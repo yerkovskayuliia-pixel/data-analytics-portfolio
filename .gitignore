@@ -1,0 +1,37 @@
+# --- Доступы и секреты: никогда не коммитим ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+.pgpass
+credentials.json
+client_secret*.json
+service_account*.json
+secrets.*
+
+# --- Локальные файлы инструментов ---
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+*.pkl
+~$*
+.~lock.*
+*.tmp
+desktop.ini
+Thumbs.db
+# Power BI / Tableau служебные файлы
+*.pbix.bak
+*.twbr
+Bookmarks/
+
+# --- Данные, которые генерируются кодом ---
+**/data/processed/
+
+# --- Исходные данные CRM: не публикуем, пока не подтверждено, что это разрешено ---
+python-crm-analysis/data/raw/

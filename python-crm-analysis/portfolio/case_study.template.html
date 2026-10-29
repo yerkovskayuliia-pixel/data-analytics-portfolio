@@ -1,0 +1,147 @@
+<title>Speed-to-Lead CRM Case Study</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single reading column with a wide figure band; numbers set in mono like an analyst's notebook */
+:root{
+  --bg:#f5f6f8; --surface:#ffffff; --ink:#141820; --ink-2:#4b5260; --line:#dde1e8;
+  --accent:#2a78d6; --accent-ink:#1c5cab; --warm:#eb6834; --paper:#fcfcfb;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#101318; --surface:#171b22; --ink:#eef1f5; --ink-2:#a9b1bd; --line:#2a303a;
+  --accent:#5598e7; --accent-ink:#86b6ef; --warm:#ec835a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101318; --surface:#171b22; --ink:#eef1f5; --ink-2:#a9b1bd; --line:#2a303a;
+  --accent:#5598e7; --accent-ink:#86b6ef; --warm:#ec835a; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:17px/1.6 var(--body)}
+.wrap{max-width:1040px;margin:0 auto;padding-block:48px 72px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:56px}
+.col{max-width:68ch}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
+h1{font-family:var(--display);font-stretch:80%;font-weight:800;font-size:clamp(36px,6vw,64px);line-height:1.02;margin:12px 0 16px;text-wrap:balance;letter-spacing:-.01em}
+h2{font-family:var(--display);font-stretch:85%;font-weight:700;font-size:28px;line-height:1.15;margin:8px 0 12px;text-wrap:balance}
+p{margin:0 0 12px}
+.lede{font-size:20px;color:var(--ink-2);max-width:60ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 24px;color:var(--ink-2);font-size:15px;margin-top:20px}
+.meta b{color:var(--ink);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
+.stat{padding:16px 16px 18px 0;min-width:0}
+.stat+.stat{padding-left:16px;border-left:1px solid var(--line)}
+.stat .v{font:500 clamp(22px,3.4vw,34px)/1.1 var(--mono);font-variant-numeric:tabular-nums}
+.stat .l{font-size:14px;color:var(--ink-2);margin-top:6px}
+.finding{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:32px;align-items:start}
+.figure{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:10px;margin:0}
+.figure img{display:block;width:100%;height:auto;border-radius:3px}
+.figure figcaption{font-size:13px;color:#52514e;padding:8px 4px 2px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.92em;color:var(--accent-ink)}
+.hyp{border-left:4px solid var(--warm);padding:4px 0 4px 20px;font-size:20px;line-height:1.5;max-width:64ch}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:10px 12px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 12px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);white-space:nowrap}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.steps div{border-top:1px solid var(--line);padding-top:12px}
+.steps h3{font:600 16px/1.3 var(--body);margin:0 0 6px}
+.steps p{font-size:15px;color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:500 13px/1 var(--mono);padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+footer{color:var(--ink-2);font-size:14px;border-top:1px solid var(--line);padding-top:20px}
+@media (max-width:760px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat:nth-child(3){padding-left:0;border-left:0}
+  .stat:nth-child(n+3){border-top:1px solid var(--line)}
+  .finding,.steps{grid-template-columns:1fr}
+}
+</style>
+
+<main class="wrap">
+  <header class="col" style="max-width:none">
+    <div class="eyebrow">Data analysis case study · Python</div>
+    <h1>Most sales were lost before the first conversation</h1>
+    <p class="lede">I analysed a year of CRM data from an online IT school in Germany: 20,000 leads, 96,000 sales calls and the full ad budget. The goal was to find the cheapest way to grow profit and design a test that proves it in two weeks.</p>
+    <div class="meta"><span><b>Yuliia Yerkovska</b>, Data Analyst</span><span>Final project, Python for Data Analysis + Product Analytics</span><span>Data: Jul 2023 – Jun 2024</span></div>
+  </header>
+
+  <section class="stats" aria-label="Key figures">
+    <div class="stat"><div class="v">4.22%</div><div class="l">of leads became students</div></div>
+    <div class="stat"><div class="v">40%</div><div class="l">of lost deals never answered the phone</div></div>
+    <div class="stat"><div class="v">€179</div><div class="l">cost to acquire a student, against €4,275 revenue each</div></div>
+    <div class="stat"><div class="v">+€358k</div><div class="l">margin from +10% conversion, no extra ad spend</div></div>
+  </section>
+
+  <section class="col">
+    <div class="eyebrow">The data</div>
+    <h2>Four messy CRM tables, turned into one model</h2>
+    <p>The export had the usual problems of a CRM filled in by hand. Language levels were typed in two alphabets ("б1", "в1", "B1 (until February)"). Money came as text in three formats. The CSV export had rounded the 19-digit IDs, so deals no longer matched their contacts. I switched to the Excel export and wrote a reusable cleaning module with 15 rules, each tied to the client's FAQ.</p>
+    <p>The CRM also had no field for money actually received. I rebuilt it from the first payment, course price, course length and months already studied: <span class="num">€3.58M</span> received out of <span class="num">€6.33M</span> contracted.</p>
+  </section>
+
+  <section class="finding">
+    <div>
+      <div class="eyebrow">Finding 1</div>
+      <h2>The problem is reaching people, not price</h2>
+      <p>Only 4 of every 100 leads paid. The top reasons for losing a deal were "doesn't answer" and "stopped answering", together <span class="num">40%</span> of lost deals. "Too expensive" was only <span class="num">4%</span>.</p>
+      <p>At the same time lead volume tripled during the year, while conversion fell from about 6% to about 3%. The sales team grew its call volume but could not keep up.</p>
+    </div>
+    <figure class="figure"><img src="{{img:02_lost_reasons}}" alt="Bar chart of reasons for lost deals. Doesn't answer is the largest at about 29 percent."><figcaption>Reasons for lost deals. Orange: the client was never reached.</figcaption></figure>
+  </section>
+
+  <section class="finding">
+    <div>
+      <div class="eyebrow">Finding 2</div>
+      <h2>Answering in 15 minutes changes the outcome</h2>
+      <p>When a manager responded within 15 minutes, the school reached the client in <span class="num">77%</span> of cases, against <span class="num">52%</span> for slower responses. Those leads were also <span class="num">1.8×</span> more likely to be rated A or B quality (χ² test, p&nbsp;&lt;&nbsp;0.001).</p>
+      <p>This is a correlation in historical data, so it needs an experiment before anyone changes the sales process.</p>
+    </div>
+    <figure class="figure"><img src="{{img:03_hypothesis_evidence}}" alt="Line chart: reach rate and qualified share both fall as first response time grows from under 15 minutes to over 24 hours."><figcaption>Reach within 24 hours and qualified share, by time to first response.</figcaption></figure>
+  </section>
+
+  <section class="finding">
+    <div>
+      <div class="eyebrow">Finding 3</div>
+      <h2>Marketing is cheap, so conversion is the lever</h2>
+      <p>All three courses are profitable after marketing. Improving conversion, average payment or number of payments by 10% each adds about <span class="num">€358k</span> margin. Cutting lead cost by 10% adds only <span class="num">€15k</span>.</p>
+      <p>Two budget fixes stood out too: one Performance Max campaign took 23% of the budget for a single student, and Google Ads leads cost twice as much as Facebook leads at the same conversion.</p>
+    </div>
+    <figure class="figure"><img src="{{img:03_sensitivity}}" alt="Horizontal bars: a 10 percent improvement in conversion, payment size or payment count each adds about 358 thousand euros; lower lead cost adds 15 thousand."><figcaption>Margin uplift from a 10% improvement in each metric.</figcaption></figure>
+  </section>
+
+  <section>
+    <div class="col">
+      <div class="eyebrow">Hypothesis and test</div>
+      <h2>A two-week experiment the sales team can run</h2>
+    </div>
+    <p class="hyp">If every new lead is assigned to a manager within one minute, gets an automatic WhatsApp or SMS message, and receives a call within 15 minutes, then the share of leads reached within 24 hours will rise by at least 10 percentage points.</p>
+    <div class="tbl" style="margin-top:24px">
+      <table>
+        <tr><th>Primary metric</th><td>Leads with a conversation of 30+ seconds in the first 24 hours. Payment takes a median 17 days, too slow for a two-week test.</td></tr>
+        <tr><th>Groups</th><td>50/50 by lead ID. Control keeps the current process.</td></tr>
+        <tr><th>Sample</th><td>384 leads per group needed (α = 0.05, power 80%). At 74 leads a day, 14 days give about 520 per group.</td></tr>
+        <tr><th>Guardrails</th><td>Share of non-target leads, calls per manager, opt-outs from messages.</td></tr>
+        <tr><th>Decision</th><td>Two-proportion z-test with a sample-ratio check. Paid conversion confirmed on the same cohorts after 45 days.</td></tr>
+        <tr><th>Expected value</th><td>About +11% conversion and +€385k margin a year if the effect holds.</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="col"><div class="eyebrow">What I built</div><h2>Deliverables</h2></div>
+    <div class="steps">
+      <div><h3>Cleaning module and notebook</h3><p>Python ETL that logs every change, with clean tables saved for Python and BI tools.</p></div>
+      <div><h3>Analysis notebooks</h3><p>Descriptive statistics, time series, channels, campaigns, sales team, products, geography and unit economics.</p></div>
+      <div><h3>Dashboard and deck</h3><p>A filterable dashboard of leads, conversion, CAC and revenue, plus a 10-slide presentation with speaker notes.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow" style="margin-bottom:12px">Tools</div>
+    <div class="chips"><span class="chip">Python</span><span class="chip">pandas</span><span class="chip">NumPy</span><span class="chip">matplotlib</span><span class="chip">seaborn</span><span class="chip">SciPy</span><span class="chip">statsmodels</span><span class="chip">Jupyter</span><span class="chip">Plotly.js</span><span class="chip">A/B testing</span><span class="chip">Unit economics</span></div>
+  </section>
+
+  <footer>Data from a course project: a real but anonymised CRM export. Manager names in the data are placeholders. Code and notebooks: GitHub link to be added.</footer>
+</main>
