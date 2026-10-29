@@ -38,6 +38,7 @@ RULES = [
     ("логин:пароль в URL", re.compile(r"\b[a-z][a-z0-9+.-]*://[^/\s:@'\"]+:(?!\{|\$|<|\*)[^/\s@'\"]{2,}@[^\s'\"]+", re.I)),
     ("Tableau: сохранённый пароль", re.compile(r"(?i)\bpassword=['\"][^'\"]+['\"]")),
     ("API-ключ / токен", re.compile(r"(?i)\b(api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|client[_-]?secret)\b['\"]?\s*[:=]\s*['\"][A-Za-z0-9_\-./+=]{12,}['\"]")),
+    ("логин:пароль в адресе БД", re.compile(r"(?i)\b(mongodb(\+srv)?|mysql(\+\w+)?|postgres(ql)?(\+\w+)?|mssql(\+\w+)?|redis|amqp|jdbc:\w+)://[^/\s:@'\"]+:(?!\{|\$|<|\*)[^/\s@'\"]{3,}")),
     ("приватный ключ", re.compile(r"-----BEGIN (RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY-----")),
     ("AWS access key", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
     ("GitHub token", re.compile(r"\bgh[pousr]_[A-Za-z0-9]{36,}\b")),
@@ -102,6 +103,24 @@ def scan_zip(path: Path, rel: str) -> list[str]:
     return hits
 
 
+def notebook_text(path: Path) -> str:
+    """Код, markdown и выводы ячеек ноутбука как обычный текст (в .ipynb кавычки экранированы)."""
+    import json
+    try:
+        nb = json.loads(path.read_text("utf-8", errors="ignore"))
+    except ValueError:
+        return path.read_text("utf-8", errors="ignore")
+    parts = []
+    for cell in nb.get("cells", []):
+        parts.append("".join(cell.get("source", [])))
+        for out in cell.get("outputs", []):
+            parts.append("".join(out.get("text", [])))
+            for v in out.get("data", {}).values():
+                if isinstance(v, (list, str)) and not str(v).startswith("iVBOR"):
+                    parts.append("".join(v) if isinstance(v, list) else v)
+    return "\n".join(parts)
+
+
 def scan_file(path: Path) -> list[str]:
     rel = path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else str(path)
     if FORBIDDEN_NAMES.search(rel) and not ALLOWED_NAMES.search(rel):
@@ -109,8 +128,10 @@ def scan_file(path: Path) -> list[str]:
     ext = path.suffix.lower()
     if ext in ZIP_EXT:
         return scan_zip(path, rel)
+    if ext == ".ipynb":
+        return scan_text(notebook_text(path), rel)
     if ext in TEXT_EXT and path.stat().st_size <= MAX_TEXT:
-        return scan_text(path.read_text("utf-8", errors="ignore"), rel)
+        return scan_text(path.read_text("utf-8", errors="ignore").replace('\\"', '"'), rel)
     return []
 
 

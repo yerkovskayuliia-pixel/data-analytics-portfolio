@@ -5,8 +5,10 @@ Projects from my Data Analytics training: Python, Excel, Power BI and Tableau.
 | Project | Tools | What it shows |
 |---|---|---|
 | [CRM Analytics for an Online IT School](python-crm-analysis/) | Python, pandas, statsmodels, Plotly | Data cleaning, EDA, unit economics, metric tree, A/B test design |
-
-_More projects (Excel, Power BI, Tableau) are being added._
+| [Movie Search App](python-sakila-movie-search/) | Python, MySQL, MongoDB | SQL from Python, parameterised queries, search logging and statistics |
+| [E-commerce Dashboard: Olist](power-bi-olist-ecommerce/) | Power BI, DAX | Data model, DAX measures, sales, logistics, payments and reviews |
+| [US Flight Delays](tableau-us-flight-delays/) | Tableau | KPI dashboard, delay and cancellation analysis, map |
+| [Clinic Growth & Unit Economics](excel-clinic-unit-economics/) | Excel | Cohorts, unit economics, forecast, pivot tables, dashboard |
 
 ---
 
