@@ -19,3 +19,5 @@ pip install pymysql pymongo python-dotenv
 cp .env.example .env    # then add MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MONGO_URI
 jupyter lab movie_search_sakila.ipynb
 ```
+
+The original Russian version of the notebook is in `movie_search_sakila_RU.ipynb`.

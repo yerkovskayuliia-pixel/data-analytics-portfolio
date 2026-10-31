@@ -1,4 +1,4 @@
-"""Единый стиль графиков проекта и сохранение в reports/figures."""
+"""One chart style for the whole project, plus saving to reports/figures."""
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -7,7 +7,7 @@ import seaborn as sns
 
 FIG_DIR = Path(__file__).resolve().parents[1] / "reports" / "figures"
 
-# Валидированная CVD-безопасная категориальная палитра (фиксированный порядок слотов).
+# Validated colour-blind-safe categorical palette (fixed slot order).
 PALETTE = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"]
 PRIMARY, ACCENT, GOOD = PALETTE[0], PALETTE[1], PALETTE[2]
 MUTED = "#a8a69c"

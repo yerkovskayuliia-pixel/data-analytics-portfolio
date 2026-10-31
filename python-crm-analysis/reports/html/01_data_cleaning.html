@@ -7802,42 +7802,42 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="01-%C2%B7-%D0%9E%D1%87%D0%B8%D1%81%D1%82%D0%BA%D0%B0-%D0%B8-%D0%BF%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-CRM">01 · Очистка и подготовка данных CRM<a class="anchor-link" href="#01-%C2%B7-%D0%9E%D1%87%D0%B8%D1%81%D1%82%D0%BA%D0%B0-%D0%B8-%D0%BF%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-CRM">¶</a></h1><p><strong>Проект:</strong> анализ CRM онлайн-школы программирования X (июль 2023 – июнь 2024).
-<strong>Цель ноутбука:</strong> превратить 4 «сырые» выгрузки CRM в чистые, связанные между собой таблицы,
-на которых можно считать воронку, эффективность маркетинга и юнит-экономику.</p>
+<h1 id="01-%C2%B7-CRM-Data-Cleaning-and-Preparation">01 · CRM Data Cleaning and Preparation<a class="anchor-link" href="#01-%C2%B7-CRM-Data-Cleaning-and-Preparation">¶</a></h1><p><strong>Project:</strong> CRM analysis of online programming school X (July 2023 – June 2024).
+<strong>Goal of this notebook:</strong> turn 4 raw CRM exports into clean, linked tables
+that support funnel, marketing-efficiency and unit-economics analysis.</p>
 <table>
 <thead>
 <tr>
-<th>Таблица</th>
-<th>Что содержит</th>
-<th>Ключ</th>
+<th>Table</th>
+<th>Contents</th>
+<th>Key</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Contacts</td>
-<td>контакты (лиды)</td>
+<td>contacts (leads)</td>
 <td><code>Id</code></td>
 </tr>
 <tr>
 <td>Calls</td>
-<td>звонки менеджеров</td>
+<td>sales managers' calls</td>
 <td><code>CONTACTID</code> → Contacts</td>
 </tr>
 <tr>
 <td>Spend</td>
-<td>рекламные расходы по дням</td>
+<td>daily ad spend</td>
 <td><code>Source</code>, <code>Campaign</code> → Deals</td>
 </tr>
 <tr>
 <td>Deals</td>
-<td>потенциальные сделки</td>
+<td>potential deals</td>
 <td><code>Contact Name</code> → Contacts</td>
 </tr>
 </tbody>
 </table>
-<p>Вся логика очистки вынесена в модуль <a href="../src/cleaning.py"><code>src/cleaning.py</code></a>, чтобы её можно было
-переиспользовать и тестировать. Здесь — проверка исходных данных, запуск ETL и контроль результата.</p>
+<p>All cleaning logic lives in the module <a href="../src/cleaning.py"><code>src/cleaning.py</code></a> so it can be
+reused and tested. This notebook checks the raw data, runs the ETL and validates the result.</p>
 </div>
 </div>
 </div>
@@ -7872,8 +7872,8 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="1.-%D0%98%D1%81%D1%85%D0%BE%D0%B4%D0%BD%D1%8B%D0%B5-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5">1. Исходные данные<a class="anchor-link" href="#1.-%D0%98%D1%81%D1%85%D0%BE%D0%B4%D0%BD%D1%8B%D0%B5-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5">¶</a></h2><p>Берём <code>.xlsx</code>, а не <code>.csv</code>: в CSV-выгрузке кириллица в поле <em>Level of Deutsch</em> превратилась в <code>?</code>,
-а 19-значные ID округлены как float (связь таблиц ломается). Все ID читаем как строки.</p>
+<h2 id="1.-Raw-data">1. Raw data<a class="anchor-link" href="#1.-Raw-data">¶</a></h2><p>We read <code>.xlsx</code>, not <code>.csv</code>: in the CSV export the Cyrillic text in <em>Level of Deutsch</em> turned into <code>?</code>,
+and 19-digit IDs were rounded as floats (which breaks the joins). All IDs are read as strings.</p>
 </div>
 </div>
 </div>
@@ -7887,9 +7887,9 @@ a.anchor-link {
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">raw</span> <span class="o">=</span> <span class="n">etl</span><span class="o">.</span><span class="n">load_raw</span><span class="p">()</span>
 <span class="n">overview</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="n">name</span><span class="p">:</span> <span class="p">{</span><span class="s2">"строк"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="s2">"столбцов"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-           <span class="s2">"полных дубликатов"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
-           <span class="s2">"ячеек с пропусками, %"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
+    <span class="n">name</span><span class="p">:</span> <span class="p">{</span><span class="s2">"rows"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="s2">"columns"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+           <span class="s2">"full duplicates"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+           <span class="s2">"missing cells, %"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">raw</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
 <span class="p">})</span><span class="o">.</span><span class="n">T</span>
 <span class="n">overview</span>
@@ -7923,10 +7923,10 @@ a.anchor-link {
 <thead>
 <tr style="text-align: right;">
 <th></th>
-<th>строк</th>
-<th>столбцов</th>
-<th>полных дубликатов</th>
-<th>ячеек с пропусками, %</th>
+<th>rows</th>
+<th>columns</th>
+<th>full duplicates</th>
+<th>missing cells, %</th>
 </tr>
 </thead>
 <tbody>
@@ -7975,9 +7975,9 @@ a.anchor-link {
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">missing_report</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"пропусков"</span><span class="p">:</span> <span class="n">m</span><span class="p">,</span> <span class="s2">"%"</span><span class="p">:</span> <span class="p">(</span><span class="n">m</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-                          <span class="s2">"тип"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)})</span>
-            <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"пропусков &gt; 0"</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"%"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"missing"</span><span class="p">:</span> <span class="n">m</span><span class="p">,</span> <span class="s2">"%"</span><span class="p">:</span> <span class="p">(</span><span class="n">m</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                          <span class="s2">"dtype"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)})</span>
+            <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"missing &gt; 0"</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"%"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
 <span class="n">missing_report</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="s2">"Deals"</span><span class="p">])</span>
 </pre></div>
@@ -8010,9 +8010,9 @@ a.anchor-link {
 <thead>
 <tr style="text-align: right;">
 <th></th>
-<th>пропусков</th>
+<th>missing</th>
 <th>%</th>
-<th>тип</th>
+<th>dtype</th>
 </tr>
 </thead>
 <tbody>
@@ -8168,13 +8168,13 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Что видно в Deals до очистки:</strong></p>
+<p><strong>What Deals looks like before cleaning:</strong></p>
 <ul>
-<li><code>Payment Type</code>, <code>Months of study</code>, <code>Course duration</code>, <code>City</code>, <code>Level of Deutsch</code> заполнены у малой доли
-сделок — менеджер заполняет их только на поздних стадиях воронки. Это не ошибка, а особенность процесса:
-пропуск означает «до этого этапа сделка не дошла», поэтому такие поля <strong>не удаляем и не заполняем средним</strong>.</li>
-<li>Суммы хранятся текстом в разных форматах: <code>1000</code>, <code>€ 3.500,00</code>, <code>$11.000,00</code>.</li>
-<li><code>SLA</code> — смесь <code>time</code> (чч:мм:сс) и <code>timedelta</code> (больше суток).</li>
+<li><code>Payment Type</code>, <code>Months of study</code>, <code>Course duration</code>, <code>City</code>, <code>Level of Deutsch</code> are filled for a small share
+of deals: managers fill them only at late funnel stages. This is how the process works, not an error.
+A gap means "the deal never reached this stage", so these fields are <strong>neither dropped nor mean-imputed</strong>.</li>
+<li>Amounts are stored as text in different formats: <code>1000</code>, <code>€ 3.500,00</code>, <code>$11.000,00</code>.</li>
+<li><code>SLA</code> mixes <code>time</code> (hh:mm:ss) and <code>timedelta</code> (more than one day).</li>
 </ul>
 </div>
 </div>
@@ -8336,9 +8336,9 @@ a.anchor-link {
 <thead>
 <tr style="text-align: right;">
 <th></th>
-<th>пропусков</th>
+<th>missing</th>
 <th>%</th>
-<th>тип</th>
+<th>dtype</th>
 </tr>
 </thead>
 <tbody>
@@ -8392,14 +8392,14 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="2.-%D0%9F%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%B0-%D0%BE%D1%87%D0%B8%D1%81%D1%82%D0%BA%D0%B8-%D0%B8-%D0%B8%D1%85-%D0%BE%D0%B1%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">2. Правила очистки и их обоснование<a class="anchor-link" href="#2.-%D0%9F%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%B0-%D0%BE%D1%87%D0%B8%D1%81%D1%82%D0%BA%D0%B8-%D0%B8-%D0%B8%D1%85-%D0%BE%D0%B1%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">¶</a></h2><table>
+<h2 id="2.-Cleaning-rules-and-why">2. Cleaning rules and why<a class="anchor-link" href="#2.-Cleaning-rules-and-why">¶</a></h2><table>
 <thead>
 <tr>
 <th>#</th>
-<th>Таблица</th>
-<th>Проблема</th>
-<th>Решение</th>
-<th>Обоснование</th>
+<th>Table</th>
+<th>Problem</th>
+<th>Fix</th>
+<th>Reason</th>
 </tr>
 </thead>
 <tbody>
@@ -8407,113 +8407,113 @@ a.anchor-link {
 <td>1</td>
 <td>Deals</td>
 <td><code>Lost Reason = Duplicate</code></td>
-<td>удалить</td>
-<td>по FAQ это технический дубль лида; иначе завышаем число лидов и занижаем конверсию</td>
+<td>drop</td>
+<td>per the FAQ this is a technical duplicate lead; keeping it inflates leads and deflates conversion</td>
 </tr>
 <tr>
 <td>2</td>
 <td>Deals</td>
 <td><code>Closing Date</code> &lt; <code>Created Time</code></td>
 <td>→ <code>NaT</code></td>
-<td>закрыть сделку раньше создания невозможно (FAQ: ошибка, решает аналитик)</td>
+<td>a deal cannot close before it is created (FAQ: data error, the analyst decides)</td>
 </tr>
 <tr>
 <td>3</td>
 <td>Deals</td>
 <td><code>Initial Amount Paid</code> &gt; <code>Offer Total Amount</code></td>
-<td>2 строки с offer 1 200 по 11-мес. курсу — опечатка в offer; остальные — initial ограничен offer</td>
-<td>первый платёж не может превышать стоимость курса; консервативная оценка выручки</td>
+<td>2 rows with offer 1,200 on an 11-month course are a typo in the offer; elsewhere initial is capped at offer</td>
+<td>the first payment cannot exceed the course price; conservative revenue estimate</td>
 </tr>
 <tr>
 <td>4</td>
 <td>Deals</td>
-<td>offer = 0 / 1 / 9 €</td>
-<td>флаг <code>is_demo</code></td>
-<td>по FAQ это демо-доступы за символическую плату — не студенты</td>
+<td>offer = €0 / 1 / 9</td>
+<td>flag <code>is_demo</code></td>
+<td>per the FAQ these are demo accesses for a token fee, not students</td>
 </tr>
 <tr>
 <td>5</td>
 <td>Deals</td>
-<td><code>Payment Done</code>, но <code>Months of study</code> пуст</td>
-<td>не считаем студентом</td>
-<td>FAQ: «если месяц не заполнен — студент не учится, деньги учитывать нельзя»</td>
+<td><code>Payment Done</code> but <code>Months of study</code> empty</td>
+<td>not counted as a student</td>
+<td>FAQ: "if the month is not filled in, the student is not studying and the money must not be counted"</td>
 </tr>
 <tr>
 <td>6</td>
 <td>Deals</td>
-<td>суммы текстом, SLA смешанного типа</td>
-<td>→ float / секунды</td>
-<td>для расчётов нужны числа</td>
+<td>amounts as text, SLA of mixed type</td>
+<td>→ float / seconds</td>
+<td>calculations need numbers</td>
 </tr>
 <tr>
 <td>7</td>
 <td>Deals</td>
-<td><code>Level of Deutsch</code> свободным текстом (б1, в1, «B1 (до февраля)»)</td>
+<td><code>Level of Deutsch</code> as free text (Cyrillic б1, в1, "B1 (until February)")</td>
 <td>→ CEFR <code>A0…C2</code></td>
-<td>кириллические б/в = B; берём текущий уровень (первый упомянутый)</td>
+<td>Cyrillic б/в = B; take the current level (the first one mentioned)</td>
 </tr>
 <tr>
 <td>8</td>
 <td>Deals</td>
-<td>города: <code>-</code>, адреса, разное написание</td>
+<td>cities: <code>-</code>, street addresses, different spellings</td>
 <td>→ <code>city</code>, <code>country</code></td>
-<td>для географического анализа</td>
+<td>needed for geographic analysis</td>
 </tr>
 <tr>
 <td>9</td>
 <td>Deals</td>
 <td><code>Content</code>, <code>Term</code></td>
-<td>удалить</td>
-<td>детализация объявления; кампания и источник сохраняются</td>
+<td>drop</td>
+<td>ad-level detail; campaign and source are kept</td>
 </tr>
 <tr>
 <td>10</td>
 <td>Deals</td>
-<td>категориальные пропуски</td>
-<td>явные метки <code>Unknown</code>, <code>Not rated</code>, <code>Not lost</code></td>
-<td>пропуск сам по себе информативен; удаление строк исказило бы воронку</td>
+<td>categorical gaps</td>
+<td>explicit labels <code>Unknown</code>, <code>Not rated</code>, <code>Not lost</code></td>
+<td>the gap itself is informative; dropping rows would distort the funnel</td>
 </tr>
 <tr>
 <td>11</td>
 <td>Calls</td>
-<td><code>Dialled Number</code>, <code>Tag</code> пустые на 100%</td>
-<td>удалить</td>
-<td>нет информации</td>
+<td><code>Dialled Number</code>, <code>Tag</code> 100% empty</td>
+<td>drop</td>
+<td>no information</td>
 </tr>
 <tr>
 <td>12</td>
 <td>Calls</td>
-<td>нет длительности</td>
-<td>удалить строки (83)</td>
-<td>звонок без длительности нельзя анализировать</td>
+<td>no duration</td>
+<td>drop rows (83)</td>
+<td>a call without a duration cannot be analysed</td>
 </tr>
 <tr>
 <td>13</td>
 <td>Calls</td>
-<td><code>Outgoing Call Status</code> пуст у входящих</td>
+<td><code>Outgoing Call Status</code> empty for inbound calls</td>
 <td>→ <code>Not applicable</code></td>
-<td>это не пропуск, а «не применимо»</td>
+<td>not missing, just not applicable</td>
 </tr>
 <tr>
 <td>14</td>
 <td>Spend</td>
-<td>917 полных дублей</td>
-<td>удалить</td>
-<td>все — нулевые строки, на суммы не влияют</td>
+<td>917 full duplicates</td>
+<td>drop</td>
+<td>all are zero rows and do not affect totals</td>
 </tr>
 <tr>
 <td>15</td>
 <td>Spend</td>
-<td><code>Campaign</code> пуст</td>
+<td><code>Campaign</code> empty</td>
 <td>→ <code>(no campaign)</code></td>
-<td>расход реальный, удалять нельзя</td>
+<td>the spend is real and must not be dropped</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Выручка.</strong> По FAQ факт оплаты — статус <code>Payment Done</code>, а сумма первого платежа — <code>Initial Amount Paid</code>.
-Остаток курса оплачивается помесячно, поэтому выручка, полученная к дате выгрузки:</p>
+<p><strong>Revenue.</strong> Per the FAQ, payment is confirmed by the status <code>Payment Done</code>, and the first payment is <code>Initial Amount Paid</code>.
+The rest of the course is paid monthly, so the revenue received by the export date is:</p>
 <p>$$revenue = initial + (months\_of\_study - 1) \cdot \frac{offer - initial}{course\_duration - 1},\quad revenue \le offer$$</p>
-<p>При единовременной оплате (<code>initial = offer</code>) выручка = <code>offer</code>.</p>
+<p>For a one-off payment (<code>initial = offer</code>), revenue = <code>offer</code>.</p>
 </div>
 </div>
 </div>
@@ -8544,36 +8544,36 @@ a.anchor-link {
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>
 === Contacts
- • Дубликаты по id удалены: 0
- • created_time, modified_time -&gt; datetime64 (формат дд.мм.гггг чч:мм)
- • Пропусков нет; contact_owner_name -&gt; category
+ • Duplicate ids removed: 0
+ • created_time, modified_time -&gt; datetime64 (format dd.mm.yyyy hh:mm)
+ • No missing values; contact_owner_name -&gt; category
 
 === Calls
- • Дубликаты по id удалены: 0
- • Удалены полностью пустые столбцы: ['dialled_number', 'tag']
- • Удалены звонки без длительности/с отрицательной длительностью: 83
- • outgoing_call_status: NaN -&gt; 'Not applicable' (входящие/пропущенные); scheduled_in_crm -&gt; bool
- • Звонков без contact_id: 3855 — оставлены для анализа нагрузки менеджеров, но не участвуют в связке со сделками
- • Добавлен флаг is_conversation (&gt;= 30 сек): медиана звонка 8 сек, короткие звонки — недозвоны/автоответчики
+ • Duplicate ids removed: 0
+ • Fully empty columns dropped: ['dialled_number', 'tag']
+ • Calls with missing/negative duration dropped: 83
+ • outgoing_call_status: NaN -&gt; 'Not applicable' (inbound/missed); scheduled_in_crm -&gt; bool
+ • Calls without contact_id: 3855, kept for manager workload analysis but not joined to deals
+ • Added flag is_conversation (&gt;= 30 s): the median call is 8 s, short calls are no-answers/voicemail
 
 === Spend
- • Полные дубликаты удалены: 917 (все — нулевые строки без расходов)
- • campaign/adgroup/ad: NaN -&gt; '(no campaign)'/'(not set)' — расход реальный, просто не размечен, удалять его нельзя
- • Отрицательных значений impressions/spend/clicks: 0
+ • Full duplicates removed: 917 (all are zero rows with no spend)
+ • campaign/adgroup/ad: NaN -&gt; '(no campaign)'/'(not set)': the spend is real, just untagged, so it must not be dropped
+ • Negative impressions/spend/clicks values: 0
 
 === Deals
- • Удалены пустые строки/дубли id: 2
- • Удалены технические дубли лидов (Lost Reason = 'Duplicate', см. FAQ): 1771
- • Удалены неактуальные столбцы content, term (детализация объявлений, не используется в анализе; кампания и источник остаются)
- • closing_date раньше created_time — ошибка ввода, -&gt; NaT: 38
- • SLA (чч:мм:сс и 'дни чч:мм:сс') -&gt; sla_sec (секунды)
+ • Empty rows/duplicate ids removed: 2
+ • Technical duplicate leads removed (Lost Reason = 'Duplicate', see FAQ): 1771
+ • Dropped irrelevant columns content, term (ad-level detail, not used in the analysis; campaign and source are kept)
+ • closing_date before created_time is an input error, -&gt; NaT: 38
+ • SLA (hh:mm:ss and 'days hh:mm:ss') -&gt; sla_sec (seconds)
  • initial_amount_paid / offer_total_amount: '€ 3.500,00', '$11.000,00' -&gt; float
- • initial &gt; offer (очевидная ошибка, FAQ): offer исправлен как опечатка в 6 строках, initial ограничен offer в 49 строках; флаг amount_anomaly_flag
- • Демо-доступы за символическую плату (offer 0/1/9 €): 792
- • Payment Done: 856; из них студентов (months_of_study заполнен, не демо): 837. Без months_of_study деньги не учитываем (FAQ)
- • revenue: выручка, полученная к дате выгрузки (первый платёж + помесячные платежи за отученные месяцы); payments_count: число транзакций
- • Категориальные пропуски заполнены явными метками: quality 'Not rated' (+3 строки 'F'), lost_reason 'Not lost', product/payment_type/education_type 'Unknown', campaign '(no campaign)'; '#REF!' — ошибка Excel -&gt; Unknown
- • city: '-' -&gt; Unknown, адреса -&gt; город, единое написание; добавлен country. level_of_deutsch (б1, в1, 'B1 (до февраля)') -&gt; german_level A0..C2/Unknown
+ • initial &gt; offer (an obvious error, FAQ): offer fixed as a typo in 6 rows, initial capped at offer in 49 rows; flag amount_anomaly_flag
+ • Demo accesses for a token fee (offer €0/1/9): 792
+ • Payment Done: 856; of them students (months_of_study filled in, not demo): 837. Without months_of_study the money is not counted (FAQ)
+ • revenue: revenue received by the export date (first payment + monthly payments for the months studied); payments_count: number of transactions
+ • Categorical gaps filled with explicit labels: quality 'Not rated' (+3 rows 'F'), lost_reason 'Not lost', product/payment_type/education_type 'Unknown', campaign '(no campaign)'; '#REF!' (an Excel error) -&gt; Unknown
+ • city: '-' -&gt; Unknown, addresses -&gt; city, one spelling; added country. level_of_deutsch (б1, в1, 'B1 (until February)') -&gt; german_level A0..C2/Unknown
 </pre>
 </div>
 </div>
@@ -8586,7 +8586,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="3.-%D0%9A%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D1%8C-%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D0%B0">3. Контроль результата<a class="anchor-link" href="#3.-%D0%9A%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D1%8C-%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D0%B0">¶</a></h2>
+<h2 id="3.-Validating-the-result">3. Validating the result<a class="anchor-link" href="#3.-Validating-the-result">¶</a></h2>
 </div>
 </div>
 </div>
@@ -8599,8 +8599,8 @@ a.anchor-link {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="n">name</span><span class="p">:</span> <span class="p">{</span><span class="s2">"строк до"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="n">name</span><span class="p">]),</span> <span class="s2">"строк после"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span>
-           <span class="s2">"столбцов"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">"полных дубликатов"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()}</span>
+    <span class="n">name</span><span class="p">:</span> <span class="p">{</span><span class="s2">"rows before"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="n">name</span><span class="p">]),</span> <span class="s2">"rows after"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span>
+           <span class="s2">"columns"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">"full duplicates"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()}</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">clean</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
 <span class="p">})</span><span class="o">.</span><span class="n">T</span>
 </pre></div>
@@ -8633,10 +8633,10 @@ a.anchor-link {
 <thead>
 <tr style="text-align: right;">
 <th></th>
-<th>строк до</th>
-<th>строк после</th>
-<th>столбцов</th>
-<th>полных дубликатов</th>
+<th>rows before</th>
+<th>rows after</th>
+<th>columns</th>
+<th>full duplicates</th>
 </tr>
 </thead>
 <tbody>
@@ -8797,16 +8797,16 @@ a.anchor-link {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">checks</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"id сделок уникальны"</span><span class="p">:</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="o">.</span><span class="n">is_unique</span><span class="p">,</span>
-    <span class="s2">"нет closing_date &lt; created_time"</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"closing_date"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">normalize</span><span class="p">())</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span>
-    <span class="s2">"initial &lt;= offer везде"</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"initial_amount_paid"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"offer_total_amount"</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span>
-    <span class="s2">"у студентов есть months_of_study"</span><span class="p">:</span> <span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"is_student"</span><span class="p">],</span> <span class="s2">"months_of_study"</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
-    <span class="s2">"у студентов есть продукт"</span><span class="p">:</span> <span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"is_student"</span><span class="p">],</span> <span class="s2">"product"</span><span class="p">]</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="s2">"Unknown"</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
-    <span class="s2">"выручка только у студентов"</span><span class="p">:</span> <span class="p">(</span><span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">deals</span><span class="p">[</span><span class="s2">"is_student"</span><span class="p">],</span> <span class="s2">"revenue"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
-    <span class="s2">"contact_id сделок есть в Contacts, %"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"contact_id"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">clean</span><span class="p">[</span><span class="s2">"Contacts"</span><span class="p">][</span><span class="s2">"id"</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-    <span class="s2">"contact_id звонков есть в Contacts, %"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">clean</span><span class="p">[</span><span class="s2">"Calls"</span><span class="p">][</span><span class="s2">"contact_id"</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">clean</span><span class="p">[</span><span class="s2">"Contacts"</span><span class="p">][</span><span class="s2">"id"</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"deal ids are unique"</span><span class="p">:</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="o">.</span><span class="n">is_unique</span><span class="p">,</span>
+    <span class="s2">"no closing_date &lt; created_time"</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"closing_date"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">normalize</span><span class="p">())</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span>
+    <span class="s2">"initial &lt;= offer everywhere"</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"initial_amount_paid"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"offer_total_amount"</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span>
+    <span class="s2">"students have months_of_study"</span><span class="p">:</span> <span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"is_student"</span><span class="p">],</span> <span class="s2">"months_of_study"</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
+    <span class="s2">"students have a product"</span><span class="p">:</span> <span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"is_student"</span><span class="p">],</span> <span class="s2">"product"</span><span class="p">]</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="s2">"Unknown"</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
+    <span class="s2">"revenue only for students"</span><span class="p">:</span> <span class="p">(</span><span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">deals</span><span class="p">[</span><span class="s2">"is_student"</span><span class="p">],</span> <span class="s2">"revenue"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
+    <span class="s2">"deal contact_id found in Contacts, %"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"contact_id"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">clean</span><span class="p">[</span><span class="s2">"Contacts"</span><span class="p">][</span><span class="s2">"id"</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"call contact_id found in Contacts, %"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">clean</span><span class="p">[</span><span class="s2">"Calls"</span><span class="p">][</span><span class="s2">"contact_id"</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">clean</span><span class="p">[</span><span class="s2">"Contacts"</span><span class="p">][</span><span class="s2">"id"</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
 <span class="p">}</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">checks</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"проверка"</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">checks</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"check"</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -8837,40 +8837,40 @@ a.anchor-link {
 <thead>
 <tr style="text-align: right;">
 <th></th>
-<th>проверка</th>
+<th>check</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th>id сделок уникальны</th>
+<th>deal ids are unique</th>
 <td>True</td>
 </tr>
 <tr>
-<th>нет closing_date &lt; created_time</th>
+<th>no closing_date &lt; created_time</th>
 <td>True</td>
 </tr>
 <tr>
-<th>initial &lt;= offer везде</th>
+<th>initial &lt;= offer everywhere</th>
 <td>True</td>
 </tr>
 <tr>
-<th>у студентов есть months_of_study</th>
+<th>students have months_of_study</th>
 <td>True</td>
 </tr>
 <tr>
-<th>у студентов есть продукт</th>
+<th>students have a product</th>
 <td>True</td>
 </tr>
 <tr>
-<th>выручка только у студентов</th>
+<th>revenue only for students</th>
 <td>True</td>
 </tr>
 <tr>
-<th>contact_id сделок есть в Contacts, %</th>
+<th>deal contact_id found in Contacts, %</th>
 <td>99.8</td>
 </tr>
 <tr>
-<th>contact_id звонков есть в Contacts, %</th>
+<th>call contact_id found in Contacts, %</th>
 <td>100.0</td>
 </tr>
 </tbody>
@@ -8888,7 +8888,7 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">deals</span><span class="p">[</span><span class="s2">"german_level"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">"сделок"</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">deals</span><span class="p">[</span><span class="s2">"german_level"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">"deals"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8919,7 +8919,7 @@ a.anchor-link {
 <thead>
 <tr style="text-align: right;">
 <th></th>
-<th>сделок</th>
+<th>deals</th>
 </tr>
 <tr>
 <th>german_level</th>
@@ -8973,14 +8973,14 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="4.-%D0%98%D1%82%D0%BE%D0%B3">4. Итог<a class="anchor-link" href="#4.-%D0%98%D1%82%D0%BE%D0%B3">¶</a></h2><ul>
-<li>Сделок после очистки: <strong>19 822</strong> (удалено 1 771 технический дубль), звонков: <strong>95 791</strong>, строк расходов: <strong>19 862</strong>.</li>
-<li>Студентов (оплата + заполнен срок обучения, не демо): <strong>837</strong> из 856 сделок <code>Payment Done</code>.</li>
-<li>Связь таблиц работает: 99.7% сделок и 100% звонков с контактом находят свой контакт.</li>
-<li>Очищенные таблицы сохранены в <code>data/processed/</code> в двух форматах: <strong>CSV</strong> (для Tableau/Sheets) и
-<strong>pickle</strong> (для Python: сохраняет типы <code>datetime</code>, <code>category</code>, <code>bool</code> и загружается мгновенно).</li>
+<h2 id="4.-Summary">4. Summary<a class="anchor-link" href="#4.-Summary">¶</a></h2><ul>
+<li>Deals after cleaning: <strong>19,822</strong> (1,771 technical duplicates removed), calls: <strong>95,791</strong>, spend rows: <strong>19,862</strong>.</li>
+<li>Students (paid + study months filled in, not demo): <strong>837</strong> of 856 <code>Payment Done</code> deals.</li>
+<li>The joins work: 99.7% of deals and 100% of calls with a contact find their contact.</li>
+<li>Clean tables are saved to <code>data/processed/</code> in two formats: <strong>CSV</strong> (for Tableau/Sheets) and
+<strong>pickle</strong> (for Python: keeps the <code>datetime</code>, <code>category</code> and <code>bool</code> types and loads instantly).</li>
 </ul>
-<p>➡️ Следующий шаг — <a href="02_eda_analysis.ipynb">02_eda_analysis.ipynb</a></p>
+<p>➡️ Next step: <a href="02_eda_analysis.ipynb">02_eda_analysis.ipynb</a></p>
 </div>
 </div>
 </div>

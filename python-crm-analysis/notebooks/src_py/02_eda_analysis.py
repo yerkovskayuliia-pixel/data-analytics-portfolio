@@ -1,16 +1,16 @@
 # %% [markdown]
-# # 02 · Исследовательский анализ (EDA)
+# # 02 · Exploratory Data Analysis (EDA)
 #
-# Работаем с очищенными таблицами из [01_data_cleaning](01_data_cleaning.ipynb).
+# We work with the clean tables from [01_data_cleaning](01_data_cleaning.ipynb).
 #
-# **Определения, которые используются везде ниже:**
-# - **Лид** — сделка (потенциальная сделка) в таблице Deals после удаления технических дублей.
-# - **Студент (успешная сделка)** — `Payment Done` + заполнен `Months of study` + не демо-доступ.
-# - **C1 (конверсия)** = студенты / лиды.
-# - **Выручка** — сумма, фактически полученная к дате выгрузки (см. формулу в 01).
+# **Definitions used throughout:**
+# - **Lead**: a deal (potential deal) in the Deals table after technical duplicates are removed.
+# - **Student (successful deal)**: `Payment Done` + `Months of study` filled in + not a demo access.
+# - **C1 (conversion)** = students / leads.
+# - **Revenue**: the amount actually received by the export date (see the formula in 01).
 #
-# План по ТЗ: описательная статистика → временные ряды → кампании и источники → отдел продаж →
-# платежи и продукты → география → выводы.
+# Plan from the brief: descriptive statistics → time series → campaigns and sources → sales team →
+# payments and products → geography → conclusions.
 
 # %%
 import sys
@@ -34,13 +34,13 @@ data = etl.load_clean()
 deals, calls, spend, contacts = data["Deals"], data["Calls"], data["Spend"], data["Contacts"]
 students = deals[deals["is_student"]]
 OBS = dict(observed=True)
-print(f"Лидов: {len(deals):,} | студентов: {len(students):,} | C1: {deals['is_student'].mean():.2%}")
-print(f"Период: {deals['created_time'].min():%d.%m.%Y} – {deals['created_time'].max():%d.%m.%Y}")
-print(f"Выручка: €{students['revenue'].sum():,.0f} | рекламный бюджет: €{spend['spend'].sum():,.0f}")
+print(f"Leads: {len(deals):,} | students: {len(students):,} | C1: {deals['is_student'].mean():.2%}")
+print(f"Period: {deals['created_time'].min():%d.%m.%Y} – {deals['created_time'].max():%d.%m.%Y}")
+print(f"Revenue: €{students['revenue'].sum():,.0f} | ad budget: €{spend['spend'].sum():,.0f}")
 
 # %% [markdown]
-# ## 1. Описательная статистика
-# ### 1.1 Числовые поля: среднее, медиана, мода, диапазон
+# ## 1. Descriptive statistics
+# ### 1.1 Numeric fields: mean, median, mode, range
 
 # %%
 def describe_num(s: pd.Series) -> pd.Series:
@@ -53,15 +53,15 @@ def describe_num(s: pd.Series) -> pd.Series:
     })
 
 numeric = {
-    "Deals · offer_total_amount (студенты), €": students["offer_total_amount"],
-    "Deals · initial_amount_paid (студенты), €": students["initial_amount_paid"],
-    "Deals · revenue на студента, €": students["revenue"],
+    "Deals · offer_total_amount (students), €": students["offer_total_amount"],
+    "Deals · initial_amount_paid (students), €": students["initial_amount_paid"],
+    "Deals · revenue per student, €": students["revenue"],
     "Deals · months_of_study": students["months_of_study"],
-    "Deals · course_duration, мес.": students["course_duration"],
-    "Deals · deal_cycle_days (студенты)": students["deal_cycle_days"],
-    "Deals · SLA, часы": deals["sla_sec"] / 3600,
+    "Deals · course_duration, months": students["course_duration"],
+    "Deals · deal_cycle_days (students)": students["deal_cycle_days"],
+    "Deals · SLA, hours": deals["sla_sec"] / 3600,
     "Calls · duration_sec": calls["duration_sec"],
-    "Spend · spend в день по строке, €": spend["spend"],
+    "Spend · spend per row per day, €": spend["spend"],
     "Spend · clicks": spend["clicks"],
     "Spend · impressions": spend["impressions"],
 }
@@ -69,15 +69,15 @@ stats = pd.DataFrame({k: describe_num(v) for k, v in numeric.items()}).T
 stats
 
 # %% [markdown]
-# **Интерпретация:**
-# - **Стоимость курса** у студентов: мода и медиана — €11 000 (11-месячные Digital Marketing и UX/UI),
-#   среднее ниже (~€7.5k) из-за дешёвых пакетов и 6-месячного Web Developer. Распределение бимодальное —
-#   среднее здесь плохо описывает «типичного» студента, корректнее смотреть медиану и разрез по продукту.
-# - **Первый платёж**: мода €1 000 — стандартный вход в рассрочку.
-# - **Цикл сделки**: медиана 17 дней, среднее 33 — длинный правый хвост (до 305 дней): часть клиентов
-#   «дозревает» месяцами.
-# - **SLA**: медиана ~5.5 ч, среднее ~31 ч — единичные заявки ждут ответа неделями. Это первый кандидат в точки роста.
-# - **Звонки**: медиана 8 секунд, среднее 165 — большинство звонков — недозвоны; реальный разговор встречается реже.
+# **Interpretation:**
+# - **Course price** for students: the mode and median are €11,000 (the 11-month Digital Marketing and UX/UI courses).
+#   The mean is lower (~€7.5k) because of cheap packages and the 6-month Web Developer course. The distribution is bimodal,
+#   so the mean describes a "typical" student poorly; the median and the split by product are more accurate.
+# - **First payment**: the mode is €1,000, the standard down payment for instalments.
+# - **Deal cycle**: median 17 days, mean 33, with a long right tail (up to 305 days): some clients
+#   take months to decide.
+# - **SLA**: median ~5.5 h, mean ~31 h; some requests wait weeks for a reply. This is the first candidate growth lever.
+# - **Calls**: median 8 seconds, mean 165; most calls do not get through, real conversations are rarer.
 
 # %%
 fig, axes = plt.subplots(1, 3, figsize=(15, 4))
@@ -92,7 +92,7 @@ axes[2].set_xticks([0, 1, 2, 3]); axes[2].set_xticklabels(["0", "10s", "100s", "
 plt.tight_layout(); save(fig, "02_distributions"); plt.show()
 
 # %% [markdown]
-# ### 1.2 Категориальные поля: качество, стадия, источник, продукт
+# ### 1.2 Categorical fields: quality, stage, source, product
 
 # %%
 fig, axes = plt.subplots(2, 2, figsize=(15, 9))
@@ -116,13 +116,13 @@ for col in ["quality", "source", "product", "education_type"]:
 pd.concat(cat_conv).style.format({"C1": "{:.1%}", "leads": "{:,}"}).background_gradient(subset="C1", cmap="Blues")
 
 # %% [markdown]
-# **Выводы по категориям:**
-# - **Стадия:** 71% лидов в `Lost`, до оплаты доходит 4.3%. Главные причины потерь (ниже) — «не отвечает» и
-#   «перестал отвечать» (40% проигранных сделок, вместе с неверным номером — 51%): это проблема **дозвона и скорости реакции**, а не цены.
-# - **Качество:** класс A конвертируется в 34% случаев, B — 21%, C — 10%, D/E — почти 0. Оценка менеджера
-#   хорошо предсказывает оплату, поэтому доля A+B — надёжная *опережающая* метрика для A/B-теста.
-# - **Продукт:** у 82% лидов продукт не указан (не дошли до консультации). Среди указанных лидеры —
-#   Digital Marketing (≈55% продаж), UX/UI Design, Web Developer.
+# **Findings by category:**
+# - **Stage:** 71% of leads end in `Lost`, 4.3% reach payment. The main loss reasons (below) are "doesn't answer" and
+#   "stopped answering" (40% of lost deals, 51% together with invalid numbers): the problem is **reaching the lead and response speed**, not price.
+# - **Quality:** class A converts in 34% of cases, B in 21%, C in 10%, D/E almost never. The manager's rating
+#   predicts payment well, so the A+B share is a reliable *leading* metric for an A/B test.
+# - **Product:** 82% of leads have no product (they never reached a consultation). Among the known ones the leaders are
+#   Digital Marketing (≈55% of sales), UX/UI Design and Web Developer.
 
 # %%
 lost = deals.loc[deals["stage"].eq("Lost"), "lost_reason"].value_counts(normalize=True).head(10).sort_values()
@@ -135,8 +135,8 @@ ax.grid(axis="y", visible=False)
 save(fig, "02_lost_reasons"); plt.show()
 
 # %% [markdown]
-# ## 2. Анализ временных рядов
-# ### 2.1 Динамика создания сделок и связь со звонками
+# ## 2. Time series analysis
+# ### 2.1 Deal creation over time and its link to calls
 
 # %%
 monthly = deals.groupby("month").agg(leads=("id", "size"), students=("is_student", "sum"),
@@ -157,26 +157,26 @@ pct_axis(axes[1], decimals=0); axes[1].set_title("Lead → student conversion (C
 for x, v in zip(monthly.index, monthly["C1"]):
     axes[1].text(x, v, f"{v:.1%}", ha="center", va="bottom", fontsize=9, color=viz.TEXT_2)
 plt.tight_layout(); save(fig, "02_time_series"); plt.show()
-print(f"Корреляция лидов и звонков по месяцам: r = {monthly['leads'].corr(monthly['calls']):.2f}")
+print(f"Monthly correlation of leads and calls: r = {monthly['leads'].corr(monthly['calls']):.2f}")
 
 # %%
 weekly = deals.set_index("created_time").resample("W")["id"].count().to_frame("leads")
 weekly["calls"] = calls.set_index("call_start_time").resample("W")["id"].count()
 weekly = weekly.dropna()
-lagged = {f"лаг {l} нед.": weekly["leads"].corr(weekly["calls"].shift(-l)) for l in range(0, 4)}
-pd.Series(lagged, name="corr(лиды, звонки)").to_frame()
+lagged = {f"lag {l} wk": weekly["leads"].corr(weekly["calls"].shift(-l)) for l in range(0, 4)}
+pd.Series(lagged, name="corr(leads, calls)").to_frame()
 
 # %% [markdown]
-# **Выводы:**
-# - Поток лидов вырос с ~600 до 2 000–2 900 в месяц (пик — апрель 2024, совпадает с пиком бюджета).
-# - Звонки почти синхронно повторяют поток лидов (r ≈ 0.94 по месяцам, максимум на нулевом лаге по неделям):
-#   отдел продаж масштабируется вместе с маркетингом, но **конверсия при этом падает**: 5–6% в августе 2023 – январе 2024 →
-#   2.6–3.4% в апреле–мае 2024. Рост трафика не превращается в рост продаж пропорционально.
-# - Падение C1 в мае–июне 2024 частично объясняется тем, что сделки ещё «не дозрели» (медиана цикла 17 дней,
-#   хвост — месяцы), поэтому последние 1–2 месяца сравнивать с остальными нужно осторожно.
+# **Findings:**
+# - Lead volume grew from ~600 to 2,000–2,900 per month (peak in April 2024, matching the budget peak).
+# - Calls follow the lead flow almost in sync (r ≈ 0.94 monthly, the weekly maximum is at lag zero):
+#   the sales team scales with marketing, but **conversion falls**: 5–6% in August 2023 – January 2024 →
+#   2.6–3.4% in April–May 2024. More traffic does not turn into proportionally more sales.
+# - The C1 drop in May–June 2024 is partly because those deals have not "matured" yet (median cycle 17 days,
+#   the tail is months long), so the last 1–2 months should be compared with care.
 
 # %% [markdown]
-# ### 2.2 Время закрытия сделок и длительность от создания до закрытия
+# ### 2.2 Closing time and duration from creation to closing
 
 # %%
 closed = deals.dropna(subset=["closing_date"])
@@ -197,17 +197,17 @@ plt.tight_layout(); save(fig, "02_closing"); plt.show()
 closed.groupby("is_student")["deal_cycle_days"].describe()
 
 # %% [markdown]
-# **Выводы:**
-# - Проигранные сделки закрываются быстро (медиана — в первые дни: «не дозвонились» → Lost).
-# - Студенты платят в среднем через 2–5 недель: 50% — в течение 17 дней, 75% — в течение 43 дней.
-#   Значит, **оплата не годится как метрика двухнедельного A/B-теста** — за 14 дней её не успеет набрать даже
-#   половина будущих студентов. Нужна опережающая метрика (квалификация лида).
-# - По будням оплаты распределены ровно, на выходных — минимум: менеджеры не работают, сделки ждут.
-# - У 341 оплаченной сделки дата закрытия в исходных данных не заполнена — анализ цикла по 513 студентам.
+# **Findings:**
+# - Lost deals close fast (median within the first days: "couldn't reach" → Lost).
+# - Students pay after 2–5 weeks on average: 50% within 17 days, 75% within 43 days.
+#   So **payment is not a usable metric for a two-week A/B test**: within 14 days not even half of the future
+#   students will have paid. A leading metric is needed (lead qualification).
+# - Payments are spread evenly over weekdays and drop at weekends: managers are off and deals wait.
+# - 341 paid deals have no closing date in the source data, so the cycle analysis covers 513 students.
 
 # %% [markdown]
-# ## 3. Эффективность кампаний и источников
-# ### 3.1 Источники: объём, качество лидов, конверсия, стоимость
+# ## 3. Campaign and source effectiveness
+# ### 3.1 Sources: volume, lead quality, conversion, cost
 
 # %%
 AB = ["A - High", "B - Medium"]
@@ -235,16 +235,16 @@ ax.set_title("Paid sources: cheaper leads ≠ better leads (bubble = lead volume
 save(fig, "02_sources_scatter"); plt.show()
 
 # %% [markdown]
-# **Выводы по источникам:**
-# - **Organic** и **Webinar** — лучшая конверсия (9.5% и 8.5%) и самая высокая доля лидов A/B.
-#   Вебинар — самый эффективный *платный* канал: CAC ≈ €111.
-# - **Facebook Ads** — главный канал по объёму: дешёвый лид (€7) и средняя конверсия, CAC ≈ €172.
-# - **Google Ads** — лид в 2 раза дороже Facebook при той же конверсии → CAC ≈ €344, самый дорогой крупный канал.
-# - **TikTok** — дешёвые, но низкокачественные лиды (C1 2.8%, доля A/B 6%).
-# - **CRM** (повторные касания базы) почти не конвертируется (1.6%).
+# **Findings by source:**
+# - **Organic** and **Webinar** have the best conversion (9.5% and 8.5%) and the highest share of A/B leads.
+#   Webinars are the most efficient *paid* channel: CAC ≈ €111.
+# - **Facebook Ads** is the main channel by volume: cheap leads (€7) and average conversion, CAC ≈ €172.
+# - **Google Ads** leads cost twice as much as Facebook's at the same conversion → CAC ≈ €344, the most expensive large channel.
+# - **TikTok** brings cheap but low-quality leads (C1 2.8%, A/B share 6%).
+# - **CRM** (repeat touches of the existing base) barely converts (1.6%).
 
 # %% [markdown]
-# ### 3.2 Кампании: генерация лидов и конверсия
+# ### 3.2 Campaigns: lead generation and conversion
 
 # %%
 camp = deals.groupby("campaign").agg(leads=("id", "size"), students=("is_student", "sum"),
@@ -253,8 +253,8 @@ camp["spend"] = spend.groupby("campaign")["spend"].sum()
 camp["C1"] = camp["students"] / camp["leads"]
 camp["CAC"] = camp["spend"] / camp["students"].replace(0, np.nan)
 top_camp = camp[camp["leads"] >= 150].sort_values("leads", ascending=False)
-print(f"Кампаний всего: {len(camp)}, с ≥150 лидами: {len(top_camp)} — они дают {top_camp['leads'].sum() / len(deals):.0%} лидов")
-print(f"Кампаний из Deals, найденных в Spend: {camp.index.isin(spend['campaign']).mean():.0%}")
+print(f"Campaigns in total: {len(camp)}, with ≥150 leads: {len(top_camp)}, they bring {top_camp['leads'].sum() / len(deals):.0%} of leads")
+print(f"Deals campaigns found in Spend: {camp.index.isin(spend['campaign']).mean():.0%}")
 top_camp.style.format({"C1": "{:.1%}", "CAC": "€{:,.0f}", "revenue": "€{:,.0f}", "spend": "€{:,.0f}"}, na_rep="—") \
     .background_gradient(subset="C1", cmap="Blues")
 
@@ -270,17 +270,17 @@ ax.set_title("Top-15 campaigns by lead volume: conversion"); ax.grid(axis="y", v
 save(fig, "02_campaigns"); plt.show()
 
 # %% [markdown]
-# **Выводы по кампаниям:**
-# - `brand_search_eng_DE` (поиск по бренду) — 9.3%: люди уже знают школу.
-# - Широкие кампании Facebook (`02.07.23wide_DE`, `07.07.23LAL_DE`, `12.09.23interests_Uxui_DE`) — 5–5.5%, выше среднего.
-# - `performancemax_eng_DE` потратил ~€34k (23% всего бюджета!) и принёс 1 студента — **кандидат на отключение**.
-# - Вебинарные кампании (`webinar1604`, `webinar1906`, `08.04.24wide_webinar_DE`) дают много регистраций,
-#   но почти без оплат: регистрация на вебинар ≠ намерение купить.
-# - Только 29% названий кампаний из Deals есть в Spend (это 63% размеченных лидов) — расходы и лиды по
-#   многим кампаниям сопоставить нельзя. Нужна единая UTM-разметка.
+# **Findings by campaign:**
+# - `brand_search_eng_DE` (brand search) converts at 9.3%: these people already know the school.
+# - Broad Facebook campaigns (`02.07.23wide_DE`, `07.07.23LAL_DE`, `12.09.23interests_Uxui_DE`) convert at 5–5.5%, above average.
+# - `performancemax_eng_DE` spent ~€34k (23% of the whole budget!) and brought 1 student: **a candidate to switch off**.
+# - Webinar campaigns (`webinar1604`, `webinar1906`, `08.04.24wide_webinar_DE`) bring many sign-ups
+#   but almost no payments: registering for a webinar ≠ intent to buy.
+# - Only 29% of campaign names in Deals appear in Spend (63% of tagged leads), so spend and leads cannot be
+#   matched for many campaigns. Consistent UTM tagging is needed.
 
 # %% [markdown]
-# ## 4. Эффективность отдела продаж
+# ## 4. Sales team effectiveness
 
 # %%
 own = deals.groupby("deal_owner_name", **OBS).agg(
@@ -312,17 +312,17 @@ cr_calls = cr_calls[cr_calls["calls"] > 500].sort_values("calls", ascending=Fals
 cr_calls.style.format({"talk_share": "{:.1%}", "avg_talk_min": "{:.1f}", "calls": "{:,}"})
 
 # %% [markdown]
-# **Выводы по отделу продаж:**
-# - Лидеры по выручке — **Charlie Davis** и **Ulysses Adams** (≈€1.15 млн на двоих, 32% выручки).
-# - **Oliver Taylor** — 31% конверсии на 160 сделках: судя по объёму и качеству, ему передают «тёплые»
-#   квалифицированные сделки (закрывающий менеджер). Сравнивать его C1 с остальными напрямую некорректно.
-# - **Diana Evans** (927 сделок, 1 студент), **Rachel White** и **Bob Brown** (0 студентов) — работают на
-#   первичной обработке/квалификации, а не на закрытии. Оценивать их нужно по доле квалифицированных лидов.
-# - Медианный SLA у менеджеров — от 2 до 12+ часов: разброс в 5 раз при одинаковом потоке.
+# **Findings on the sales team:**
+# - The revenue leaders are **Charlie Davis** and **Ulysses Adams** (≈€1.15M between them, 32% of revenue).
+# - **Oliver Taylor** converts 31% of 160 deals: judging by volume and quality, he receives "warm"
+#   qualified deals (a closing manager). Comparing his C1 with the others directly would be misleading.
+# - **Diana Evans** (927 deals, 1 student), **Rachel White** and **Bob Brown** (0 students) work on
+#   first contact and qualification, not closing. They should be judged by the share of qualified leads.
+# - Managers' median SLA ranges from 2 to 12+ hours: a 5× spread with the same lead flow.
 
 # %% [markdown]
-# ## 5. Платежи и продукты
-# ### 5.1 Типы оплаты и их влияние на успешность
+# ## 5. Payments and products
+# ### 5.1 Payment types and their effect on success
 
 # %%
 with_pt = deals[deals["payment_type"].ne("Unknown")]
@@ -335,13 +335,13 @@ pt.style.format({"success_rate": "{:.1%}", "revenue": "€{:,.0f}", "avg_offer":
                  "revenue_per_student": "€{:,.0f}", "avg_months": "{:.1f}"}, na_rep="—")
 
 # %% [markdown]
-# - Тип оплаты указан только у 482 сделок (менеджеры заполняют его вручную и непоследовательно: у 57% студентов он пуст).
-# - **One Payment** — 80% успешных при указанном типе, **Recurring Payments** — 73%. Рассрочка — основной формат
-#   (2/3 студентов с известным типом) и приносит больше выручки на студента за счёт более дорогих 11-месячных курсов.
-# - **Reservation** (бронь) почти не конвертируется (1 из 5).
+# - The payment type is filled in for only 482 deals (managers enter it manually and inconsistently: it is empty for 57% of students).
+# - **One Payment** succeeds in 80% of deals with a known type, **Recurring Payments** in 73%. Instalments are the main format
+#   (2/3 of students with a known type) and bring more revenue per student thanks to the pricier 11-month courses.
+# - **Reservation** barely converts (1 of 5).
 
 # %% [markdown]
-# ### 5.2 Популярность и успешность продуктов и типов обучения
+# ### 5.2 Popularity and success of products and study formats
 
 # %%
 known = deals[deals["product"].isin(["Digital Marketing", "UX/UI Design", "Web Developer"])]
@@ -366,18 +366,18 @@ axes[1].legend(title="", frameon=False)
 plt.tight_layout(); save(fig, "02_products"); plt.show()
 
 # %% [markdown]
-# **Выводы по продуктам:**
-# - **Digital Marketing** — самый популярный (57% студентов) и самый доходный продукт (€2.27 млн).
-# - Утренний формат преобладает (≈80% студентов), но **вечерние группы конвертируются лучше**
-#   (Digital Marketing 46% vs 23%, UX/UI 38% vs 21%) — вечер выбирают работающие люди с более
-#   осознанным решением. Вечерних групп для Web Developer практически нет — возможная ниша.
-# - Web Developer: короче (6 мес.) и дешевле → меньше выручки на студента (~€2.7k против ~€4.8k у DM).
+# **Findings on products:**
+# - **Digital Marketing** is the most popular (57% of students) and highest-earning product (€2.27M).
+# - The morning format dominates (≈80% of students), but **evening groups convert better**
+#   (Digital Marketing 46% vs 23%, UX/UI 38% vs 21%): working people choose evenings and decide
+#   more deliberately. There are practically no evening Web Developer groups, a possible niche.
+# - Web Developer is shorter (6 months) and cheaper → less revenue per student (~€2.7k vs ~€4.8k for DM).
 
 # %% [markdown]
-# ## 6. Географический анализ
-# ⚠️ Город и уровень немецкого заполнены только у ~11% сделок — менеджер вносит их на этапе консультации.
-# Поэтому C1 среди сделок с городом (≈33%) несопоставим с общей C1 (4.2%) — это **смещение выборки**, а не
-# «эффект города». Сравниваем города и уровни языка **между собой** внутри этой выборки.
+# ## 6. Geographic analysis
+# ⚠️ City and German level are filled in for only ~11% of deals: the manager enters them at the consultation stage.
+# So C1 among deals with a city (≈33%) is not comparable with the overall C1 (4.2%). That is **selection bias**, not
+# a "city effect". We compare cities and language levels **with each other** within this sample.
 
 # %%
 geo = deals[deals["city"].ne("Unknown")]
@@ -405,7 +405,7 @@ g["city_group"] = np.where(g["city"].isin(city.head(6).index), g["city"], "Other
 pivot_n = pd.crosstab(g["city_group"], g["german_level"]).reindex(columns=lvl_order, fill_value=0)
 pivot_c1 = g.pivot_table(index="city_group", columns="german_level", values="is_student", aggfunc="mean",
                          observed=True).reindex(columns=lvl_order)
-pivot_c1 = pivot_c1.where(pivot_n >= 5)  # не показываем ячейки с < 5 сделками
+pivot_c1 = pivot_c1.where(pivot_n >= 5)  # hide cells with < 5 deals
 
 fig, ax = plt.subplots(figsize=(10, 4.5))
 sns.heatmap(pivot_c1, annot=pivot_c1.map(lambda v: "" if pd.isna(v) else f"{v:.0%}"), fmt="",
@@ -418,17 +418,17 @@ lvl["C1"] = lvl["students"] / lvl["deals"]
 lvl.reindex(lvl_order).style.format({"C1": "{:.1%}"})
 
 # %% [markdown]
-# **Выводы по географии:**
-# - 99% клиентов с указанным городом живут в **Германии**; единично — Австрия и Польша.
-# - **Берлин** — крупнейший рынок (182 сделки) и лучшая конверсия среди крупных городов (43%), затем
-#   Мюнхен, Гамбург, Лейпциг. Стоит усилить гео-таргетинг на Берлин и крупные города.
-# - Самый сильный сегмент — **Берлин + B1**: 62% конверсии.
-# - **Уровень немецкого:** основная аудитория — **B1** (≈68% указанных). Конверсия при B1 (37%) выше, чем
-#   при B2 (25%) и A2 (30%). Люди с B2 чаще уже находят работу без переобучения, с A2 — сомневаются,
-#   справятся ли с курсом. Ядро аудитории — B1, на него стоит ориентировать коммуникацию.
+# **Findings on geography:**
+# - 99% of clients with a known city live in **Germany**; a few are in Austria and Poland.
+# - **Berlin** is the largest market (182 deals) and has the best conversion among large cities (43%), followed by
+#   Munich, Hamburg and Leipzig. Geo-targeting of Berlin and other large cities is worth strengthening.
+# - The strongest segment is **Berlin + B1**: 62% conversion.
+# - **German level:** the core audience is **B1** (≈68% of known levels). Conversion at B1 (37%) is higher than
+#   at B2 (25%) and A2 (30%). People with B2 more often find work without retraining; people with A2 doubt
+#   they can handle the course. B1 is the core audience and communication should target it.
 
 # %% [markdown]
-# ## 7. Скорость реакции (SLA) и конверсия — мост к продуктовой аналитике
+# ## 7. Response speed (SLA) and conversion: the bridge to product analytics
 
 # %%
 deals["sla_bucket"] = pd.cut(deals["sla_sec"] / 3600, [0, 0.25, 1, 4, 24, 1e6],
@@ -455,25 +455,25 @@ slow = deals["sla_bucket"].isin(["1–4 h", "4–24 h", "> 24 h"])
 sub = deals[fast | slow]
 table = pd.crosstab(fast[fast | slow], sub["quality"].isin(AB))
 chi2, p, *_ = chi2_contingency(table)
-print(f"Доля A+B: <15 мин = {sub[fast[fast | slow]]['quality'].isin(AB).mean():.1%}, "
-      f"> 1 ч = {sub[~fast[fast | slow]]['quality'].isin(AB).mean():.1%}; χ² = {chi2:.1f}, p = {p:.1e}")
+print(f"A+B share: <15 min = {sub[fast[fast | slow]]['quality'].isin(AB).mean():.1%}, "
+      f"> 1 h = {sub[~fast[fast | slow]]['quality'].isin(AB).mean():.1%}; χ² = {chi2:.1f}, p = {p:.1e}")
 
 # %% [markdown]
-# **Ключевая находка:** лиды, которым ответили **быстрее 15 минут**, в 1.8 раза чаще становятся
-# квалифицированными (A+B: 21% против ~12%) и чаще покупают (C1 6.6% против 4.6% при ответе позже суток).
-# Разница статистически значима (χ², p ≪ 0.05). Это наблюдательные данные (корреляция, не причинность) —
-# поэтому эффект нужно **проверить A/B-тестом** (ноутбук 03).
+# **Key finding:** leads answered **within 15 minutes** are 1.8 times more likely to become
+# qualified (A+B: 21% vs ~12%) and buy more often (C1 6.6% vs 4.6% when answered after more than a day).
+# The difference is statistically significant (χ², p ≪ 0.05). This is observational data (correlation, not causation),
+# so the effect has to be **tested with an A/B test** (notebook 03).
 #
-# ## 8. Итоги EDA и рекомендации
+# ## 8. EDA summary and recommendations
 #
-# | # | Находка | Рекомендация |
+# | # | Finding | Recommendation |
 # |---|---|---|
-# | 1 | C1 = 4.2%; 40% проигранных сделок — «не отвечает / перестал отвечать» | ускорить первый контакт, добавить мессенджеры/SMS к звонкам |
-# | 2 | Ответ < 15 мин → лидов A+B почти в 2 раза больше | A/B-тест «Speed-to-lead» (ноутбук 03) |
-# | 3 | Лиды выросли ×3, конверсия упала с 5–6% до 3.5% | масштабировать отдел продаж и контроль SLA вместе с бюджетом |
-# | 4 | `performancemax_eng_DE` — €34k и 1 студент; Google Ads CAC €344 | перераспределить бюджет в Facebook wide/LAL, вебинары, бренд-поиск |
-# | 5 | Вечерние группы конвертируются почти вдвое лучше | расширить вечерний формат, запустить вечерний Web Developer |
-# | 6 | Ядро — Берлин и уровень B1 | гео- и языковой таргетинг рекламы |
-# | 7 | 71% названий кампаний не сопоставляются со Spend, ключевые поля заполняются вручную | единая UTM-разметка и обязательные поля в CRM |
+# | 1 | C1 = 4.2%; 40% of lost deals are "doesn't answer / stopped answering" | speed up first contact, add messengers/SMS to calls |
+# | 2 | Reply < 15 min → almost 2× more A+B leads | "Speed-to-lead" A/B test (notebook 03) |
+# | 3 | Leads grew ×3, conversion fell from 5–6% to 3.5% | scale the sales team and SLA control together with the budget |
+# | 4 | `performancemax_eng_DE`: €34k and 1 student; Google Ads CAC €344 | move budget to Facebook wide/LAL, webinars, brand search |
+# | 5 | Evening groups convert almost twice as well | expand the evening format, launch an evening Web Developer group |
+# | 6 | The core is Berlin and level B1 | geo and language targeting of ads |
+# | 7 | 71% of campaign names cannot be matched to Spend, key fields are filled in manually | consistent UTM tagging and mandatory CRM fields |
 #
-# ➡️ Следующий шаг — [03_unit_economics_ab_test.ipynb](03_unit_economics_ab_test.ipynb)
+# ➡️ Next step: [03_unit_economics_ab_test.ipynb](03_unit_economics_ab_test.ipynb)
