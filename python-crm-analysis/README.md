@@ -46,6 +46,7 @@ The school spends about €150k a year on ads and gets about 20k leads. Only 4.2
 │   ├── 01_data_cleaning.ipynb          # 15 cleaning rules with business justification
 │   ├── 02_eda_analysis.ipynb           # descriptive stats, time series, marketing, sales, products, geography
 │   ├── 03_unit_economics_ab_test.ipynb # unit economics, sensitivity, metric tree, hypothesis, A/B design
+│   ├── *_RU.ipynb                      # original Russian versions of the notebooks
 │   └── src_py/                         # the same notebooks as .py (jupytext), easy to diff
 ├── src/
 │   ├── cleaning.py            # reusable ETL: load → clean → save, returns a change log

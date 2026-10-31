@@ -1,9 +1,9 @@
 """
-ETL для CRM онлайн-школы: загрузка сырых выгрузок, очистка и сохранение.
+ETL for the online school CRM: load the raw exports, clean them and save.
 
-Каждая функция clean_* возвращает очищенный DataFrame и журнал (log) —
-список строк «что сделано и сколько строк затронуто». Журнал выводится
-в ноутбуке 01_data_cleaning и служит обоснованием для защиты.
+Each clean_* function returns a cleaned DataFrame and a log: a list of lines
+saying what was done and how many rows were affected. The log is printed
+in notebook 01_data_cleaning and documents every cleaning decision.
 """
 from __future__ import annotations
 
@@ -17,8 +17,8 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
 
-# Длинные ID (19 цифр) читаем строкой: во float они теряют точность,
-# и связь Deals -> Contacts -> Calls ломается.
+# Long IDs (19 digits) are read as strings: as floats they lose precision
+# and the Deals -> Contacts -> Calls joins break.
 ID_COLS = {"Id": str, "CONTACTID": str, "Contact Name": str}
 
 NON_GERMAN_CITIES = {
@@ -32,7 +32,7 @@ NON_GERMAN_CITIES = {
 
 
 def load_raw() -> dict[str, pd.DataFrame]:
-    """Читает 4 выгрузки CRM из data/raw (xlsx сохраняет кириллицу и точные ID)."""
+    """Reads the 4 CRM exports from data/raw (xlsx keeps Cyrillic text and exact IDs)."""
     return {
         name: pd.read_excel(RAW / f"{name}.xlsx", dtype=ID_COLS)
         for name in ["Contacts", "Calls", "Spend", "Deals"]
@@ -52,14 +52,14 @@ def clean_contacts(raw: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     df = to_snake(raw)
     n = len(df)
     df = df.drop_duplicates("id")
-    log.append(f"Дубликаты по id удалены: {n - len(df)}")
+    log.append(f"Duplicate ids removed: {n - len(df)}")
 
     for col in ["created_time", "modified_time"]:
         df[col] = pd.to_datetime(df[col], format="%d.%m.%Y %H:%M")
-    log.append("created_time, modified_time -> datetime64 (формат дд.мм.гггг чч:мм)")
+    log.append("created_time, modified_time -> datetime64 (format dd.mm.yyyy hh:mm)")
 
     df["contact_owner_name"] = df["contact_owner_name"].fillna("Unassigned").astype("category")
-    log.append("Пропусков нет; contact_owner_name -> category")
+    log.append("No missing values; contact_owner_name -> category")
     return df.reset_index(drop=True), log
 
 
@@ -70,32 +70,32 @@ def clean_calls(raw: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
                                        "contactid": "contact_id"})
     n = len(df)
     df = df.drop_duplicates("id")
-    log.append(f"Дубликаты по id удалены: {n - len(df)}")
+    log.append(f"Duplicate ids removed: {n - len(df)}")
 
     empty = [c for c in df.columns if df[c].isna().all()]
     df = df.drop(columns=empty)
-    log.append(f"Удалены полностью пустые столбцы: {empty}")
+    log.append(f"Fully empty columns dropped: {empty}")
 
     df["call_start_time"] = pd.to_datetime(df["call_start_time"], format="%d.%m.%Y %H:%M")
 
     n = len(df)
     df = df[df["duration_sec"].notna() & (df["duration_sec"] >= 0)]
-    log.append(f"Удалены звонки без длительности/с отрицательной длительностью: {n - len(df)}")
+    log.append(f"Calls with missing/negative duration dropped: {n - len(df)}")
     df["duration_sec"] = df["duration_sec"].astype(int)
 
-    # Входящие и пропущенные звонки не имеют статуса исходящего вызова — это не пропуск, а «не применимо».
+    # Inbound and missed calls have no outgoing status: the value is not missing, it is "not applicable".
     df["outgoing_call_status"] = df["outgoing_call_status"].fillna("Not applicable")
     df["scheduled_in_crm"] = df["scheduled_in_crm"].fillna(0).astype(bool)
-    log.append("outgoing_call_status: NaN -> 'Not applicable' (входящие/пропущенные); "
+    log.append("outgoing_call_status: NaN -> 'Not applicable' (inbound/missed); "
                "scheduled_in_crm -> bool")
 
     no_contact = df["contact_id"].isna().sum()
-    log.append(f"Звонков без contact_id: {no_contact} — оставлены для анализа нагрузки "
-               "менеджеров, но не участвуют в связке со сделками")
+    log.append(f"Calls without contact_id: {no_contact}, kept for manager workload analysis "
+               "but not joined to deals")
 
     df["is_conversation"] = df["duration_sec"] >= 30
-    log.append("Добавлен флаг is_conversation (>= 30 сек): медиана звонка 8 сек, "
-               "короткие звонки — недозвоны/автоответчики")
+    log.append("Added flag is_conversation (>= 30 s): the median call is 8 s, "
+               "short calls are no-answers/voicemail")
     for col in ["call_owner_name", "call_type", "call_status", "outgoing_call_status"]:
         df[col] = df[col].astype("category")
     return df.reset_index(drop=True), log
@@ -107,23 +107,23 @@ def clean_spend(raw: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     df = to_snake(raw)
     n = len(df)
     df = df.drop_duplicates()
-    log.append(f"Полные дубликаты удалены: {n - len(df)} (все — нулевые строки без расходов)")
+    log.append(f"Full duplicates removed: {n - len(df)} (all are zero rows with no spend)")
 
     df["date"] = pd.to_datetime(df["date"])
     df["campaign"] = df["campaign"].fillna("(no campaign)")
     df[["adgroup", "ad"]] = df[["adgroup", "ad"]].fillna("(not set)")
-    log.append("campaign/adgroup/ad: NaN -> '(no campaign)'/'(not set)' — расход "
-               "реальный, просто не размечен, удалять его нельзя")
+    log.append("campaign/adgroup/ad: NaN -> '(no campaign)'/'(not set)': the spend "
+               "is real, just untagged, so it must not be dropped")
 
     neg = (df[["impressions", "spend", "clicks"]] < 0).any(axis=1).sum()
-    log.append(f"Отрицательных значений impressions/spend/clicks: {neg}")
+    log.append(f"Negative impressions/spend/clicks values: {neg}")
     df["source"] = df["source"].astype("category")
     return df.reset_index(drop=True), log
 
 
 # ---------------------------------------------------------------- Deals
 def parse_money(x) -> float:
-    """'€ 3.500,00' / '$11.000,00' / 1000 -> float (европейский формат: точка — тысячи)."""
+    """'€ 3.500,00' / '$11.000,00' / 1000 -> float (European format: dot = thousands)."""
     if pd.isna(x):
         return np.nan
     if isinstance(x, (int, float, np.number)):
@@ -133,7 +133,7 @@ def parse_money(x) -> float:
 
 
 def parse_sla(x) -> float:
-    """SLA приходит как time (чч:мм:сс) или timedelta (> 24 ч) -> секунды."""
+    """SLA comes as time (hh:mm:ss) or timedelta (> 24 h) -> seconds."""
     if pd.isna(x):
         return np.nan
     if hasattr(x, "total_seconds"):
@@ -152,10 +152,10 @@ CYR_TO_LAT = str.maketrans({"а": "a", "б": "b", "в": "b", "с": "c", "А": "a
 
 
 def normalize_german(x) -> str:
-    """Свободный текст менеджера -> уровень CEFR (A1..C2).
+    """Manager's free text -> CEFR level (A1..C2).
 
-    Менеджеры писали кириллицей (б1, в1 = B1), в разном регистре и с комментариями
-    («б1 (проходит Б2)»). Берём первый упомянутый уровень — текущий, а не цель.
+    Managers typed in Cyrillic (б1, в1 = B1), in mixed case and with comments
+    ("б1 (taking Б2)"). Take the first level mentioned: the current one, not the goal.
     """
     if pd.isna(x):
         return "Unknown"
@@ -172,7 +172,7 @@ def normalize_city(x) -> str:
     if pd.isna(x) or str(x).strip() in {"-", ".", ""}:
         return "Unknown"
     s = str(x).strip()
-    # «Karl-Liebknecht str. 24, Hildburghausen, Thüringen» -> Hildburghausen
+    # "Karl-Liebknecht str. 24, Hildburghausen, Thüringen" -> Hildburghausen
     if "," in s:
         parts = [p.strip() for p in s.split(",")]
         s = next((p for p in parts if not re.search(r"\d|str\.|straße|poland", p, re.I)), parts[0])
@@ -184,12 +184,12 @@ def normalize_city(x) -> str:
 
 
 def realized_revenue(row) -> float:
-    """Выручка, фактически полученная к моменту выгрузки.
+    """Revenue actually received by the export date.
 
-    Первый платёж = initial_amount_paid, остаток курса делится на оставшиеся
-    месяцы и оплачивается помесячно. Студент, отучившийся N месяцев, заплатил
-    initial + (N-1) * ежемесячный платёж. При единовременной оплате (initial == offer)
-    выручка = offer. Не может превышать offer.
+    The first payment is initial_amount_paid; the rest of the course price is split
+    over the remaining months and paid monthly. A student who studied N months has paid
+    initial + (N-1) * monthly payment. For a one-off payment (initial == offer)
+    revenue = offer. It can never exceed offer.
     """
     offer, init, months, dur = (row["offer_total_amount"], row["initial_amount_paid"],
                                 row["months_of_study"], row["course_duration"])
@@ -208,51 +208,51 @@ def clean_deals(raw: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
 
     n = len(df)
     df = df[df["id"].notna()].drop_duplicates("id")
-    log.append(f"Удалены пустые строки/дубли id: {n - len(df)}")
+    log.append(f"Empty rows/duplicate ids removed: {n - len(df)}")
 
     n = len(df)
     df = df[df["lost_reason"].ne("Duplicate")]
-    log.append(f"Удалены технические дубли лидов (Lost Reason = 'Duplicate', см. FAQ): {n - len(df)}")
+    log.append(f"Technical duplicate leads removed (Lost Reason = 'Duplicate', see FAQ): {n - len(df)}")
 
     df = df.drop(columns=["content", "term"])
-    log.append("Удалены неактуальные столбцы content, term (детализация объявлений, "
-               "не используется в анализе; кампания и источник остаются)")
+    log.append("Dropped irrelevant columns content, term (ad-level detail, "
+               "not used in the analysis; campaign and source are kept)")
 
-    # --- даты
+    # --- dates
     df["created_time"] = pd.to_datetime(df["created_time"], format="%d.%m.%Y %H:%M")
     df["closing_date"] = pd.to_datetime(df["closing_date"], format="%d.%m.%Y")
     bad = df["closing_date"] < df["created_time"].dt.normalize()
     df.loc[bad, "closing_date"] = pd.NaT
-    log.append(f"closing_date раньше created_time — ошибка ввода, -> NaT: {bad.sum()}")
+    log.append(f"closing_date before created_time is an input error, -> NaT: {bad.sum()}")
     df["deal_cycle_days"] = (df["closing_date"] - df["created_time"].dt.normalize()).dt.days
 
     df["sla_sec"] = df["sla"].map(parse_sla)
     df = df.drop(columns="sla")
-    log.append("SLA (чч:мм:сс и 'дни чч:мм:сс') -> sla_sec (секунды)")
+    log.append("SLA (hh:mm:ss and 'days hh:mm:ss') -> sla_sec (seconds)")
 
-    # --- деньги
+    # --- money
     for col in ["initial_amount_paid", "offer_total_amount"]:
         df[col] = df[col].map(parse_money)
     log.append("initial_amount_paid / offer_total_amount: '€ 3.500,00', '$11.000,00' -> float")
 
-    # Offer 1 200 при первом платеже 11 000 по 11-месячному курсу — пропущен ноль в цене курса.
+    # Offer 1,200 with a first payment of 11,000 on an 11-month course: a zero is missing in the price.
     typo = (df["initial_amount_paid"] > df["offer_total_amount"]) & (df["offer_total_amount"] < 2000) \
         & (df["course_duration"] == 11)
     df.loc[typo, "offer_total_amount"] = df.loc[typo, "initial_amount_paid"]
     over = df["initial_amount_paid"] > df["offer_total_amount"]
     df["amount_anomaly_flag"] = over | typo
     df.loc[over, "initial_amount_paid"] = df.loc[over, "offer_total_amount"]
-    log.append(f"initial > offer (очевидная ошибка, FAQ): offer исправлен как опечатка в {typo.sum()} "
-               f"строках, initial ограничен offer в {over.sum()} строках; флаг amount_anomaly_flag")
+    log.append(f"initial > offer (an obvious error, FAQ): offer fixed as a typo in {typo.sum()} "
+               f"rows, initial capped at offer in {over.sum()} rows; flag amount_anomaly_flag")
 
     df["is_demo"] = df["offer_total_amount"].isin([0, 1, 9])
-    log.append(f"Демо-доступы за символическую плату (offer 0/1/9 €): {df['is_demo'].sum()}")
+    log.append(f"Demo accesses for a token fee (offer €0/1/9): {df['is_demo'].sum()}")
 
-    # --- статус студента
+    # --- student status
     df["is_paid"] = df["stage"].eq("Payment Done")
     df["is_student"] = df["is_paid"] & df["months_of_study"].notna() & ~df["is_demo"]
-    log.append(f"Payment Done: {df['is_paid'].sum()}; из них студентов (months_of_study заполнен, "
-               f"не демо): {df['is_student'].sum()}. Без months_of_study деньги не учитываем (FAQ)")
+    log.append(f"Payment Done: {df['is_paid'].sum()}; of them students (months_of_study filled in, "
+               f"not demo): {df['is_student'].sum()}. Without months_of_study the money is not counted (FAQ)")
 
     df["revenue"] = np.where(df["is_student"], df.apply(realized_revenue, axis=1), 0.0)
     df["payments_count"] = np.where(
@@ -260,10 +260,10 @@ def clean_deals(raw: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
         np.where(df["initial_amount_paid"] >= df["offer_total_amount"], 1,
                  df["months_of_study"].clip(lower=1)),
         0)
-    log.append("revenue: выручка, полученная к дате выгрузки (первый платёж + помесячные "
-               "платежи за отученные месяцы); payments_count: число транзакций")
+    log.append("revenue: revenue received by the export date (first payment + monthly "
+               "payments for the months studied); payments_count: number of transactions")
 
-    # --- категориальные пропуски
+    # --- categorical gaps
     df["quality"] = df["quality"].replace("F", np.nan).fillna("Not rated")
     df["lost_reason"] = df["lost_reason"].fillna("Not lost")
     df["deal_owner_name"] = df["deal_owner_name"].fillna("Unassigned")
@@ -272,17 +272,17 @@ def clean_deals(raw: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     df["education_type"] = df["education_type"].replace("#REF!", np.nan).fillna("Unknown")
     df["payment_type"] = df["payment_type"].fillna("Unknown")
     df["product"] = df["product"].fillna("Unknown")
-    log.append("Категориальные пропуски заполнены явными метками: quality 'Not rated' (+3 строки 'F'), "
+    log.append("Categorical gaps filled with explicit labels: quality 'Not rated' (+3 rows 'F'), "
                "lost_reason 'Not lost', product/payment_type/education_type 'Unknown', "
-               "campaign '(no campaign)'; '#REF!' — ошибка Excel -> Unknown")
+               "campaign '(no campaign)'; '#REF!' (an Excel error) -> Unknown")
 
     df["city"] = df["city"].map(normalize_city)
     df["country"] = df["city"].map(lambda c: "Unknown" if c == "Unknown"
                                    else NON_GERMAN_CITIES.get(c, "Germany"))
     df["german_level"] = df["level_of_deutsch"].map(normalize_german)
     df = df.drop(columns="level_of_deutsch")
-    log.append("city: '-' -> Unknown, адреса -> город, единое написание; добавлен country. "
-               "level_of_deutsch (б1, в1, 'B1 (до февраля)') -> german_level A0..C2/Unknown")
+    log.append("city: '-' -> Unknown, addresses -> city, one spelling; added country. "
+               "level_of_deutsch (б1, в1, 'B1 (until February)') -> german_level A0..C2/Unknown")
 
     for col in ["deal_owner_name", "quality", "stage", "lost_reason", "source", "product",
                 "education_type", "payment_type", "german_level", "country"]:
@@ -307,7 +307,7 @@ def run_etl(save: bool = True) -> tuple[dict[str, pd.DataFrame], dict[str, list[
 
 
 def load_clean() -> dict[str, pd.DataFrame]:
-    """Быстрая загрузка очищенных таблиц из pickle (типы сохраняются)."""
+    """Fast load of the clean tables from pickle (dtypes are preserved)."""
     return {name: pd.read_pickle(PROCESSED / f"{name.lower()}_clean.pkl")
             for name in ["Contacts", "Calls", "Spend", "Deals"]}
 
