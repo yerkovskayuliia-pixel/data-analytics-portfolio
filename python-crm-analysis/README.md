@@ -7,6 +7,7 @@ End-to-end data analysis of a real CRM export (leads, calls, ad spend and deals)
 | | |
 |---|---|
 | Interactive dashboard | [`reports/dashboard.html`](reports/dashboard.html) |
+| Tableau dashboard (Tableau Cloud, packaged workbook) | [`reports/tableau/crm_dashboard.twbx`](reports/tableau/crm_dashboard.twbx), built by `src/build_tableau.py` from `deals_tableau.csv` |
 | Presentation (10 slides, speaker notes included) | [`reports/presentation.pptx`](reports/presentation.pptx) |
 | Full report (rendered notebooks) | [`reports/html/`](reports/html) |
 
