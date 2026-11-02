@@ -7796,7 +7796,7 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c73bcb6a">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5626cfe7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7841,7 +7841,7 @@ reused and tested. This notebook checks the raw data, runs the ETL and validates
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=98522df0">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e147254a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7866,7 +7866,7 @@ reused and tested. This notebook checks the raw data, runs the ETL and validates
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0cf651cd">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3670f383">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7877,7 +7877,7 @@ and 19-digit IDs were rounded as floats (which breaks the joins). All IDs are re
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=24fe64d7">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a0bed079">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7965,7 +7965,7 @@ and 19-digit IDs were rounded as floats (which breaks the joins). All IDs are re
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=df7a228a">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3a34bfa0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8162,7 +8162,7 @@ and 19-digit IDs were rounded as floats (which breaks the joins). All IDs are re
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6cbf5547">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c312b254">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8179,7 +8179,7 @@ A gap means "the deal never reached this stage", so these fields are <strong>nei
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3602ed1c">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=915b4c01">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8297,7 +8297,7 @@ A gap means "the deal never reached this stage", so these fields are <strong>nei
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b3577cd7">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6b56d559">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8386,7 +8386,7 @@ A gap means "the deal never reached this stage", so these fields are <strong>nei
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=514734fd">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f51bc651">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8413,9 +8413,9 @@ A gap means "the deal never reached this stage", so these fields are <strong>nei
 <tr>
 <td>2</td>
 <td>Deals</td>
-<td><code>Closing Date</code> &lt; <code>Created Time</code></td>
+<td><code>Closing Date</code> &lt; <code>Created Time</code>; <code>Closing Date</code> after the export date (21.06.2024)</td>
 <td>→ <code>NaT</code></td>
-<td>a deal cannot close before it is created (FAQ: data error, the analyst decides)</td>
+<td>a deal cannot close before it is created (FAQ: data error, the analyst decides); a future date is a plan, not a fact</td>
 </tr>
 <tr>
 <td>3</td>
@@ -8517,7 +8517,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=35037e72">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=88c43ad4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8566,6 +8566,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
  • Technical duplicate leads removed (Lost Reason = 'Duplicate', see FAQ): 1771
  • Dropped irrelevant columns content, term (ad-level detail, not used in the analysis; campaign and source are kept)
  • closing_date before created_time is an input error, -&gt; NaT: 38
+ • closing_date after the export date 21.06.2024 is a future (planned) date, -&gt; NaT: 3
  • SLA (hh:mm:ss and 'days hh:mm:ss') -&gt; sla_sec (seconds)
  • initial_amount_paid / offer_total_amount: '€ 3.500,00', '$11.000,00' -&gt; float
  • initial &gt; offer (an obvious error, FAQ): offer fixed as a typo in 6 rows, initial capped at offer in 49 rows; flag amount_anomaly_flag
@@ -8580,7 +8581,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bc3d7bc3">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=06585f97">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8590,7 +8591,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=62094f0a">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=e43bf7e6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8675,7 +8676,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=9eefc8b2">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=17d04b5a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8788,7 +8789,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=853d2117">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8c2af1df">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8799,6 +8800,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">checks</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"deal ids are unique"</span><span class="p">:</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="o">.</span><span class="n">is_unique</span><span class="p">,</span>
     <span class="s2">"no closing_date &lt; created_time"</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"closing_date"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">normalize</span><span class="p">())</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span>
+    <span class="s2">"no closing_date after the export date"</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"closing_date"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span>
     <span class="s2">"initial &lt;= offer everywhere"</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"initial_amount_paid"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"offer_total_amount"</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span>
     <span class="s2">"students have months_of_study"</span><span class="p">:</span> <span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"is_student"</span><span class="p">],</span> <span class="s2">"months_of_study"</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
     <span class="s2">"students have a product"</span><span class="p">:</span> <span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"is_student"</span><span class="p">],</span> <span class="s2">"product"</span><span class="p">]</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="s2">"Unknown"</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
@@ -8850,6 +8852,10 @@ The rest of the course is paid monthly, so the revenue received by the export da
 <td>True</td>
 </tr>
 <tr>
+<th>no closing_date after the export date</th>
+<td>True</td>
+</tr>
+<tr>
 <th>initial &lt;= offer everywhere</th>
 <td>True</td>
 </tr>
@@ -8880,7 +8886,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=2aa5b691">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c654dfb7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8967,7 +8973,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bdd24ea4">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4ebe08a2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>

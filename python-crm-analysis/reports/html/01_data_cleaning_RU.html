@@ -7796,7 +7796,7 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c73bcb6a">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e55849b1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7841,7 +7841,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=98522df0">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4a05b40e">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7866,7 +7866,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0cf651cd">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6ce2a0ae">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7877,7 +7877,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=24fe64d7">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b2e960ac">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7965,7 +7965,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=df7a228a">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3784a4fa">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8162,7 +8162,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6cbf5547">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1429988c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8179,7 +8179,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3602ed1c">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6d42757c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8297,7 +8297,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b3577cd7">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=dafb187f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8386,7 +8386,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=514734fd">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=842931b5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8413,9 +8413,9 @@ a.anchor-link {
 <tr>
 <td>2</td>
 <td>Deals</td>
-<td><code>Closing Date</code> &lt; <code>Created Time</code></td>
+<td><code>Closing Date</code> &lt; <code>Created Time</code>; <code>Closing Date</code> позже даты выгрузки (21.06.2024)</td>
 <td>→ <code>NaT</code></td>
-<td>закрыть сделку раньше создания невозможно (FAQ: ошибка, решает аналитик)</td>
+<td>закрыть сделку раньше создания невозможно (FAQ: ошибка, решает аналитик); дата в будущем — плановая, а не фактическая</td>
 </tr>
 <tr>
 <td>3</td>
@@ -8517,7 +8517,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=35037e72">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=d159a35e">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8566,6 +8566,7 @@ a.anchor-link {
  • Удалены технические дубли лидов (Lost Reason = 'Duplicate', см. FAQ): 1771
  • Удалены неактуальные столбцы content, term (детализация объявлений, не используется в анализе; кампания и источник остаются)
  • closing_date раньше created_time — ошибка ввода, -&gt; NaT: 38
+ • closing_date позже даты выгрузки 21.06.2024 — будущая (плановая) дата, -&gt; NaT: 3
  • SLA (чч:мм:сс и 'дни чч:мм:сс') -&gt; sla_sec (секунды)
  • initial_amount_paid / offer_total_amount: '€ 3.500,00', '$11.000,00' -&gt; float
  • initial &gt; offer (очевидная ошибка, FAQ): offer исправлен как опечатка в 6 строках, initial ограничен offer в 49 строках; флаг amount_anomaly_flag
@@ -8580,7 +8581,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bc3d7bc3">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3b709177">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8590,7 +8591,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=62094f0a">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00adcb72">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8675,7 +8676,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=9eefc8b2">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cdc757e8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8788,7 +8789,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=853d2117">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cdac18ac">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8799,6 +8800,7 @@ a.anchor-link {
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">checks</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"id сделок уникальны"</span><span class="p">:</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="o">.</span><span class="n">is_unique</span><span class="p">,</span>
     <span class="s2">"нет closing_date &lt; created_time"</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"closing_date"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">normalize</span><span class="p">())</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span>
+    <span class="s2">"нет closing_date после даты выгрузки"</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"closing_date"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span>
     <span class="s2">"initial &lt;= offer везде"</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"initial_amount_paid"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"offer_total_amount"</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span>
     <span class="s2">"у студентов есть months_of_study"</span><span class="p">:</span> <span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"is_student"</span><span class="p">],</span> <span class="s2">"months_of_study"</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
     <span class="s2">"у студентов есть продукт"</span><span class="p">:</span> <span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"is_student"</span><span class="p">],</span> <span class="s2">"product"</span><span class="p">]</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="s2">"Unknown"</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
@@ -8850,6 +8852,10 @@ a.anchor-link {
 <td>True</td>
 </tr>
 <tr>
+<th>нет closing_date после даты выгрузки</th>
+<td>True</td>
+</tr>
+<tr>
 <th>initial &lt;= offer везде</th>
 <td>True</td>
 </tr>
@@ -8880,7 +8886,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=2aa5b691">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=10dee71c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8967,7 +8973,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bdd24ea4">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=18a1931f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
