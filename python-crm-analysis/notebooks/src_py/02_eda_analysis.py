@@ -470,7 +470,7 @@ print(f"A+B share: <15 min = {sub[fast[fast | slow]]['quality'].isin(AB).mean():
 # |---|---|---|
 # | 1 | C1 = 4.2%; 40% of lost deals are "doesn't answer / stopped answering" | speed up first contact, add messengers/SMS to calls |
 # | 2 | Reply < 15 min → almost 2× more A+B leads | "Speed-to-lead" A/B test (notebook 03) |
-# | 3 | Leads grew ×3, conversion fell from 5–6% to 3.5% | scale the sales team and SLA control together with the budget |
+# | 3 | Leads grew ×3, conversion fell from 5–6% to 2.6–3.4% | scale the sales team and SLA control together with the budget |
 # | 4 | `performancemax_eng_DE`: €34k and 1 student; Google Ads CAC €344 | move budget to Facebook wide/LAL, webinars, brand search |
 # | 5 | Evening groups convert almost twice as well | expand the evening format, launch an evening Web Developer group |
 # | 6 | The core is Berlin and level B1 | geo and language targeting of ads |

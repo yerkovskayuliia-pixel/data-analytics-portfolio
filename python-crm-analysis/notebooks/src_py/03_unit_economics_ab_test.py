@@ -64,7 +64,7 @@ UA_total, AC_total = len(deals), spend["spend"].sum()
 
 stud = deals[deals["is_student"] & deals["product"].isin(PRODUCTS)]
 ue = pd.DataFrame(index=PRODUCTS)
-ue["UA"] = (share * UA_total).round()
+ue["UA"] = share * UA_total
 ue["B"] = stud.groupby("product", observed=True).size().reindex(PRODUCTS)
 ue["T"] = stud.groupby("product", observed=True)["payments_count"].sum().reindex(PRODUCTS)
 ue["Revenue"] = stud.groupby("product", observed=True)["revenue"].sum().reindex(PRODUCTS)
@@ -220,13 +220,36 @@ ax.set_xlabel("time to first response (SLA)"); ax.legend(frameon=False); ax.set_
 save(fig, "03_hypothesis_evidence"); plt.show()
 
 # %% [markdown]
+# **A fair comparison.** Leads in the "> 24 h" bucket cannot, by construction, have a conversation within the first
+# 24 hours (1.4% reached), so the fast response is compared only with responses between 15 minutes and 24 hours.
+# We also check whether the gap is explained by the time of the request (night leads get slower answers) or by the source.
+
+# %%
+fast = deals["sla_bucket"].eq("< 15 min")
+slow = deals["sla_bucket"].isin(["15–60 min", "1–4 h", "4–24 h"])
+work = deals["created_time"].dt.hour.between(9, 17) & (deals["created_time"].dt.dayofweek < 5)
+check = {"all leads": deals.index == deals.index, "working hours (Mon–Fri, 9–18)": work}
+for s in ["Facebook Ads", "Google Ads"]:
+    check[s] = deals["source"].eq(s)
+robust = pd.DataFrame({
+    name: {"< 15 min": deals.loc[mask & fast, "reached_24h"].mean(),
+           "15 min – 24 h": deals.loc[mask & slow, "reached_24h"].mean()}
+    for name, mask in check.items()}).T
+robust["gap, pp"] = (robust["< 15 min"] - robust["15 min – 24 h"]) * 100
+robust.style.format({"< 15 min": "{:.1%}", "15 min – 24 h": "{:.1%}", "gap, pp": "{:+.1f}"})
+
+# %% [markdown]
+# The 16–20 pp gap holds during working hours and within each major source, so it is not just night-time leads or
+# the channel mix. It is still observational data, which is why an A/B test is needed.
+
+# %% [markdown]
 # > **Hypothesis (H1).** If every new lead is automatically assigned to an available manager within 1 minute
 # > with a push notification, the client gets a WhatsApp/SMS message ("A manager will call you within 15 minutes"),
 # > and the manager must call **within 15 minutes** during working hours,
 # > **then the share of leads with a conversation in the first 24 hours will grow by at least 10 pp**
-# > (from ~52% to ≥ 62%), **because** the client is still "warm" and expects the call. In the data, leads answered within 15 min
-# > are reached 77% of the time vs 52% with a slower response (a 25 pp gap; we conservatively
-# > assume 10 pp).
+# > (from ~59% to ≥ 69%), **because** the client is still "warm" and expects the call. In the data, leads answered within 15 min
+# > are reached 77% of the time vs 59% with a response between 15 minutes and 24 hours (an 18 pp gap,
+# > 16 pp during working hours; we conservatively assume 10 pp).
 #
 # - **Product metric we influence:** C1 (through reach and qualification).
 # - **Primary test metric:** `reached_24h`, the share of leads with a conversation of ≥ 30 seconds within 24 hours.
@@ -245,7 +268,7 @@ save(fig, "03_hypothesis_evidence"); plt.show()
 recent = deals[deals["created_time"] >= "2024-03-01"]
 leads_per_day = len(recent) / recent["created_time"].dt.normalize().nunique()
 
-slow = deals["sla_bucket"].isin(["15–60 min", "1–4 h", "4–24 h", "> 24 h"])
+# control: leads answered between 15 min and 24 h (the "> 24 h" bucket is excluded, see section 4)
 p_control = deals.loc[slow, "reached_24h"].mean()
 p_treatment = p_control + 0.10
 alpha, power = 0.05, 0.80
@@ -336,8 +359,8 @@ pd.Series({
 # %% [markdown]
 # ## 7. Product analytics summary
 # 1. All products are profitable after marketing; CAC €175–189 vs CLTV €2.7–4.8k (ROMI 14–26×). The bottleneck is conversion (C1 ≈ 4%).
-# 2. The growth lever is **C1**: the most headroom and a clear improvement mechanism (37% of losses are unreached leads).
+# 2. The growth lever is **C1**: the most headroom and a clear improvement mechanism (40% of lost deals are "doesn't answer / stopped answering").
 # 3. Metric tree: CM ← Revenue ← C1 ← reach ← first-contact SLA.
 # 4. Hypothesis: auto-assigning leads + contact within 15 minutes will raise 24-hour reach by ≥ 10 pp.
-# 5. A/B test: 14 days (~390 leads needed per group, ~520 are collected in 2 weeks), α = 0.05, power 80%, z-test for proportions; final check on C1
+# 5. A/B test: 14 days (359 leads needed per group at a 59% baseline, 519 are collected in 2 weeks), α = 0.05, power 80%, z-test for proportions; final check on C1
 #    after 45 days.
