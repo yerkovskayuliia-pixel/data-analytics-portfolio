@@ -34,7 +34,9 @@ The school spends about €150k a year on ads and gets about 20k leads. Only 4.2
 5. **Product.** Digital Marketing brings 57% of students. Evening groups convert almost twice as well as morning groups.
 6. **Unit economics.** All products are profitable after marketing. +10% to C1 adds €334k contribution margin without extra ad spend.
 
-**Hypothesis and test design:** auto-assign every new lead to a manager within 1 minute and call within 15 minutes. This should raise the 24-hour reach rate by at least 10 percentage points. The test is a 14-day A/B with 359 leads needed per group and about 520 collected in two weeks (α = 0.05, power = 80%, two-proportion z-test), followed by a C1 check after 45 days. Expected impact if confirmed: about +€360k contribution margin per year.
+**Hypothesis and test design:** auto-assign every new lead to a manager within 1 minute and call within 15 minutes. This should raise the 24-hour reach rate by at least 10 percentage points. The test is designed only (the CRM has no experiment data). The duration is fixed at 14 days: 74 leads a day give 519 leads per group, so the minimum detectable effect is +8.4 pp, below the expected +10 pp (α = 0.05, power = 80%, two-proportion z-test). C1 is checked after 45 days. Expected impact if confirmed: about +€360k contribution margin per year.
+
+**Product hypotheses:** Digital Marketing — offer an evening group at every consultation (evening 47.6% vs morning 32.9% reach payment or an invoice); UX/UI Design — an alumni case and a free portfolio review within 24 h of the consultation (21% of leads change their mind); Web Developer — payment reminders after 24 and 72 h with instalments (14.3% of leads stall in Waiting For Payment). With only 3–4 leads with a known product a day, a 14-day test could detect only +35–43 pp, so product-level A/B tests are not feasible in two weeks; these are checked as pilots.
 
 ![Response time vs reach](reports/figures/03_hypothesis_evidence.png)
 
