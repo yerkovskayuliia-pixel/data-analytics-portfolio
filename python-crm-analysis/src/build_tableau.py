@@ -1,9 +1,10 @@
 """
 Builds reports/tableau/crm_dashboard.twbx: a packaged Tableau workbook over reports/tableau/deals_tableau.csv.
 
-Sheets: KPI strip, leads and C1 by month, C1 and CAC by source, speed to lead, revenue by product,
-prepayments by student status, and one dashboard that puts them together.
-Run after the CSV export: python src/build_tableau.py
+Dashboard "CRM Dashboard": KPI strip, leads and C1 by month, C1 and CAC by source, speed to lead, revenue by product,
+prepayments by student status. Dashboard "A/B Test Options": one hypothesis per product and the MDE of four 14-day
+test designs for each (from reports/tableau/ab_variants.csv).
+Run after the CSV exports: python src/build_ab_variants.py && python src/build_tableau.py
 """
 import uuid
 import zipfile
@@ -14,14 +15,20 @@ import pandas as pd
 
 OUT_DIR = Path(__file__).resolve().parents[1] / "reports" / "tableau"
 CSV = OUT_DIR / "deals_tableau.csv"
+AB_CSV = OUT_DIR / "ab_variants.csv"
 TWBX = OUT_DIR / "crm_dashboard.twbx"
-DS = "federated.crm0deals0school01"
+DS_DEALS = "federated.crm0deals0school01"
+DS_AB = "federated.crm0ab0variants001"
+DS = DS_DEALS  # datasource the sheet builders write to; switched while building the A/B sheets
 CONN = "textscan.crm0deals0csv0001"
+CONN_AB = "textscan.crm0ab0csv0000001"
 BLUE, ORANGE, GREEN = "#2a78d6", "#eb6834", "#1baf7a"
 
 STRING_DIMS = ["Lead ID", "Created Date", "Month", "Source", "Campaign", "Product", "Education Type", "Deal Owner",
                "Stage", "Lost Reason", "Quality", "City", "German Level", "SLA Bucket", "Student Status"]
-INT_MEASURES = ["Is Student", "Is Qualified", "Reached 24h"]
+INT_MEASURES = ["Is Student", "Is Qualified", "Reached 24h", "Test group size", "Days for classic test"]
+AB_STRINGS = ["Product", "Hypothesis", "Evidence", "Metric", "Variant", "Verdict"]
+AB_REAL = {"Leads per day": "n#,##0.0", "Baseline": "p0.0%", "MDE pp": "n#,##0.0", "Expected effect pp": "n#,##0.0"}
 REAL_MEASURES = ["Cash Received", "Revenue", "Prepaid", "Refund Due", "Ad Spend"]
 
 CALCS = {  # name: (caption, formula, format)
@@ -50,7 +57,9 @@ def column_decls(names):
             cap, f, fmt = CALCS[n]
             out.append(f"<column caption='{q(cap)}' datatype='real' default-format='{q(fmt)}' name='[{n}]' role='measure' type='quantitative'>"
                        f"<calculation class='tableau' formula='{q(f)}' /></column>")
-        elif n in STRING_DIMS:
+        elif n in AB_REAL:
+            out.append(f"<column datatype='real' default-format='{AB_REAL[n]}' name='[{n}]' role='measure' type='quantitative' />")
+        elif n in STRING_DIMS or n in AB_STRINGS:
             out.append(f"<column datatype='string' name='[{n}]' role='dimension' type='nominal' />")
         elif n in INT_MEASURES:
             out.append(f"<column datatype='integer' name='[{n}]' role='measure' type='quantitative' />")
@@ -65,6 +74,8 @@ def inst(field, how):
         return f"[none:{field}:nk]", f"<column-instance column='[{field}]' derivation='None' name='[none:{field}:nk]' pivot='key' type='nominal' />"
     if how == "sum":
         return f"[sum:{field}:qk]", f"<column-instance column='[{field}]' derivation='Sum' name='[sum:{field}:qk]' pivot='key' type='quantitative' />"
+    if how == "avg":
+        return f"[avg:{field}:qk]", f"<column-instance column='[{field}]' derivation='Avg' name='[avg:{field}:qk]' pivot='key' type='quantitative' />"
     if how == "cnt":
         return f"[cnt:{field}:qk]", f"<column-instance column='[{field}]' derivation='Count' name='[cnt:{field}:qk]' pivot='key' type='quantitative' />"
     return f"[usr:{field}:qk]", f"<column-instance column='[{field}]' derivation='User' name='[usr:{field}:qk]' pivot='key' type='quantitative' />"
@@ -113,7 +124,9 @@ def worksheet(name, rows, cols, mark, fields, color=None, text=None, label=None,
                     )
         slices = f"<slices><column>{ref(measure)}</column></slices>"
     color_style = ""
-    if label:
+    if label and color:
+        color_style = "<style><style-rule element='mark'><format attr='mark-labels-show' value='true' /></style-rule></style>"
+    elif label:
         color_style = ("<style><style-rule element='cell'><format attr='text-align' value='center' />"
                        "<format attr='vertical-align' value='center' /></style-rule><style-rule element='mark'>"
                        "<format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='true' />"
@@ -123,13 +136,50 @@ def worksheet(name, rows, cols, mark, fields, color=None, text=None, label=None,
         color_style = (f"<style><style-rule element='mark'><format attr='mark-color' value='{BLUE}' />{labels_on}"
                        "</style-rule></style>")
     return (f"<worksheet name='{q(name)}'><table><view>"
-            f"<datasources><datasource caption='CRM deals' name='{DS}' /></datasources>"
+            f"<datasources><datasource caption='{CAPTIONS[DS]}' name='{DS}' /></datasources>"
             f"<datasource-dependencies datasource='{DS}'>{deps}</datasource-dependencies>"
             f"{filters}{sort_xml}{slices}<aggregation value='true' /></view><style />"
             f"<panes><pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view>"
             f"<mark class='{mark}' />{f'<encodings>{enc}</encodings>' if enc else ''}{label_xml}{color_style}</pane></panes>"
-            f"<rows>{ref(rows) if rows else ''}</rows><cols>{ref(cols) if cols else ''}</cols>"
+            f"<rows>{shelf(rows)}</rows><cols>{shelf(cols)}</cols>"
             f"</table>{sid(name)}</worksheet>")
+
+
+CAPTIONS = {DS_DEALS: "CRM deals", DS_AB: "A/B test options"}
+
+
+def shelf(fields):
+    """One instance name, or a list nested with ' / ' (dimensions on the same shelf)."""
+    if not fields:
+        return ""
+    if isinstance(fields, str):
+        return ref(fields)
+    return "(" + " / ".join(ref(f) for f in fields) + ")"
+
+
+def text_datasource(ds, conn, caption, csv_path, type_of, extra_cols=""):
+    order = list(pd.read_csv(csv_path, nrows=5).columns)
+    table = csv_path.name
+    rel = "".join(f"<column datatype='{type_of(c)}' name='{q(c)}' ordinal='{i}' />" for i, c in enumerate(order))
+    meta = []
+    for i, c in enumerate(order):
+        lt = type_of(c)
+        rt, agg = {"string": (129, "Count"), "integer": (20, "Sum"), "real": (5, "Sum")}[lt]
+        meta.append(f"<metadata-record class='column'><remote-name>{q(c)}</remote-name><remote-type>{rt}</remote-type>"
+                    f"<local-name>[{q(c)}]</local-name><parent-name>[{table}]</parent-name>"
+                    f"<remote-alias>{q(c)}</remote-alias><ordinal>{i}</ordinal><local-type>{lt}</local-type>"
+                    f"<aggregation>{agg}</aggregation><contains-null>true</contains-null></metadata-record>")
+    return (f"<datasource caption='{caption}' inline='true' name='{ds}' version='18.1'>"
+            f"<connection class='federated'><named-connections><named-connection caption='{csv_path.stem}' name='{conn}'>"
+            f"<connection class='textscan' directory='Data/tableau' filename='{table}' password='' server='' workgroup-auth-mode='as-is' />"
+            f"</named-connection></named-connections>"
+            f"<relation connection='{conn}' name='{table}' table='[{table.replace('.', '#')}]' type='table'>"
+            f"<columns character-set='UTF-8' header='yes' locale='en_US' separator=','>{rel}</columns></relation>"
+            f"<metadata-records>{''.join(meta)}</metadata-records></connection>"
+            f"<aliases enabled='yes' />{extra_cols}"
+            f"<layout dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />"
+            f"<semantic-values><semantic-value key='[Country].[Name]' value='&quot;Germany&quot;' /></semantic-values>"
+            f"</datasource>")
 
 
 def run(text, bold=False, size=None, color=None):
@@ -145,32 +195,12 @@ def build():
     df = pd.read_csv(CSV, nrows=5)
     assert list(df.columns) == STRING_DIMS[:13] + ["SLA Bucket", "Is Student", "Is Qualified", "Reached 24h",
                                                    "Student Status"] + REAL_MEASURES, list(df.columns)
-    order = list(df.columns)
-
-    rel_cols = "".join(
-        f"<column datatype='{'string' if c in STRING_DIMS else 'integer' if c in INT_MEASURES else 'real'}' name='{q(c)}' ordinal='{i}' />"
-        for i, c in enumerate(order))
-    meta = []
-    for i, c in enumerate(order):
-        lt, rt, agg = (("string", 129, "Count") if c in STRING_DIMS else ("integer", 20, "Sum") if c in INT_MEASURES
-                       else ("real", 5, "Sum"))
-        meta.append(f"<metadata-record class='column'><remote-name>{q(c)}</remote-name><remote-type>{rt}</remote-type>"
-                    f"<local-name>[{q(c)}]</local-name><parent-name>[deals_tableau.csv]</parent-name>"
-                    f"<remote-alias>{q(c)}</remote-alias><ordinal>{i}</ordinal><local-type>{lt}</local-type>"
-                    f"<aggregation>{agg}</aggregation><contains-null>true</contains-null></metadata-record>")
-    calc_cols = "".join(column_decls(list(CALCS) + REAL_MEASURES))
-    datasource = (
-        f"<datasource caption='CRM deals' inline='true' name='{DS}' version='18.1'>"
-        f"<connection class='federated'><named-connections><named-connection caption='deals_tableau' name='{CONN}'>"
-        f"<connection class='textscan' directory='Data/tableau' filename='deals_tableau.csv' password='' server='' workgroup-auth-mode='as-is' />"
-        f"</named-connection></named-connections>"
-        f"<relation connection='{CONN}' name='deals_tableau.csv' table='[deals_tableau#csv]' type='table'>"
-        f"<columns character-set='UTF-8' header='yes' locale='en_US' separator=','>{rel_cols}</columns></relation>"
-        f"<metadata-records>{''.join(meta)}</metadata-records></connection>"
-        f"<aliases enabled='yes' />{calc_cols}"
-        f"<layout dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />"
-        f"<semantic-values><semantic-value key='[Country].[Name]' value='&quot;Germany&quot;' /></semantic-values>"
-        f"</datasource>")
+    deals_type = lambda c: "string" if c in STRING_DIMS else "integer" if c in INT_MEASURES else "real"
+    datasource = text_datasource(DS_DEALS, CONN, "CRM deals", CSV, deals_type,
+                                 "".join(column_decls(list(CALCS) + REAL_MEASURES)))
+    ab_type = lambda c: "string" if c in AB_STRINGS else "integer" if c in INT_MEASURES else "real"
+    datasource_ab = text_datasource(DS_AB, CONN_AB, "A/B test options", AB_CSV, ab_type,
+                                    "".join(column_decls(list(AB_REAL))))
 
     leads, _ = inst("Calc_Leads", "usr")
     students, _ = inst("Calc_Students", "usr")
@@ -213,6 +243,25 @@ def build():
                                         members=("Student Status", ["active", "unknown", "dropout", "finished"]))),
     ]
 
+    global DS
+    DS = DS_AB
+    prod_d, hyp_d, ev_d, met_d, var_d, verdict_d = (inst(f, "dim")[0] for f in AB_STRINGS)
+    mde_v, exp_v, days_v = (inst(f, "avg")[0] for f in ("MDE pp", "Expected effect pp", "Days for classic test"))
+    cdata = lambda n, bold=False: f"<run{' bold=' + chr(39) + 'true' + chr(39) if bold else ''}><![CDATA[<{ref(n)}>]]></run>"
+    ab_label = [run("MDE "), cdata(mde_v, True), run(" pp · expected "), cdata(exp_v), run(" pp")]
+    hyp_label = [run("expected "), cdata(exp_v, True), run(" pp · a classic 50/50 test needs "), cdata(days_v, True), run(" days")]
+    ab_sheets = [
+        ("Product Hypotheses", worksheet("Product Hypotheses", [prod_d, hyp_d, ev_d, met_d], "", "Text",
+                                         [(f, "dim") for f in ("Product", "Hypothesis", "Evidence", "Metric")]
+                                         + [("Expected effect pp", "avg"), ("Days for classic test", "avg")],
+                                         text=[exp_v, days_v], label=hyp_label)),
+        ("A/B Options: MDE in 14 days", worksheet("A/B Options: MDE in 14 days", [prod_d, var_d], mde_v, "Bar",
+                                                  [("Product", "dim"), ("Variant", "dim"), ("Verdict", "dim"),
+                                                   ("MDE pp", "avg"), ("Expected effect pp", "avg")],
+                                                  color=verdict_d, text=[mde_v, exp_v], label=ab_label)),
+    ]
+    DS = DS_DEALS
+
     # dashboard: 1200 x 1000, coordinates in 1/100000 of the size
     W, H = 100000, 100000
     zid = iter(range(3, 100))
@@ -231,28 +280,46 @@ def build():
              + z("Speed to Lead", 0, 17000 + 2 * row, W // 3, H - 17000 - 2 * row)
              + z("Revenue by Product", W // 3, 17000 + 2 * row, W // 3, H - 17000 - 2 * row)
              + z("Prepaid by Status", 2 * W // 3, 17000 + 2 * row, W - 2 * W // 3, H - 17000 - 2 * row))
+    note = ("Each product hypothesis is shown with four 14-day test designs. Leads with a known product are only 3-4 a day, "
+            "so even the best design detects +18-29 pp, far above the expected +4-7.5 pp. "
+            "Only the speed-to-lead test on all leads (MDE +8.4 pp vs expected +10 pp) fits into 14 days.")
+    ab_zones = (f"<zone h='5000' id='{next(zid)}' type-v2='text' w='{W}' x='0' y='0'><formatted-text>"
+                f"{run('Product hypotheses and A/B test options · duration fixed at 14 days, α = 0.05, power 80%', bold=True, size=16)}"
+                f"</formatted-text></zone>"
+                f"<zone h='6000' id='{next(zid)}' type-v2='text' w='{W}' x='0' y='5000'><formatted-text>"
+                f"{run(note, size=11, color='#4b5260')}</formatted-text></zone>"
+                + z("Product Hypotheses", 0, 11000, W, 30000) + z("A/B Options: MDE in 14 days", 0, 41000, W, H - 41000))
+    dashboard_ab = (f"<dashboard name='A/B Test Options'><style />"
+                    f"<size maxheight='1000' maxwidth='1200' minheight='1000' minwidth='1200' sizing-mode='fixed' />"
+                    f"<datasources><datasource caption='A/B test options' name='{DS_AB}' /></datasources>"
+                    f"<zones><zone h='{H}' id='{next(zid)}' type-v2='layout-basic' w='{W}' x='0' y='0'>{ab_zones}</zone></zones>"
+                    f"{sid('A/B Test Options')}</dashboard>")
     dashboard = (f"<dashboards><dashboard name='CRM Dashboard'><style />"
                  f"<size maxheight='1000' maxwidth='1200' minheight='1000' minwidth='1200' sizing-mode='fixed' />"
                  f"<datasources><datasource caption='CRM deals' name='{DS}' /></datasources>"
                  f"<zones><zone h='{H}' id='2' type-v2='layout-basic' w='{W}' x='0' y='0'>{zones}</zone></zones>"
-                 f"{sid('CRM Dashboard')}</dashboard></dashboards>")
+                 f"{sid('CRM Dashboard')}</dashboard>{dashboard_ab}</dashboards>")
     windows = "".join(f"<window class='worksheet' name='{q(n)}'><cards><edge name='left'><strip size='160'>"
                       f"<card type='pages' /><card type='filters' /><card type='marks' /></strip></edge></cards>{sid(n)}</window>"
-                      for n, _ in sheets)
+                      for n, _ in sheets + ab_sheets)
     windows += ("<window class='dashboard' maximized='true' name='CRM Dashboard'><viewpoints>"
                 + "".join(f"<viewpoint name='{q(n)}' />" for n, _ in sheets) + f"</viewpoints><active id='-1' />{sid('CRM Dashboard')}</window>")
+    windows += ("<window class='dashboard' name='A/B Test Options'><viewpoints>"
+                + "".join(f"<viewpoint name='{q(n)}' />" for n, _ in ab_sheets)
+                + f"</viewpoints><active id='-1' />{sid('A/B Test Options')}</window>")
 
     twb = ("<?xml version='1.0' encoding='utf-8' ?>\n"
            "<workbook original-version='18.1' source-build='2026.2.0 (20262.26.0603.1643)' source-platform='win' version='18.1' "
            "xmlns:user='http://www.tableausoftware.com/xml/user'>"
            "<document-format-change-manifest><SheetIdentifierTracking /><SortTagCleanup /><WindowsPersistSimpleIdentifiers />"
            "</document-format-change-manifest><preferences />"
-           f"<datasources>{datasource}</datasources><worksheets>{''.join(x for _, x in sheets)}</worksheets>"
+           f"<datasources>{datasource}{datasource_ab}</datasources><worksheets>{''.join(x for _, x in sheets + ab_sheets)}</worksheets>"
            f"{dashboard}<windows>{windows}</windows></workbook>")
     (OUT_DIR / "crm_dashboard.twb").write_text(twb, encoding="utf-8")
     with zipfile.ZipFile(TWBX, "w", zipfile.ZIP_DEFLATED) as zf:
         zf.writestr("crm_dashboard.twb", twb)
         zf.write(CSV, "Data/tableau/deals_tableau.csv")
+        zf.write(AB_CSV, "Data/tableau/ab_variants.csv")
     print(f"Saved {TWBX} ({TWBX.stat().st_size / 1e6:.1f} MB)")
 
 

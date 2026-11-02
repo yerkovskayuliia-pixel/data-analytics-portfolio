@@ -7,7 +7,7 @@ End-to-end data analysis of a real CRM export (leads, calls, ad spend and deals)
 | | |
 |---|---|
 | Interactive dashboard | [`reports/dashboard.html`](reports/dashboard.html) |
-| Tableau dashboard (Tableau Cloud, packaged workbook) | [`reports/tableau/crm_dashboard.twbx`](reports/tableau/crm_dashboard.twbx), built by `src/build_tableau.py` from `deals_tableau.csv` |
+| Tableau dashboard (Tableau Cloud, packaged workbook) | [`reports/tableau/crm_dashboard.twbx`](reports/tableau/crm_dashboard.twbx), built by `src/build_tableau.py` from `deals_tableau.csv`; second dashboard *A/B Test Options* shows the product hypotheses and the 14-day MDE of four test designs for each (`src/build_ab_variants.py`) |
 | Presentation (10 slides, speaker notes included) | [`reports/presentation.pptx`](reports/presentation.pptx) |
 | Full report (rendered notebooks) | [`reports/html/`](reports/html) |
 
