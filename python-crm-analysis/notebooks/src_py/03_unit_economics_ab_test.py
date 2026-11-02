@@ -292,35 +292,42 @@ robust.style.format({"< 15 min": "{:.1%}", "15 min – 24 h": "{:.1%}", "gap, pp
 # - **H0:** the `reached_24h` shares in groups A and B are equal.
 
 # %% [markdown]
-# ## 5. A/B test design (≤ 2 weeks)
+# ## 5. A/B test design: the duration is fixed at 14 days
+#
+# **The test was not run:** the CRM export has no experiment data, so below is the design only. The task limits a test
+# to 2 weeks, so we start from the duration: fix 14 days → count the leads that arrive → compute the **MDE** (the
+# smallest effect the test can detect at α = 0.05 and 80% power). The test makes sense only if the expected effect is
+# at least the MDE.
 
 # %%
 recent = deals[deals["created_time"] >= "2024-03-01"]
-leads_per_day = len(recent) / recent["created_time"].dt.normalize().nunique()
+n_days = recent["created_time"].dt.normalize().nunique()
+leads_per_day = len(recent) / n_days
+alpha, power, TEST_DAYS = 0.05, 0.80, 14
+
+
+def mde_for(p_base: float, n_group: int) -> float:
+    """MDE as a share for two groups of n_group (z-test for proportions, inverse of Cohen's h)."""
+    h = NormalIndPower().solve_power(nobs1=n_group, alpha=alpha, power=power, ratio=1)
+    return np.sin(np.arcsin(np.sqrt(p_base)) + h / 2) ** 2 - p_base
+
 
 # control: leads answered between 15 min and 24 h (the "> 24 h" bucket is excluded, see section 4)
 p_control = deals.loc[slow, "reached_24h"].mean()
-p_treatment = p_control + 0.10
-alpha, power = 0.05, 0.80
-effect = proportion_effectsize(p_treatment, p_control)
-n_per_group = int(np.ceil(NormalIndPower().solve_power(effect, alpha=alpha, power=power, ratio=1)))
-days_needed = int(np.ceil(2 * n_per_group / leads_per_day))
-
-n_14 = int(leads_per_day * 14 / 2)
-mde_h = NormalIndPower().solve_power(nobs1=n_14, alpha=alpha, power=power, ratio=1)
-# inverse Cohen's h transform -> proportion
-mde_p = np.sin(np.arcsin(np.sqrt(p_control)) + mde_h / 2) ** 2
+n_14 = int(leads_per_day * TEST_DAYS / 2)
+mde = mde_for(p_control, n_14)
+expected = 0.10
 
 design = pd.Series({
+    "Test duration": f"{TEST_DAYS} days (2 full weeks, covers weekly seasonality)",
     "Leads per day (since March 2024)": f"{leads_per_day:.0f}",
+    "Leads per group in 14 days (50/50)": f"{n_14:,}",
     "Baseline reached_24h (control)": f"{p_control:.1%}",
-    "Expected level in treatment": f"{p_treatment:.1%} (+10 pp)",
-    "Significance level α / power": f"{alpha} / {power:.0%}",
-    "Leads needed per group": f"{n_per_group:,}",
-    "Days to collect the sample": days_needed,
-    "Test duration": "14 days (2 full weeks, covers weekly seasonality)",
-    "Leads per group in 14 days": f"{n_14:,}",
-    "MDE in 14 days": f"{(mde_p - p_control) * 100:+.1f} pp (up to {mde_p:.1%})",
+    "α / power": f"{alpha} / {power:.0%}",
+    "MDE in 14 days": f"+{mde * 100:.1f} pp (from {p_control:.1%} to {p_control + mde:.1%})",
+    "Expected effect (section 4)": f"+{expected * 100:.0f} pp",
+    "Verdict": "expected effect ≥ MDE: a 14-day test makes sense" if expected >= mde
+               else "expected effect < MDE: a 14-day test will not show it",
 }, name="value")
 design.to_frame()
 
@@ -330,47 +337,68 @@ design.to_frame()
 # | Parameter | Decision |
 # |---|---|
 # | Randomisation unit | lead (new request) |
-# | Split | 50/50 by the last digit of the deal ID (even → B, odd → A): deterministic and verifiable |
+# | Split | 50/50 by the last digit of the deal ID (even → B, odd → A): deterministic and checkable |
 # | Group A (control) | the current lead assignment process |
-# | Group B (treatment) | auto-assignment + push + automatic message to the client + "call within 15 min" rule |
+# | Group B (test) | auto-assignment + push + automatic message to the client + the "call within 15 min" rule |
 # | Who takes part | all new leads from all sources; the same managers work with both groups |
-# | Duration | 14 days starting on a Monday; no early stopping (the "peeking" problem) |
-# | Validity check | SRM test (chi-square) for equal group sizes; comparison of the source mix |
-# | Statistical test | two-sided z-test for proportions, α = 0.05 |
+# | Duration | exactly 14 days, starting on a Monday; no early stopping (the peeking problem) |
+# | Validity check | SRM test (chi-square) on group sizes; comparison of the source mix |
+# | Statistical test | two-sided z-test for proportions, α = 0.05; result = difference in shares with a 95% confidence interval |
 # | Decision | roll out if `reached_24h` grew significantly and guardrails did not get worse; confirm with C1 after 45 days |
 #
-# **Risks:** managers know about the test and may also call the control group faster (spillover) →
-# the effect will be **underestimated**, so the result is conservative. To reduce the risk, the "≤ 15 min" rule and
-# the notifications are shown to managers only on group B leads.
+# **Risks:** managers know about the test and may also call the control group faster (spillover) → the effect will be
+# **underestimated**, i.e. the result is conservative. To reduce this, the "≤ 15 min" rule and notifications are shown
+# to managers only on group B leads.
 
 # %% [markdown]
-# ### 5.1 How the result will be calculated (demo on simulated data)
-# Below is the analysis code that runs after the test. To show it working, we generate data with
-# a built-in +10 pp effect (this is a **simulation**, not a real result).
+# ## 6. Hypotheses for each product
+#
+# The product appears in the CRM only at the consultation, so the unit for product hypotheses is a lead with a known
+# product. The 14-day metric is the **share of leads that reached payment or an invoice** (`Payment Done` or
+# `Waiting For Payment`): payment itself cannot be awaited within 2 weeks (median cycle 17 days), while the client's
+# decision is visible right after the consultation.
 
 # %%
-rng = np.random.default_rng(42)
-sim = pd.DataFrame({"group": np.repeat(["A", "B"], n_14)})
-sim["reached_24h"] = np.where(sim["group"] == "A",
-                              rng.random(len(sim)) < p_control,
-                              rng.random(len(sim)) < p_treatment)
-
-
-def analyze_ab(df: pd.DataFrame, metric: str = "reached_24h") -> pd.Series:
-    g = df.groupby("group")[metric].agg(["sum", "count", "mean"])
-    z, p = proportions_ztest(g["sum"].values, g["count"].values)
-    diff = g.loc["B", "mean"] - g.loc["A", "mean"]
-    se = np.sqrt(sum(g.loc[x, "mean"] * (1 - g.loc[x, "mean"]) / g.loc[x, "count"] for x in "AB"))
-    return pd.Series({"A": f"{g.loc['A', 'mean']:.1%}", "B": f"{g.loc['B', 'mean']:.1%}",
-                      "uplift, pp": f"{diff:+.1%}",
-                      "95% CI": f"[{diff - 1.96 * se:+.1%}; {diff + 1.96 * se:+.1%}]",
-                      "p-value": f"{p:.4f}", "decision": "reject H0" if p < 0.05 else "fail to reject H0"})
-
-
-analyze_ab(sim).to_frame("simulation")
+commit = deals["stage"].isin(["Payment Done", "Waiting For Payment"])
+rows = {}
+for prod in PRODUCTS:
+    mask = deals["product"].eq(prod)
+    per_day = (recent["product"] == prod).sum() / n_days
+    n_group = int(per_day * TEST_DAYS / 2)
+    base_p = commit[mask].mean()
+    rows[prod] = {"leads with product per day": per_day, "leads per group in 14 days": n_group,
+                  "baseline: paid or invoiced": base_p, "MDE in 14 days, pp": mde_for(base_p, n_group) * 100,
+                  "evening: paid or invoiced": commit[mask & deals["education_type"].eq("Evening")].mean(),
+                  "morning: paid or invoiced": commit[mask & deals["education_type"].eq("Morning")].mean(),
+                  "share in Waiting For Payment": deals.loc[mask, "stage"].eq("Waiting For Payment").mean(),
+                  "share 'changed decision / needs time'": deals.loc[mask, "lost_reason"].isin(
+                      ["Changed Decision", "needs time to think"]).mean()}
+products_ab = pd.DataFrame(rows).T
+pooled_per_day = recent["product"].isin(PRODUCTS).sum() / n_days
+pooled_mde = mde_for(commit[deals["product"].isin(PRODUCTS)].mean(), int(pooled_per_day * TEST_DAYS / 2))
+print(f"All three products together: {pooled_per_day:.1f} leads a day, MDE in 14 days = +{pooled_mde * 100:.0f} pp")
+products_ab.style.format({"leads with product per day": "{:.1f}", "leads per group in 14 days": "{:.0f}",
+                          "MDE in 14 days, pp": "+{:.0f}", **{c: "{:.1%}" for c in products_ab.columns[[2, 4, 5, 6, 7]]}})
 
 # %% [markdown]
-# ## 6. Expected business impact
+# | Product | Hypothesis | Evidence in the data | Metric (14 days) | Expected effect | MDE in 14 days |
+# |---|---|---|---|---|---|
+# | **Digital Marketing** | If every client is offered an evening group on equal terms with a morning one at the consultation, the share reaching payment or an invoice will grow, because working people find evenings easier | evening 47.6% vs 32.9% morning (paid or invoiced); only 14% choose evening groups | paid or invoiced | ≈ +4 pp (if a third more morning clients pick evening) | +35 pp |
+# | **UX/UI Design** | If within 24 h after the consultation the client gets an alumni case study and a free portfolio review, fewer leads will change their mind, because the doubt "will I find a job" is removed before the decision | "changed decision / needs time" — 21% of leads with the product | paid or invoiced | +5–10 pp (assumption, no data) | +41 pp |
+# | **Web Developer** | If a client who received an invoice gets payment reminders after 24 and 72 h with an instalment option, more invoices will be paid, because deals currently stall at the payment stage | 14.3% of leads with the product are stuck in `Waiting For Payment`, more than any other product | paid or invoiced → share of invoices paid | +5–10 pp (assumption) | +43 pp |
+#
+# **Verdict on the product hypotheses.** Each product has only 3–4 leads with a known product a day, i.e. 19–30 leads
+# per group in 14 days. With this traffic a 2-week test can only detect an effect of +35–43 pp, while a realistic
+# effect is 5–10 pp. Even with all three products pooled, the MDE stays around +23 pp. Therefore:
+# 1. **A product-level A/B test within 14 days is not possible**: there is not enough data, and the result would be
+#    "no difference" whether or not the change works.
+# 2. Product hypotheses should be checked as a **pilot** with a before/after comparison or once traffic grows; the A/B test
+#    within 14 days runs on the all-lead metric (section 5), where the MDE of +8.4 pp is below the expected effect.
+# 3. The website page (`page`) does not help: product pages bring only 1.6–3.2 leads a day. Product tests become possible
+#    only when traffic grows or the product is recorded for every lead at sign-up.
+
+# %% [markdown]
+# ## 7. Expected business impact
 # If the hypothesis is confirmed and the +10 pp in reach carries over to C1 proportionally
 # (reached leads convert better than unreached ones), the effect on CM is:
 
@@ -387,10 +415,13 @@ pd.Series({
 }).to_frame("estimate")
 
 # %% [markdown]
-# ## 7. Product analytics summary
+# ## 8. Product analytics summary
 # 1. All products are profitable after marketing; CAC €175–189 vs CLTV €2.5–4.5k (ROMI 13–25×). The bottleneck is conversion (C1 ≈ 4%).
 # 2. The growth lever is **C1**: the most headroom and a clear improvement mechanism (40% of lost deals are "doesn't answer / stopped answering").
 # 3. Metric tree: CM ← Revenue ← C1 ← reach ← first-contact SLA.
 # 4. Hypothesis: auto-assigning leads + contact within 15 minutes will raise 24-hour reach by ≥ 10 pp.
-# 5. A/B test: 14 days (359 leads needed per group at a 59% baseline, 519 are collected in 2 weeks), α = 0.05, power 80%, z-test for proportions; final check on C1
+# 5. A/B test (design only, no experiment data): the duration is fixed at 14 days, 519 leads per group, MDE = +8.4 pp vs an expected +10 pp, α = 0.05, power 80%, z-test for proportions; final check on C1
 #    after 45 days.
+# 6. Product hypotheses: Digital Marketing — evening group, UX/UI — alumni case and portfolio review after the
+#    consultation, Web Developer — reminders and instalments for issued invoices. With 3–4 leads with a product a day the
+#    14-day MDE is +35–43 pp, so product A/B tests within 2 weeks are not possible; they are checked as pilots.
