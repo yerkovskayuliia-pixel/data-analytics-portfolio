@@ -7796,7 +7796,7 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5626cfe7">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4eb07dc7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7841,7 +7841,7 @@ reused and tested. This notebook checks the raw data, runs the ETL and validates
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e147254a">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c27b0d38">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7866,7 +7866,7 @@ reused and tested. This notebook checks the raw data, runs the ETL and validates
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3670f383">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3ac267b4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7877,7 +7877,7 @@ and 19-digit IDs were rounded as floats (which breaks the joins). All IDs are re
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a0bed079">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=44e58cc6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7965,7 +7965,7 @@ and 19-digit IDs were rounded as floats (which breaks the joins). All IDs are re
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3a34bfa0">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c5a7ff9c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8162,7 +8162,7 @@ and 19-digit IDs were rounded as floats (which breaks the joins). All IDs are re
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c312b254">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=eb6448ff">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8179,7 +8179,7 @@ A gap means "the deal never reached this stage", so these fields are <strong>nei
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=915b4c01">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=66e548cc">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8297,7 +8297,7 @@ A gap means "the deal never reached this stage", so these fields are <strong>nei
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6b56d559">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=0d34fd4c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8386,7 +8386,7 @@ A gap means "the deal never reached this stage", so these fields are <strong>nei
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f51bc651">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0a9affad">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8510,14 +8510,17 @@ A gap means "the deal never reached this stage", so these fields are <strong>nei
 </tr>
 </tbody>
 </table>
-<p><strong>Revenue.</strong> Per the FAQ, payment is confirmed by the status <code>Payment Done</code>, and the first payment is <code>Initial Amount Paid</code>.
-The rest of the course is paid monthly, so the revenue received by the export date is:</p>
-<p>$$revenue = initial + (months\_of\_study - 1) \cdot \frac{offer - initial}{course\_duration - 1},\quad revenue \le offer$$</p>
-<p>For a one-off payment (<code>initial = offer</code>), revenue = <code>offer</code>.</p>
+<p><strong>Cash and revenue.</strong> Per the FAQ, payment is confirmed by the status <code>Payment Done</code>, and the first payment is <code>Initial Amount Paid</code>.
+The rest of the course is paid monthly, so the cash received by the export date is:</p>
+<p>$$cash\_received = initial + (months\_of\_study - 1) \cdot \frac{offer - initial}{course\_duration - 1},\quad \le offer$$</p>
+<p>For a one-off payment (<code>initial = offer</code>), the whole <code>offer</code> is received. By law, however, revenue is recognised only for
+the months studied, so the analysis uses</p>
+<p>$$revenue = \frac{offer}{course\_duration} \cdot months\_of\_study,\quad prepaid = \max(cash\_received - revenue, 0)$$</p>
+<p><code>prepaid</code> is an advance for future months; for students who dropped out it is an amount to refund (<code>refund_due</code>), see notebook 03.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=88c43ad4">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b960b170">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8572,7 +8575,8 @@ The rest of the course is paid monthly, so the revenue received by the export da
  • initial &gt; offer (an obvious error, FAQ): offer fixed as a typo in 6 rows, initial capped at offer in 49 rows; flag amount_anomaly_flag
  • Demo accesses for a token fee (offer €0/1/9): 792
  • Payment Done: 856; of them students (months_of_study filled in, not demo): 837. Without months_of_study the money is not counted (FAQ)
- • revenue: revenue received by the export date (first payment + monthly payments for the months studied); payments_count: number of transactions
+ • cash_received: money received by the export date (first payment + monthly payments); revenue: recognised revenue = course price / duration × months studied (by law revenue is recognised only for the months of teaching delivered); prepaid = cash_received − revenue &gt; 0: an advance for future months, for dropouts an amount to refund; payments_count: number of transactions
+ • student_status (estimate): finished 71, studying 398, dropped out 54, no payment date 314. Dropout = fewer months studied than have passed since payment, with a 1-month margin
  • Categorical gaps filled with explicit labels: quality 'Not rated' (+3 rows 'F'), lost_reason 'Not lost', product/payment_type/education_type 'Unknown', campaign '(no campaign)'; '#REF!' (an Excel error) -&gt; Unknown
  • city: '-' -&gt; Unknown, addresses -&gt; city, one spelling; added country. level_of_deutsch (б1, в1, 'B1 (until February)') -&gt; german_level A0..C2/Unknown
 </pre>
@@ -8581,7 +8585,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=06585f97">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c713d6f1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8591,7 +8595,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=e43bf7e6">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a92a43b9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8666,7 +8670,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 <th>Deals</th>
 <td>21595</td>
 <td>19822</td>
-<td>30</td>
+<td>34</td>
 <td>0</td>
 </tr>
 </tbody>
@@ -8676,7 +8680,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=17d04b5a">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=431da7bb">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8731,17 +8735,18 @@ The rest of the course is paid monthly, so the revenue received by the export da
 <th>created_time</th>
 <th>course_duration</th>
 <th>months_of_study</th>
-<th>initial_amount_paid</th>
-<th>offer_total_amount</th>
-<th>contact_id</th>
-<th>city</th>
+<th>...</th>
 <th>deal_cycle_days</th>
 <th>sla_sec</th>
 <th>amount_anomaly_flag</th>
 <th>is_demo</th>
 <th>is_paid</th>
 <th>is_student</th>
+<th>cash_received</th>
 <th>revenue</th>
+<th>prepaid</th>
+<th>student_status</th>
+<th>refund_due</th>
 <th>payments_count</th>
 <th>country</th>
 <th>german_level</th>
@@ -8766,16 +8771,17 @@ The rest of the course is paid monthly, so the revenue received by the export da
 <td>datetime64[us]</td>
 <td>float64</td>
 <td>float64</td>
+<td>...</td>
+<td>float64</td>
+<td>float64</td>
+<td>bool</td>
+<td>bool</td>
+<td>bool</td>
+<td>bool</td>
+<td>float64</td>
 <td>float64</td>
 <td>float64</td>
 <td>str</td>
-<td>str</td>
-<td>float64</td>
-<td>float64</td>
-<td>bool</td>
-<td>bool</td>
-<td>bool</td>
-<td>bool</td>
 <td>float64</td>
 <td>float64</td>
 <td>category</td>
@@ -8784,12 +8790,13 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </tr>
 </tbody>
 </table>
+<p>1 rows × 34 columns</p>
 </div>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8c2af1df">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5a5063e8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8886,7 +8893,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c654dfb7">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=efc4bb05">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8973,7 +8980,7 @@ The rest of the course is paid monthly, so the revenue received by the export da
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4ebe08a2">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=731eb75c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>

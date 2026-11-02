@@ -101,7 +101,7 @@ footer{margin-top:20px;color:var(--ink2);font-size:12px}
  <div class="card"><h2>Top cities</h2><p>City is filled only for ~11% of deals (at consultation stage).</p><div class="chart" id="cCity"></div></div>
  <div class="card wide"><h2>Sales team</h2><p>Deal owners with at least 30 deals in the current selection.</p><div class="tbl" id="tOwn"></div></div>
 </div>
-<footer>Source: cleaned CRM export (Deals, Spend). Student = stage "Payment Done" with months of study filled, demo access excluded. Revenue = payments actually received by the export date.</footer>
+<footer>Source: cleaned CRM export (Deals, Spend). Student = stage "Payment Done" with months of study filled, demo access excluded. Revenue = recognised for months already studied (course price / duration × months); prepayments for later months are excluded.</footer>
 </div>
 <script>
 const P=/*__DATA__*/null;

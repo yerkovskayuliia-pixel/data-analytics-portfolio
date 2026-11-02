@@ -183,8 +183,8 @@ def normalize_city(x) -> str:
             "Helmstidde": "Helmstedt"}.get(s, s)
 
 
-def realized_revenue(row) -> float:
-    """Revenue actually received by the export date.
+def cash_received(row) -> float:
+    """Money actually received from the student by the export date.
 
     The first payment is initial_amount_paid; the rest of the course price is split
     over the remaining months and paid monthly. A student who studied N months has paid
@@ -259,14 +259,30 @@ def clean_deals(raw: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     log.append(f"Payment Done: {df['is_paid'].sum()}; of them students (months_of_study filled in, "
                f"not demo): {df['is_student'].sum()}. Without months_of_study the money is not counted (FAQ)")
 
-    df["revenue"] = np.where(df["is_student"], df.apply(realized_revenue, axis=1), 0.0)
+    df["cash_received"] = np.where(df["is_student"], df.apply(cash_received, axis=1), 0.0)
+    earned = (df["offer_total_amount"] / df["course_duration"] * df["months_of_study"]).clip(upper=df["offer_total_amount"])
+    df["revenue"] = np.where(df["is_student"], earned, 0.0)
+    df["prepaid"] = (df["cash_received"] - df["revenue"]).clip(lower=0)
+    export_date = df["created_time"].max().normalize()
+    months_since_payment = np.floor((export_date - df["closing_date"]).dt.days / 30.44) + 1
+    df["student_status"] = np.select(
+        [~df["is_student"], df["months_of_study"] >= df["course_duration"], df["closing_date"].isna(),
+         df["months_of_study"] < np.minimum(months_since_payment, df["course_duration"]) - 1],
+        ["", "finished", "unknown", "dropout"], "active")
+    df["refund_due"] = np.where(df["student_status"].eq("dropout"), df["prepaid"], 0.0)
     df["payments_count"] = np.where(
         df["is_student"],
         np.where(df["initial_amount_paid"] >= df["offer_total_amount"], 1,
                  df["months_of_study"].clip(lower=1)),
         0)
-    log.append("revenue: revenue received by the export date (first payment + monthly "
-               "payments for the months studied); payments_count: number of transactions")
+    log.append("cash_received: money received by the export date (first payment + monthly payments); "
+               "revenue: recognised revenue = course price / duration × months studied (by law revenue is "
+               "recognised only for the months of teaching delivered); prepaid = cash_received − revenue > 0: "
+               "an advance for future months, for dropouts an amount to refund; payments_count: number of transactions")
+    log.append(f"student_status (estimate): finished {(df['student_status'] == 'finished').sum()}, "
+               f"studying {(df['student_status'] == 'active').sum()}, dropped out {(df['student_status'] == 'dropout').sum()}, "
+               f"no payment date {(df['student_status'] == 'unknown').sum()}. Dropout = fewer months studied "
+               "than have passed since payment, with a 1-month margin")
 
     # --- categorical gaps
     df["quality"] = df["quality"].replace("F", np.nan).fillna("Not rated")

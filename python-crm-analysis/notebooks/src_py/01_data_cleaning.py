@@ -88,12 +88,17 @@ missing_report(raw["Calls"])
 # | 14 | Spend | 917 full duplicates | drop | all are zero rows and do not affect totals |
 # | 15 | Spend | `Campaign` empty | → `(no campaign)` | the spend is real and must not be dropped |
 #
-# **Revenue.** Per the FAQ, payment is confirmed by the status `Payment Done`, and the first payment is `Initial Amount Paid`.
-# The rest of the course is paid monthly, so the revenue received by the export date is:
+# **Cash and revenue.** Per the FAQ, payment is confirmed by the status `Payment Done`, and the first payment is `Initial Amount Paid`.
+# The rest of the course is paid monthly, so the cash received by the export date is:
 #
-# $$revenue = initial + (months\_of\_study - 1) \cdot \frac{offer - initial}{course\_duration - 1},\quad revenue \le offer$$
+# $$cash\_received = initial + (months\_of\_study - 1) \cdot \frac{offer - initial}{course\_duration - 1},\quad \le offer$$
 #
-# For a one-off payment (`initial = offer`), revenue = `offer`.
+# For a one-off payment (`initial = offer`), the whole `offer` is received. By law, however, revenue is recognised only for
+# the months studied, so the analysis uses
+#
+# $$revenue = \frac{offer}{course\_duration} \cdot months\_of\_study,\quad prepaid = \max(cash\_received - revenue, 0)$$
+#
+# `prepaid` is an advance for future months; for students who dropped out it is an amount to refund (`refund_due`), see notebook 03.
 
 # %%
 clean, logs = etl.run_etl(save=True)

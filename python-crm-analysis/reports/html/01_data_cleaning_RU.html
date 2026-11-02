@@ -7796,7 +7796,7 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e55849b1">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=48be69b7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7841,7 +7841,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4a05b40e">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=30e4e06a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7866,7 +7866,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6ce2a0ae">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=964b0c9f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7877,7 +7877,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b2e960ac">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=587989e7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7965,7 +7965,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3784a4fa">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=d77edb07">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8162,7 +8162,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1429988c">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=eca9af02">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8179,7 +8179,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6d42757c">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3c9038f8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8297,7 +8297,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=dafb187f">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=54d802d1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8386,7 +8386,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=842931b5">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=caae84db">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8510,14 +8510,17 @@ a.anchor-link {
 </tr>
 </tbody>
 </table>
-<p><strong>Выручка.</strong> По FAQ факт оплаты — статус <code>Payment Done</code>, а сумма первого платежа — <code>Initial Amount Paid</code>.
-Остаток курса оплачивается помесячно, поэтому выручка, полученная к дате выгрузки:</p>
-<p>$$revenue = initial + (months\_of\_study - 1) \cdot \frac{offer - initial}{course\_duration - 1},\quad revenue \le offer$$</p>
-<p>При единовременной оплате (<code>initial = offer</code>) выручка = <code>offer</code>.</p>
+<p><strong>Деньги и выручка.</strong> По FAQ факт оплаты — статус <code>Payment Done</code>, а сумма первого платежа — <code>Initial Amount Paid</code>.
+Остаток курса оплачивается помесячно, поэтому деньги, полученные к дате выгрузки:</p>
+<p>$$cash\_received = initial + (months\_of\_study - 1) \cdot \frac{offer - initial}{course\_duration - 1},\quad \le offer$$</p>
+<p>При единовременной оплате (<code>initial = offer</code>) получено <code>offer</code>. Но по закону выручка признаётся только за отученные
+месяцы, поэтому в анализе используется</p>
+<p>$$revenue = \frac{offer}{course\_duration} \cdot months\_of\_study,\quad prepaid = \max(cash\_received - revenue, 0)$$</p>
+<p><code>prepaid</code> — аванс за будущие месяцы; у отчисленных студентов это сумма к возврату (<code>refund_due</code>), подробнее — в ноутбуке 03.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=d159a35e">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=aedeffe2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8572,7 +8575,8 @@ a.anchor-link {
  • initial &gt; offer (очевидная ошибка, FAQ): offer исправлен как опечатка в 6 строках, initial ограничен offer в 49 строках; флаг amount_anomaly_flag
  • Демо-доступы за символическую плату (offer 0/1/9 €): 792
  • Payment Done: 856; из них студентов (months_of_study заполнен, не демо): 837. Без months_of_study деньги не учитываем (FAQ)
- • revenue: выручка, полученная к дате выгрузки (первый платёж + помесячные платежи за отученные месяцы); payments_count: число транзакций
+ • cash_received: деньги, полученные к дате выгрузки (первый платёж + помесячные платежи); revenue: признанная выручка = цена курса / длительность × отученные месяцы (по закону выручка признаётся только за оказанные месяцы обучения); prepaid = cash_received − revenue &gt; 0: аванс за будущие месяцы, у отчисленных — сумма к возврату; payments_count: число транзакций
+ • student_status (оценка): закончили 71, учатся 398, отчислены 54, нет даты оплаты 314. Отчислен = отучился меньше месяцев, чем прошло с оплаты, с запасом в 1 месяц
  • Категориальные пропуски заполнены явными метками: quality 'Not rated' (+3 строки 'F'), lost_reason 'Not lost', product/payment_type/education_type 'Unknown', campaign '(no campaign)'; '#REF!' — ошибка Excel -&gt; Unknown
  • city: '-' -&gt; Unknown, адреса -&gt; город, единое написание; добавлен country. level_of_deutsch (б1, в1, 'B1 (до февраля)') -&gt; german_level A0..C2/Unknown
 </pre>
@@ -8581,7 +8585,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3b709177">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d6511e58">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8591,7 +8595,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00adcb72">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ecb4b693">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8666,7 +8670,7 @@ a.anchor-link {
 <th>Deals</th>
 <td>21595</td>
 <td>19822</td>
-<td>30</td>
+<td>34</td>
 <td>0</td>
 </tr>
 </tbody>
@@ -8676,7 +8680,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cdc757e8">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3cabc7cb">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8731,17 +8735,18 @@ a.anchor-link {
 <th>created_time</th>
 <th>course_duration</th>
 <th>months_of_study</th>
-<th>initial_amount_paid</th>
-<th>offer_total_amount</th>
-<th>contact_id</th>
-<th>city</th>
+<th>...</th>
 <th>deal_cycle_days</th>
 <th>sla_sec</th>
 <th>amount_anomaly_flag</th>
 <th>is_demo</th>
 <th>is_paid</th>
 <th>is_student</th>
+<th>cash_received</th>
 <th>revenue</th>
+<th>prepaid</th>
+<th>student_status</th>
+<th>refund_due</th>
 <th>payments_count</th>
 <th>country</th>
 <th>german_level</th>
@@ -8766,16 +8771,17 @@ a.anchor-link {
 <td>datetime64[us]</td>
 <td>float64</td>
 <td>float64</td>
+<td>...</td>
+<td>float64</td>
+<td>float64</td>
+<td>bool</td>
+<td>bool</td>
+<td>bool</td>
+<td>bool</td>
+<td>float64</td>
 <td>float64</td>
 <td>float64</td>
 <td>str</td>
-<td>str</td>
-<td>float64</td>
-<td>float64</td>
-<td>bool</td>
-<td>bool</td>
-<td>bool</td>
-<td>bool</td>
 <td>float64</td>
 <td>float64</td>
 <td>category</td>
@@ -8784,12 +8790,13 @@ a.anchor-link {
 </tr>
 </tbody>
 </table>
+<p>1 rows × 34 columns</p>
 </div>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cdac18ac">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=62d6c9c1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8886,7 +8893,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=10dee71c">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=655445b6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8973,7 +8980,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=18a1931f">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c7de97ba">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
