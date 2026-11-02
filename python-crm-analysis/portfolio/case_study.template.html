@@ -70,15 +70,15 @@ footer{color:var(--ink-2);font-size:14px;border-top:1px solid var(--line);paddin
   <section class="stats" aria-label="Key figures">
     <div class="stat"><div class="v">4.22%</div><div class="l">of leads became students</div></div>
     <div class="stat"><div class="v">40%</div><div class="l">of lost deals never answered the phone</div></div>
-    <div class="stat"><div class="v">€179</div><div class="l">cost to acquire a student, against €4,275 revenue each</div></div>
-    <div class="stat"><div class="v">+€358k</div><div class="l">margin from +10% conversion, no extra ad spend</div></div>
+    <div class="stat"><div class="v">€179</div><div class="l">cost to acquire a student, against €3,996 revenue each</div></div>
+    <div class="stat"><div class="v">+€334k</div><div class="l">margin from +10% conversion, no extra ad spend</div></div>
   </section>
 
   <section class="col">
     <div class="eyebrow">The data</div>
     <h2>Four messy CRM tables, turned into one model</h2>
     <p>The export had the usual problems of a CRM filled in by hand. Language levels were typed in two alphabets ("б1", "в1", "B1 (until February)"). Money came as text in three formats. The CSV export had rounded the 19-digit IDs, so deals no longer matched their contacts. I switched to the Excel export and wrote a reusable cleaning module with 15 rules, each tied to the client's FAQ.</p>
-    <p>The CRM also had no field for money actually received. I rebuilt it from the first payment, course price, course length and months already studied: <span class="num">€3.58M</span> received out of <span class="num">€6.33M</span> contracted.</p>
+    <p>The CRM also had no field for money actually received. I rebuilt it from the first payment, course price, course length and months already studied: <span class="num">€3.58M</span> received out of <span class="num">€6.33M</span> contracted. Under German law only the months already studied count as revenue, <span class="num">€3.34M</span>; the other <span class="num">€244k</span> is prepayment, and the share paid by students who dropped out has to be refunded.</p>
   </section>
 
   <section class="finding">
@@ -105,7 +105,7 @@ footer{color:var(--ink-2);font-size:14px;border-top:1px solid var(--line);paddin
     <div>
       <div class="eyebrow">Finding 3</div>
       <h2>Marketing is cheap, so conversion is the lever</h2>
-      <p>All three courses are profitable after marketing. Improving conversion, average payment or number of payments by 10% each adds about <span class="num">€358k</span> margin. Cutting lead cost by 10% adds only <span class="num">€15k</span>.</p>
+      <p>All three courses are profitable after marketing. Improving conversion, average payment or number of payments by 10% each adds about <span class="num">€334k</span> margin. Cutting lead cost by 10% adds only <span class="num">€15k</span>.</p>
       <p>Two budget fixes stood out too: one Performance Max campaign took 23% of the budget for a single student, and Google Ads leads cost twice as much as Facebook leads at the same conversion.</p>
     </div>
     <figure class="figure"><img src="{{img:03_sensitivity}}" alt="Horizontal bars: a 10 percent improvement in conversion, payment size or payment count each adds about 358 thousand euros; lower lead cost adds 15 thousand."><figcaption>Margin uplift from a 10% improvement in each metric.</figcaption></figure>
@@ -124,7 +124,7 @@ footer{color:var(--ink-2);font-size:14px;border-top:1px solid var(--line);paddin
         <tr><th>Sample</th><td>359 leads per group needed (baseline 59%, +10 pp, α = 0.05, power 80%). At 74 leads a day, 14 days give 519 per group.</td></tr>
         <tr><th>Guardrails</th><td>Share of non-target leads, calls per manager, opt-outs from messages.</td></tr>
         <tr><th>Decision</th><td>Two-proportion z-test with a sample-ratio check. Paid conversion confirmed on the same cohorts after 45 days.</td></tr>
-        <tr><th>Expected value</th><td>About +11% conversion and +€385k margin a year if the effect holds.</td></tr>
+        <tr><th>Expected value</th><td>About +11% conversion and +€360k margin a year if the effect holds.</td></tr>
       </table>
     </div>
   </section>

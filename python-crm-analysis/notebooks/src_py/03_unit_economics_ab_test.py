@@ -37,7 +37,7 @@ PRODUCTS = ["Digital Marketing", "UX/UI Design", "Web Developer"]
 # | B | students | Buyers |
 # | C1 | B / UA | conversion to buyer |
 # | T | number of payments (instalments: 1 payment per month studied; one-off: 1) | Transactions |
-# | Revenue | revenue actually received | |
+# | Revenue | recognised revenue: course price / duration × months studied | |
 # | AOV | Revenue / T | average payment |
 # | APC | T / B | average payments per student |
 # | AC | ad budget | Acquisition Cost |
@@ -54,8 +54,8 @@ PRODUCTS = ["Digital Marketing", "UX/UI Design", "Web Developer"]
 #    UA only for leads with a product, would inflate C1 five-fold and understate CPA.
 # 2. Teaching costs (teacher salaries, platform) are not in the data → CM is the contribution margin
 #    *after marketing*. It is an upper bound of the real margin.
-# 3. Revenue is what was received **by the export date**: many students are still studying and will keep paying,
-#    so Revenue and APC are understated for recent cohorts.
+# 3. Revenue is what was recognised **by the export date**, only for months studied (section 1.1): many students
+#    are still studying, so Revenue and APC are understated for recent cohorts.
 
 # %%
 known = deals[deals["product"].isin(PRODUCTS)]
@@ -108,11 +108,41 @@ plt.tight_layout(); save(fig, "03_unit_economics"); plt.show()
 
 # %% [markdown]
 # **Reading the unit economics:**
-# - All three products are profitable after marketing: CAC (≈ €180) is 15–25 times lower than CLTV. Marketing
+# - All three products are profitable after marketing: CAC (≈ €180) is 14–26 times lower than CLTV. Marketing
 #   does not limit the business right now; **conversion** does: out of 100 leads, ~4 buy.
 # - **Digital Marketing** is the main profit source: the highest CLTV and the most students.
 # - **Web Developer** has half the CLTV (the 6-month course is cheaper) at the same cost per lead.
 # - APC ≈ 5 payments: students are on average halfway through the course, so revenue will keep growing as they study.
+
+# %% [markdown]
+# ### 1.1 Revenue recognition: cash received ≠ revenue earned
+#
+# Under German law (a tuition contract, § 611 BGB; the realisation principle, § 252 HGB) the school earns revenue
+# only for the months a student has already studied. A prepayment for future months is a liability
+# (Rechnungsabgrenzung, deferred revenue), not profit: if the student drops out, it has to be refunded.
+#
+# - `cash_received`: money received by the export date (first payment + monthly payments);
+# - `revenue`: recognised revenue = course price / duration × months studied (used everywhere in the project);
+# - `prepaid` = `cash_received` − `revenue` > 0: an advance for future months;
+# - `refund_due`: the advance of students who dropped out, to be refunded.
+#
+# The CRM does not record a student's status, so it is **estimated**: finished = studied the whole course; dropped out =
+# fewer months studied than have passed since payment, with a 1-month margin; 314 students have no payment date,
+# so their status is unknown.
+
+# %%
+s = deals[deals["is_student"]]
+rec = s.groupby("student_status").agg(students=("id", "size"), cash_received=("cash_received", "sum"),
+                                      revenue=("revenue", "sum"), prepaid=("prepaid", "sum"),
+                                      refund_due=("refund_due", "sum"))
+rec.loc["Total"] = rec.sum()
+rec.style.format({"students": "{:,.0f}", **{c: "€{:,.0f}" for c in ["cash_received", "revenue", "prepaid", "refund_due"]}})
+
+# %% [markdown]
+# **Finding:** of the €3.58M received, €3.34M is recognised as revenue. €244k is advances for future months, €200k of it
+# one-off payments for the whole course. Students who dropped out (54 by this estimate) are owed about €14k back: that
+# money must not be shown as profit. The remaining €231k becomes revenue as students study the months they paid for,
+# or a refund too if they drop out. Conversely, 182 students have paid €10k less than they have studied (receivables).
 
 # %% [markdown]
 # ## 2. Growth levers: sensitivity analysis
@@ -149,9 +179,9 @@ ax.set_xlim(0, s.max() * 1.25)
 save(fig, "03_sensitivity"); plt.show()
 
 # %% [markdown]
-# **Choosing the growth lever.** C1, AOV and APC give the same CM uplift (+€358k, +10.4% for every +10%), traffic growth
-# gives less (+€343k, because the budget grows with it), and cutting CPA by 10% adds only +€15k (marketing is already cheap
-# relative to revenue: CAC €179 vs CLTV €4,275).
+# **Choosing the growth lever.** C1, AOV and APC give the same CM uplift (+€334k, +10.5% for every +10%), traffic growth
+# gives less (+€319k, because the budget grows with it), and cutting CPA by 10% adds only +€15k (marketing is already cheap
+# relative to revenue: CAC €179 vs CLTV €3,996).
 # Of the three equal levers we choose **C1**, because:
 # 1. C1 has the most headroom: 96% of leads are lost, and 40% of lost deals are "doesn't answer / stopped answering";
 # 2. AOV and APC are the price and length of study; changing them is risky (price affects demand, and APC
@@ -358,7 +388,7 @@ pd.Series({
 
 # %% [markdown]
 # ## 7. Product analytics summary
-# 1. All products are profitable after marketing; CAC €175–189 vs CLTV €2.7–4.8k (ROMI 14–26×). The bottleneck is conversion (C1 ≈ 4%).
+# 1. All products are profitable after marketing; CAC €175–189 vs CLTV €2.5–4.5k (ROMI 13–25×). The bottleneck is conversion (C1 ≈ 4%).
 # 2. The growth lever is **C1**: the most headroom and a clear improvement mechanism (40% of lost deals are "doesn't answer / stopped answering").
 # 3. Metric tree: CM ← Revenue ← C1 ← reach ← first-contact SLA.
 # 4. Hypothesis: auto-assigning leads + contact within 15 minutes will raise 24-hour reach by ≥ 10 pp.

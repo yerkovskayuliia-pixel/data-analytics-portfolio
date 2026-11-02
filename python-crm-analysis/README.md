@@ -21,18 +21,19 @@ The school spends about €150k a year on ads and gets about 20k leads. Only 4.2
 | Leads (after cleaning) | 19,822 |
 | Students | 837 |
 | Lead → student conversion (C1) | 4.22% |
-| Revenue received | €3.58M |
+| Cash received | €3.58M |
+| Revenue recognised (months studied) | €3.34M |
 | CAC | €179 |
-| Revenue per student (CLTV) | €4,275 |
+| Revenue per student (CLTV) | €3,996 |
 
 1. **Most sales are lost at first contact, not on price.** 40% of lost deals are "doesn't answer / stopped answering".
 2. **Speed matters.** Leads answered within 15 minutes are reached by phone 77% of the time, against 59% for responses between 15 minutes and 24 hours (the gap holds within working hours and within each major ad source), and are almost twice as likely to be qualified (A/B quality class). The difference is significant (χ², p < 0.001).
 3. **Growth broke conversion.** Lead volume tripled over the year while C1 fell from 5–6% to 2.6–3.4%.
 4. **Marketing.** Facebook brings the most leads with a CAC of €172. Google Ads converts the same but each lead costs twice as much. One Performance Max campaign spent €34k (23% of budget) and produced 1 student.
 5. **Product.** Digital Marketing brings 57% of students. Evening groups convert almost twice as well as morning groups.
-6. **Unit economics.** All products are profitable after marketing. +10% to C1 adds €358k contribution margin without extra ad spend.
+6. **Unit economics.** All products are profitable after marketing. +10% to C1 adds €334k contribution margin without extra ad spend.
 
-**Hypothesis and test design:** auto-assign every new lead to a manager within 1 minute and call within 15 minutes. This should raise the 24-hour reach rate by at least 10 percentage points. The test is a 14-day A/B with 359 leads needed per group and about 520 collected in two weeks (α = 0.05, power = 80%, two-proportion z-test), followed by a C1 check after 45 days. Expected impact if confirmed: about +€385k contribution margin per year.
+**Hypothesis and test design:** auto-assign every new lead to a manager within 1 minute and call within 15 minutes. This should raise the 24-hour reach rate by at least 10 percentage points. The test is a 14-day A/B with 359 leads needed per group and about 520 collected in two weeks (α = 0.05, power = 80%, two-proportion z-test), followed by a C1 check after 45 days. Expected impact if confirmed: about +€360k contribution margin per year.
 
 ![Response time vs reach](reports/figures/03_hypothesis_evidence.png)
 
@@ -61,7 +62,7 @@ The school spends about €150k a year on ads and gets about 20k leads. Only 4.2
 - Used the **xlsx** exports, not the csv ones. The csv files had lost Cyrillic text and the precision of the 19-digit IDs, which broke the joins between tables.
 - Removed 1,771 technical duplicate leads. Fixed impossible dates and payments larger than the course price. Flagged 792 demo accesses.
 - Normalised free-text fields: German level (`б1`, `в1`, `B1 (до февраля)` → `B1`), cities, and money (`€ 3.500,00` → `3500.0`).
-- Rebuilt **revenue actually received**: first payment plus monthly instalments for the months already studied. The CRM has no single field for it.
+- Rebuilt **cash received** (first payment plus monthly instalments) and **recognised revenue**. Under German law revenue counts only for months already studied: prepayments for later months (€244k) are a liability, and the part paid by students who dropped out (≈€14k) has to be refunded.
 
 ## How to run
 

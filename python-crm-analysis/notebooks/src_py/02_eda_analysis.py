@@ -7,7 +7,8 @@
 # - **Lead**: a deal (potential deal) in the Deals table after technical duplicates are removed.
 # - **Student (successful deal)**: `Payment Done` + `Months of study` filled in + not a demo access.
 # - **C1 (conversion)** = students / leads.
-# - **Revenue**: the amount actually received by the export date (see the formula in 01).
+# - **Revenue**: recognised revenue, course price / duration × months studied (see the formula in 01).
+#   A prepayment for future months is not revenue.
 #
 # Plan from the brief: descriptive statistics → time series → campaigns and sources → sales team →
 # payments and products → geography → conclusions.
@@ -313,7 +314,7 @@ cr_calls.style.format({"talk_share": "{:.1%}", "avg_talk_min": "{:.1f}", "calls"
 
 # %% [markdown]
 # **Findings on the sales team:**
-# - The revenue leaders are **Charlie Davis** and **Ulysses Adams** (≈€1.15M between them, 32% of revenue).
+# - The revenue leaders are **Charlie Davis** and **Ulysses Adams** (≈€1.11M between them, 33% of revenue).
 # - **Oliver Taylor** converts 31% of 160 deals: judging by volume and quality, he receives "warm"
 #   qualified deals (a closing manager). Comparing his C1 with the others directly would be misleading.
 # - **Diana Evans** (927 deals, 1 student), **Rachel White** and **Bob Brown** (0 students) work on
@@ -367,11 +368,11 @@ plt.tight_layout(); save(fig, "02_products"); plt.show()
 
 # %% [markdown]
 # **Findings on products:**
-# - **Digital Marketing** is the most popular (57% of students) and highest-earning product (€2.27M).
+# - **Digital Marketing** is the most popular (57% of students) and highest-earning product (€2.15M).
 # - The morning format dominates (≈80% of students), but **evening groups convert better**
 #   (Digital Marketing 46% vs 23%, UX/UI 38% vs 21%): working people choose evenings and decide
 #   more deliberately. There are practically no evening Web Developer groups, a possible niche.
-# - Web Developer is shorter (6 months) and cheaper → less revenue per student (~€2.7k vs ~€4.8k for DM).
+# - Web Developer is shorter (6 months) and cheaper → less revenue per student (~€2.5k vs ~€4.5k for DM).
 
 # %% [markdown]
 # ## 6. Geographic analysis
