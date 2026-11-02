@@ -1,0 +1,14 @@
+Product,Hypothesis,Evidence,Metric,Variant,Leads per day,Test group size,Baseline,MDE pp,Expected effect pp,Days for classic test,Verdict
+Digital Marketing,Offer evening group,Evening 47.6% vs morning 32.9%,Paid or invoiced,1. Classic 50/50,4.3,30,0.318,35.4,4.0,1012,not detectable in 14 days
+Digital Marketing,Offer evening group,Evening 47.6% vs morning 32.9%,Paid or invoiced,2. One-sided test,4.3,30,0.318,31.5,4.0,1012,not detectable in 14 days
+Digital Marketing,Offer evening group,Evening 47.6% vs morning 32.9%,Paid or invoiced,"3. All 3 products, 50/50",10.3,71,0.3286,23.1,4.0,1012,not detectable in 14 days
+Digital Marketing,Offer evening group,Evening 47.6% vs morning 32.9%,Paid or invoiced,4. Historical control,4.3,60,0.318,17.9,4.0,1012,not detectable in 14 days
+UX/UI Design,Alumni case + portfolio review,21% changed their mind,Paid or invoiced,1. Classic 50/50,3.2,22,0.3179,40.9,7.5,402,not detectable in 14 days
+UX/UI Design,Alumni case + portfolio review,21% changed their mind,Paid or invoiced,2. One-sided test,3.2,22,0.3179,36.6,7.5,402,not detectable in 14 days
+UX/UI Design,Alumni case + portfolio review,21% changed their mind,Paid or invoiced,"3. All 3 products, 50/50",10.3,71,0.3286,23.1,7.5,402,not detectable in 14 days
+UX/UI Design,Alumni case + portfolio review,21% changed their mind,Paid or invoiced,4. Historical control,3.2,44,0.3179,21.1,7.5,402,not detectable in 14 days
+Web Developer,Payment reminders + instalments,14.3% stuck in Waiting For Payment,Invoices paid,1. Classic 50/50,1.2,8,0.6284,37.2,7.5,1029,not detectable in 14 days
+Web Developer,Payment reminders + instalments,14.3% stuck in Waiting For Payment,Invoices paid,2. One-sided test,1.2,8,0.6284,37.0,7.5,1029,not detectable in 14 days
+Web Developer,Payment reminders + instalments,14.3% stuck in Waiting For Payment,Invoices paid,"3. All 3 products, 50/50",4.5,31,0.7254,23.7,7.5,1029,not detectable in 14 days
+Web Developer,Payment reminders + instalments,14.3% stuck in Waiting For Payment,Invoices paid,4. Historical control,1.2,16,0.6284,28.9,7.5,1029,not detectable in 14 days
+All leads,Call within 15 minutes,Reach 77% vs 59%,Reached in 24 h,1. Classic 50/50,74.2,519,0.5935,8.4,10.0,10,detectable in 14 days
