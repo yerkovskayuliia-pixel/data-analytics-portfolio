@@ -73,7 +73,7 @@ missing_report(raw["Calls"])
 # | # | Table | Problem | Fix | Reason |
 # |---|---|---|---|---|
 # | 1 | Deals | `Lost Reason = Duplicate` | drop | per the FAQ this is a technical duplicate lead; keeping it inflates leads and deflates conversion |
-# | 2 | Deals | `Closing Date` < `Created Time` | → `NaT` | a deal cannot close before it is created (FAQ: data error, the analyst decides) |
+# | 2 | Deals | `Closing Date` < `Created Time`; `Closing Date` after the export date (21.06.2024) | → `NaT` | a deal cannot close before it is created (FAQ: data error, the analyst decides); a future date is a plan, not a fact |
 # | 3 | Deals | `Initial Amount Paid` > `Offer Total Amount` | 2 rows with offer 1,200 on an 11-month course are a typo in the offer; elsewhere initial is capped at offer | the first payment cannot exceed the course price; conservative revenue estimate |
 # | 4 | Deals | offer = €0 / 1 / 9 | flag `is_demo` | per the FAQ these are demo accesses for a token fee, not students |
 # | 5 | Deals | `Payment Done` but `Months of study` empty | not counted as a student | FAQ: "if the month is not filled in, the student is not studying and the money must not be counted" |
@@ -120,6 +120,7 @@ deals.dtypes.to_frame("dtype").T
 checks = {
     "deal ids are unique": deals["id"].is_unique,
     "no closing_date < created_time": not (deals["closing_date"] < deals["created_time"].dt.normalize()).any(),
+    "no closing_date after the export date": not (deals["closing_date"] > deals["created_time"].max()).any(),
     "initial <= offer everywhere": not (deals["initial_amount_paid"] > deals["offer_total_amount"]).any(),
     "students have months_of_study": deals.loc[deals["is_student"], "months_of_study"].notna().all(),
     "students have a product": deals.loc[deals["is_student"], "product"].ne("Unknown").all(),

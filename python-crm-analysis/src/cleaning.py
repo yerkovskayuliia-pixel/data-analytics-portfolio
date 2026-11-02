@@ -224,6 +224,11 @@ def clean_deals(raw: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     bad = df["closing_date"] < df["created_time"].dt.normalize()
     df.loc[bad, "closing_date"] = pd.NaT
     log.append(f"closing_date before created_time is an input error, -> NaT: {bad.sum()}")
+    # The export was made on 21.06.2024 (the last record in every table): a later closing date is a plan, not a fact.
+    export_date = df["created_time"].max().normalize()
+    future = df["closing_date"] > export_date
+    df.loc[future, "closing_date"] = pd.NaT
+    log.append(f"closing_date after the export date {export_date:%d.%m.%Y} is a future (planned) date, -> NaT: {future.sum()}")
     df["deal_cycle_days"] = (df["closing_date"] - df["created_time"].dt.normalize()).dt.days
 
     df["sla_sec"] = df["sla"].map(parse_sla)
