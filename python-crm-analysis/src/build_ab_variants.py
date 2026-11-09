@@ -12,6 +12,7 @@ from statsmodels.stats.power import NormalIndPower
 from statsmodels.stats.proportion import proportion_effectsize
 
 import cleaning as etl
+import metrics as M
 
 OUT = Path(__file__).resolve().parents[1] / "reports" / "tableau" / "ab_variants.csv"
 ALPHA, POWER, DAYS = 0.05, 0.80, 14
@@ -72,12 +73,22 @@ def build():
                          "MDE pp": round(m * 100, 1), "Expected effect pp": round(expected * 100, 1),
                          "Days for classic test": days_for(base, expected, per_day),
                          "Verdict": "detectable in 14 days" if expected >= m else "not detectable in 14 days"})
-    # reference: the speed-to-lead test on all leads
-    rows.append({"Product": "All leads", "Hypothesis": "Call within 15 minutes",
-                 "Evidence": "Reach 77% vs 59%",
-                 "Metric": "Reached in 24 h", "Variant": "1. Classic 50/50",
-                 "Leads per day": round(len(recent) / n_days, 1), "Test group size": 519, "Baseline": 0.5935,
-                 "MDE pp": 8.4, "Expected effect pp": 10.0, "Days for classic test": 10, "Verdict": "detectable in 14 days"})
+    # reference: the speed-to-lead test (numbers from src/metrics.py, same as notebook 03)
+    calls = etl.load_clean()["Calls"]
+    dm = M.add_contact_metrics(d, calls)
+    for label, hyp, window in [("1. Mon–Fri 9–18 (office hours)", "Call ≤ 15 min, Mon–Fri 9–18", list(M.WINDOWS)[0]),
+                               ("2. Daily 8–23 (shift schedule)", "Call ≤ 15 min, daily 8–23", M.CHOSEN_WINDOW)]:
+        t = M.speed_test_design(dm).loc[window]
+        rows.append({"Product": "All leads", "Hypothesis": hyp,
+                     "Evidence": "Reach 77% vs 59%", "Metric": "Reached in 24 h", "Variant": label,
+                     "Leads per day": round(t["лидов в окне в день"], 1),
+                     "Test group size": int(t["лидов на группу за 14 дней"]),
+                     "Baseline": round(t["baseline дозвона в окне"], 4),
+                     "MDE pp": round(t["MDE в окне, п.п."], 1),
+                     "Expected effect pp": round(t["ожидаемый эффект в окне, п.п."], 1),
+                     "Days for classic test": days_for(t["baseline дозвона в окне"], t["ожидаемый эффект в окне, п.п."] / 100,
+                                                       t["лидов в окне в день"]),
+                     "Verdict": "detectable in 14 days" if t["тест в окне имеет смысл"] else "not detectable in 14 days"})
     out = pd.DataFrame(rows)
     out.to_csv(OUT, index=False, encoding="utf-8")
     print(out[["Product", "Variant", "Leads per day", "Test group size", "Baseline", "MDE pp", "Expected effect pp",

@@ -14,6 +14,8 @@
 # payments and products → geography → conclusions.
 
 # %%
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)  # pandas dtype backward compatibility, does not affect results
 import sys
 from pathlib import Path
 
@@ -24,9 +26,11 @@ import seaborn as sns
 
 sys.path.insert(0, str(Path.cwd().parent / "src"))
 import cleaning as etl
+import metrics as M
 import viz
 from viz import PRIMARY, ACCENT, GOOD, MUTED, save, pct_axis, eur_axis
 
+M.set_lang("en")
 viz.set_style()
 pd.set_option("display.float_format", lambda v: f"{v:,.2f}")
 pd.set_option("display.width", 200)
@@ -136,6 +140,49 @@ ax.grid(axis="y", visible=False)
 save(fig, "02_lost_reasons"); plt.show()
 
 # %% [markdown]
+# ### 1.3 Funnel: at which step leads drop out
+#
+# Lost reasons show *why* a deal was lost, but not *where*. We build a cumulative funnel: each step requires all the
+# previous ones. "Consultation" = the deal has a product set (the manager enters it at the consultation).
+
+# %%
+dc = M.add_contact_metrics(deals, calls)   # reach, conversation, SLA: shared definitions for 02–04
+fun = M.funnel(dc, calls)
+display(fun.style.format({"leads": "{:,}", "% of leads": "{:.1%}", "step conversion": "{:.1%}", "lost at step": "{:,}"}))
+
+fig, ax = plt.subplots(figsize=(10, 4.2))
+y = np.arange(len(fun))[::-1]
+ax.barh(y, fun["leads"], color=PRIMARY, height=0.65)
+worst = fun["lost at step"].idxmax()
+for yi, (name, r) in zip(y, fun.iterrows()):
+    lost = f"  −{int(r['lost at step']):,}" if r["lost at step"] else ""
+    ax.text(r["leads"], yi, f"  {int(r['leads']):,} ({r['% of leads']:.1%}){lost}", va="center", fontsize=9,
+            color=ACCENT if name == worst else viz.TEXT_2)
+ax.set_yticks(y, ["Lead", "Called", "Conversation ≥30s", "Consultation", "Invoice or payment", "Student"])
+ax.set_xlim(0, fun["leads"].max() * 1.4); ax.grid(axis="y", visible=False)
+ax.set_title("Sales funnel: where leads drop out (orange = biggest loss)")
+save(fig, "02_funnel"); plt.show()
+
+lost_by_talk = (dc[dc["stage"].eq("Lost")].groupby("talked")["lost_reason"]
+                .value_counts(normalize=True).groupby(level=0).head(4).unstack(0).fillna(0))
+lost_by_talk.columns = ["no conversation", "had a conversation"]
+lost_by_talk.style.format("{:.1%}")
+
+# %% [markdown]
+# **Funnel findings:**
+# - **31% of leads (6,092) never talked to a manager**: 2,541 leads were never called (mostly webinar sign-ups and the
+#   CRM base), another 3,551 were never reached. Among deals lost without a conversation, 77% are "doesn't answer" or
+#   "invalid number".
+# - **The biggest loss is between the conversation and the consultation**: of the 13,730 leads who talked to a manager,
+#   24% reach a consultation (−10,368). A third of the deals lost after a conversation are again "doesn't answer /
+#   stopped answering", so contact is lost after the first call too.
+# - After the consultation the funnel works well: 33% get an invoice and 72% of invoices are paid.
+# - Bottom line: sales are lost **at contact and qualification** (the first 3 steps), not at price and payment. So the
+#   growth lever is the speed and persistence of the first contact (section 7 and notebook 03).
+# - 36 students got through without a conversation ≥ 30 s (paid after messaging or a short call), so the funnel shows
+#   801 students, not 837.
+
+# %% [markdown]
 # ## 2. Time series analysis
 # ### 2.1 Deal creation over time and its link to calls
 
@@ -197,6 +244,7 @@ plt.tight_layout(); save(fig, "02_closing"); plt.show()
 
 closed.groupby("is_student")["deal_cycle_days"].describe()
 
+
 # %% [markdown]
 # **Findings:**
 # - Lost deals close fast (median within the first days: "couldn't reach" → Lost).
@@ -205,6 +253,61 @@ closed.groupby("is_student")["deal_cycle_days"].describe()
 #   students will have paid. A leading metric is needed (lead qualification).
 # - Payments are spread evenly over weekdays and drop at weekends: managers are off and deals wait.
 # - 341 paid deals have no closing date in the source data, so the cycle analysis covers 513 students.
+
+# %% [markdown]
+# ### 2.3 Why conversion fell: the channel mix or the way leads are handled?
+#
+# Leads tripled and C1 fell. There are two explanations: (1) **mix**: the share of weak channels grew; (2) **process**:
+# within the same channels, leads were handled worse. We separate them with a shift-share decomposition, comparing
+# August 2023 – January 2024 with February – June 2024.
+#
+# C1 of the latest months is understated because those deals have not closed yet. So we also look at the **share of A+B
+# leads**: the manager rates quality in the first days, so this metric does not suffer from immature cohorts.
+
+# %%
+def shift_share(a, b, metric, by="source"):
+    """Metric difference b − a = channel mix + change within groups."""
+    ga = a.groupby(by, observed=True).agg(w=("id", "size"), r=(metric, "mean"))
+    gb = b.groupby(by, observed=True).agg(w=("id", "size"), r=(metric, "mean"))
+    ga["w"] /= ga["w"].sum(); gb["w"] /= gb["w"].sum()
+    j = ga.join(gb, lsuffix="_a", rsuffix="_b", how="outer").fillna(0)
+    return {"before (08.23–01.24)": a[metric].mean(), "after (02.24–06.24)": b[metric].mean(),
+            "change, pp": (b[metric].mean() - a[metric].mean()) * 100,
+            "due to channel mix, pp": ((j["w_b"] - j["w_a"]) * j["r_a"]).sum() * 100,
+            "within channels, pp": (j["w_b"] * (j["r_b"] - j["r_a"])).sum() * 100}
+
+before = dc[dc["month"].between("2023-08-01", "2024-01-01")]
+after = dc[dc["month"] >= "2024-02-01"]
+decomp = pd.DataFrame({name: shift_share(before, after, col) for name, col in
+                       [("C1", "is_student"), ("A+B share", "is_AB"), ("reached in 24 h", "reached_24h")]}).T
+display(decomp.style.format({"before (08.23–01.24)": "{:.1%}", "after (02.24–06.24)": "{:.1%}",
+                             **{c: "{:+.1f}" for c in decomp.columns[2:]}}))
+
+speed = dc.groupby("month").agg(leads=("id", "size"), sla_median_h=("sla_sec", lambda s: s.median() / 3600),
+                                fast_share=("sla_bucket", lambda s: s.eq("< 15 min").mean()),
+                                share_AB=("is_AB", "mean"))
+fig, ax = plt.subplots(figsize=(12, 4.5))
+ax.bar(speed.index, speed["leads"], width=20, color=MUTED, label="leads per month")
+ax.set_ylabel("leads"); ax.grid(axis="y", visible=False)
+ax2 = ax.twinx()
+ax2.plot(speed.index, speed["fast_share"], marker="o", color=ACCENT, lw=2, label="answered < 15 min")
+ax2.plot(speed.index, speed["share_AB"], marker="o", color=PRIMARY, lw=2, label="qualified A+B")
+pct_axis(ax2, decimals=0); ax2.set_ylim(0, 0.3)
+h1, l1 = ax.get_legend_handles_labels(); h2, l2 = ax2.get_legend_handles_labels()
+ax.set_ylim(0, speed["leads"].max() * 1.25)
+ax2.legend(h1 + h2, l1 + l2, frameon=False, loc="upper center", ncol=3)
+ax.set_title("Leads tripled, the sales team slowed down and lead quality fell")
+save(fig, "02_growth_vs_speed"); plt.show()
+speed.style.format({"sla_median_h": "{:.1f}", "fast_share": "{:.1%}", "share_AB": "{:.1%}"})
+
+# %% [markdown]
+# **Conclusion:** the fall in conversion happens almost entirely **within channels**: the channel mix explains less than
+# 0.2 pp of the −2.3 pp in C1 and of the −6.9 pp in the A+B share. So it is not that marketing brought "bad" traffic,
+# but how the leads were handled. The speed data show the same: the share of answers within 15 minutes fell from 21%
+# (July 2023) to ~3%, and the median SLA grew from 1 to 5–7 hours. The sales team did not keep up with the growth.
+#
+# Limitation: this is an observation, not an experiment. Creatives and audiences inside the channels could have changed at
+# the same time. So the causal link "speed → conversion" is tested with an A/B test (notebook 03).
 
 # %% [markdown]
 # ## 3. Campaign and source effectiveness
@@ -240,7 +343,9 @@ save(fig, "02_sources_scatter"); plt.show()
 # - **Organic** and **Webinar** have the best conversion (9.5% and 8.5%) and the highest share of A/B leads.
 #   Webinars are the most efficient *paid* channel: CAC ≈ €111.
 # - **Facebook Ads** is the main channel by volume: cheap leads (€7) and average conversion, CAC ≈ €172.
-# - **Google Ads** leads cost twice as much as Facebook's at the same conversion → CAC ≈ €344, the most expensive large channel.
+# - **Google Ads** leads cost twice as much as Facebook's at the same conversion → CAC ≈ €344, the most expensive large
+#   channel. But 59% of Google Ads spend is a single Performance Max campaign (€34k, 1 student, see 3.2). Without it the
+#   Google Ads CAC is ≈ €141, cheaper than Facebook. The problem is the campaign, not the channel.
 # - **TikTok** brings cheap but low-quality leads (C1 2.8%, A/B share 6%).
 # - **CRM** (repeat touches of the existing base) barely converts (1.6%).
 
@@ -277,7 +382,7 @@ save(fig, "02_campaigns"); plt.show()
 # - `performancemax_eng_DE` spent ~€34k (23% of the whole budget!) and brought 1 student: **a candidate to switch off**.
 # - Webinar campaigns (`webinar1604`, `webinar1906`, `08.04.24wide_webinar_DE`) bring many sign-ups
 #   but almost no payments: registering for a webinar ≠ intent to buy.
-# - Only 29% of campaign names in Deals appear in Spend (63% of tagged leads), so spend and leads cannot be
+# - Only 30% of campaign names in Deals appear in Spend (63% of tagged leads), so spend and leads cannot be
 #   matched for many campaigns. Consistent UTM tagging is needed.
 
 # %% [markdown]
@@ -311,6 +416,67 @@ cr_calls = calls.groupby("call_owner_name", **OBS).agg(
     calls=("id", "size"), talk_share=("is_conversation", "mean"), avg_talk_min=("duration_sec", lambda s: s.mean() / 60))
 cr_calls = cr_calls[cr_calls["calls"] > 500].sort_values("calls", ascending=False)
 cr_calls.style.format({"talk_share": "{:.1%}", "avg_talk_min": "{:.1f}", "calls": "{:,}"})
+
+# %% [markdown]
+# ### 4.1 Comparing managers: conversion and call work
+#
+# We compare managers with ≥ 300 deals by conversion and by how they work a lead: how many calls and conversations ≥ 30 s
+# there are per deal, how fast they answer, and what share of leads they reach within the first day.
+
+# %%
+dm = M.add_contact_metrics(deals, calls) if "dc" not in globals() else dc
+per_contact = calls.dropna(subset=["contact_id"]).groupby("contact_id").agg(calls_n=("id", "size"),
+                                                                             talks_n=("is_conversation", "sum"))
+dm = dm.join(per_contact, on="contact_id")
+dm[["calls_n", "talks_n"]] = dm[["calls_n", "talks_n"]].fillna(0)
+mgr = dm.groupby("deal_owner_name", observed=True).agg(
+    deals=("id", "size"), C1=("is_student", "mean"), calls_per_deal=("calls_n", "mean"),
+    talks_per_deal=("talks_n", "mean"), reached_24h=("reached_24h", "mean"),
+    sla_median_h=("sla_sec", lambda s: s.median() / 3600))
+mgr = mgr[mgr["deals"] >= 300].sort_values("C1")
+r = mgr["talks_per_deal"].corr(mgr["C1"])
+display(mgr.style.format({"C1": "{:.1%}", "calls_per_deal": "{:.1f}", "talks_per_deal": "{:.1f}",
+                          "reached_24h": "{:.0%}", "sla_median_h": "{:.1f}"}))
+
+fig, axes = plt.subplots(1, 3, figsize=(16, 6), sharey=True)
+y = np.arange(len(mgr))
+for ax, col, title, fmt in [(axes[0], "C1", "Lead → student (C1)", "{:.1%}"),
+                            (axes[1], "talks_per_deal", "Conversations ≥30s per deal", "{:.1f}"),
+                            (axes[2], "sla_median_h", "Median first response, hours", "{:.1f}")]:
+    colors = [ACCENT if (col == "sla_median_h" and v > 9) else PRIMARY for v in mgr[col]]
+    ax.barh(y, mgr[col], color=colors, height=0.7)
+    for k, v in enumerate(mgr[col]):
+        ax.text(v, k, " " + fmt.format(v), va="center", fontsize=9, color=viz.TEXT_2)
+    ax.set_title(title); ax.grid(axis="y", visible=False); ax.set_xlim(0, mgr[col].max() * 1.3)
+axes[0].set_yticks(y, mgr.index.astype(str)); pct_axis(axes[0], "x")
+fig.suptitle(f"Managers with ≥300 deals: conversion vs call work (corr. talks/deal ↔ C1 = {r:.2f})", x=0.01, ha="left")
+plt.tight_layout(); save(fig, "02_managers_compare"); plt.show()
+
+# %%
+geo_m = dm[dm["city"].ne("Unknown")]
+top_cities = geo_m["city"].value_counts().head(6).index
+geo_ct = pd.crosstab(geo_m["deal_owner_name"].astype(str), geo_m["city"].where(geo_m["city"].isin(top_cities), "Other cities"),
+                     normalize="index")
+geo_ct = geo_ct[geo_m["deal_owner_name"].astype(str).value_counts().reindex(geo_ct.index) >= 30]
+geo_ct.style.format("{:.0%}").background_gradient(cmap="Blues", axis=None)
+
+# %% [markdown]
+# **Findings on managers and HR proposals:**
+# - **Best practice: Ulysses Adams.** With a large flow (2,069 deals) he has the highest conversion (6.8%), the most
+#   conversations per deal (3.0) and the best reach within a day (52%). His scripts and contact rhythm should become the
+#   team standard, and he should mentor others.
+# - Conversations per deal are clearly linked to conversion (the correlation across managers is in the chart title): it
+#   is not just "luck" with leads but persistence of contact. This is an observation, not causation.
+# - **Slow first response** (median SLA > 9 h): Nina Scott, Kevin Parker and Rachel White. They need SLA control and the
+#   automatic lead assignment from the A/B hypothesis first; with an 8–23 shift schedule part of their flow moves to
+#   evening shifts.
+# - **Low conversion at a noticeable volume**: Cara Iverson (2.5%, the fewest conversations per deal) and Ian Miller
+#   (1.8%, 20% reached within a day): a development plan with a mentor and call reviews; if the numbers do not improve
+#   within a quarter, redistribute their flow.
+# - Diana Evans, Rachel White and Bob Brown almost never close deals: they do first-line handling. They should be judged
+#   by reach and the share of qualified leads, not by C1.
+# - **Managers' geography** (table above): there is no territorial split, every manager works across Germany and all have
+#   a large share of "other cities". Geography does not explain the differences in managers' conversion.
 
 # %% [markdown]
 # **Findings on the sales team:**
@@ -451,28 +617,28 @@ plt.tight_layout(); save(fig, "02_sla"); plt.show()
 
 # %%
 from scipy.stats import chi2_contingency
-fast = deals["sla_bucket"].eq("< 15 min")
-slow = deals["sla_bucket"].isin(["1–4 h", "4–24 h", "> 24 h"])
-sub = deals[fast | slow]
-table = pd.crosstab(fast[fast | slow], sub["quality"].isin(AB))
-chi2, p, *_ = chi2_contingency(table)
-print(f"A+B share: <15 min = {sub[fast[fast | slow]]['quality'].isin(AB).mean():.1%}, "
-      f"> 1 h = {sub[~fast[fast | slow]]['quality'].isin(AB).mean():.1%}; χ² = {chi2:.1f}, p = {p:.1e}")
+
+# fast reply vs reply within 15 min – 24 h ("> 24 h" cannot give a conversation within 24 h by construction)
+cmp = dc[dc["sla_bucket"].isin(["< 15 min", *M.SLOW])].assign(fast=lambda d: d["sla_bucket"].eq("< 15 min"))
+for col, name in [("reached_24h", "reached in 24 h"), ("is_AB", "A+B share")]:
+    chi2, p, *_ = chi2_contingency(pd.crosstab(cmp["fast"], cmp[col]))
+    rates = cmp.groupby("fast")[col].mean()
+    print(f"{name}: < 15 min = {rates[True]:.1%}, 15 min – 24 h = {rates[False]:.1%}; χ² = {chi2:.1f}, p = {p:.1e}")
 
 # %% [markdown]
-# **Key finding:** leads answered **within 15 minutes** are 1.8 times more likely to become
-# qualified (A+B: 21% vs ~12%) and buy more often (C1 6.6% vs 4.6% when answered after more than a day).
-# The difference is statistically significant (χ², p ≪ 0.05). This is observational data (correlation, not causation),
-# so the effect has to be **tested with an A/B test** (notebook 03).
+# **Key finding:** leads answered **within 15 minutes** are reached within the first day 77% of the time, against 59% when
+# answered between 15 minutes and 24 hours, and they become qualified (A+B) noticeably more often. Both differences are
+# statistically significant (χ², p < 0.001). This is observational data (correlation, not causation), so the effect has
+# to be **tested with an A/B test** (notebook 03).
 #
 # ## 8. EDA summary and recommendations
 #
 # | # | Finding | Recommendation |
 # |---|---|---|
-# | 1 | C1 = 4.2%; 40% of lost deals are "doesn't answer / stopped answering" | speed up first contact, add messengers/SMS to calls |
+# | 1 | C1 = 4.2%; 31% of leads never talk to a manager, 17% reach a consultation; 40% of lost deals are "doesn't answer / stopped answering" | speed up first contact, add messengers/SMS to calls |
 # | 2 | Reply < 15 min → almost 2× more A+B leads | "Speed-to-lead" A/B test (notebook 03) |
-# | 3 | Leads grew ×3, conversion fell from 5–6% to 2.6–3.4% | scale the sales team and SLA control together with the budget |
-# | 4 | `performancemax_eng_DE`: €34k and 1 student; Google Ads CAC €344 | move budget to Facebook wide/LAL, webinars, brand search |
+# | 3 | Leads grew ×3, conversion fell from 5–6% to 2.6–3.4%; the fall is within channels, not due to the mix; answers < 15 min fell from 21% to 3% | scale the sales team and SLA control together with the budget |
+# | 4 | `performancemax_eng_DE`: €34k and 1 student; it makes the Google Ads CAC €344, ≈ €141 without it | switch off Performance Max; keep the rest of Google Ads |
 # | 5 | Evening groups convert almost twice as well | expand the evening format, launch an evening Web Developer group |
 # | 6 | The core is Berlin and level B1 | geo and language targeting of ads |
 # | 7 | 71% of campaign names cannot be matched to Spend, key fields are filled in manually | consistent UTM tagging and mandatory CRM fields |

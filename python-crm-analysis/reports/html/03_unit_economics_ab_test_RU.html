@@ -7807,39 +7807,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=34397298">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.stats.power</span><span class="w"> </span><span class="kn">import</span> <span class="n">NormalIndPower</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.stats.proportion</span><span class="w"> </span><span class="kn">import</span> <span class="n">proportion_effectsize</span><span class="p">,</span> <span class="n">proportions_ztest</span>
-
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"src"</span><span class="p">))</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">cleaning</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">etl</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">viz</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">viz</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRIMARY</span><span class="p">,</span> <span class="n">ACCENT</span><span class="p">,</span> <span class="n">GOOD</span><span class="p">,</span> <span class="n">MUTED</span><span class="p">,</span> <span class="n">save</span><span class="p">,</span> <span class="n">pct_axis</span><span class="p">,</span> <span class="n">eur_axis</span>
-
-<span class="n">viz</span><span class="o">.</span><span class="n">set_style</span><span class="p">()</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"display.width"</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
-
-<span class="n">data</span> <span class="o">=</span> <span class="n">etl</span><span class="o">.</span><span class="n">load_clean</span><span class="p">()</span>
-<span class="n">deals</span><span class="p">,</span> <span class="n">calls</span><span class="p">,</span> <span class="n">spend</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"Deals"</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">"Calls"</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">"Spend"</span><span class="p">]</span>
-<span class="n">PRODUCTS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Digital Marketing"</span><span class="p">,</span> <span class="s2">"UX/UI Design"</span><span class="p">,</span> <span class="s2">"Web Developer"</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs celltag_hide-input" id="cell-id=34397298">
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4f927f08">
 <div class="jp-Cell-inputWrapper" tabindex="0">
@@ -7998,99 +7966,99 @@ UA только по лидам с продуктом — завысила бы 
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_8887b">
+<table id="T_da611">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_8887b_level0_col0">UA</th>
-<th class="col_heading level0 col1" id="T_8887b_level0_col1">B</th>
-<th class="col_heading level0 col2" id="T_8887b_level0_col2">T</th>
-<th class="col_heading level0 col3" id="T_8887b_level0_col3">Revenue</th>
-<th class="col_heading level0 col4" id="T_8887b_level0_col4">AC</th>
-<th class="col_heading level0 col5" id="T_8887b_level0_col5">C1</th>
-<th class="col_heading level0 col6" id="T_8887b_level0_col6">AOV</th>
-<th class="col_heading level0 col7" id="T_8887b_level0_col7">APC</th>
-<th class="col_heading level0 col8" id="T_8887b_level0_col8">CPA</th>
-<th class="col_heading level0 col9" id="T_8887b_level0_col9">CAC</th>
-<th class="col_heading level0 col10" id="T_8887b_level0_col10">ARPU</th>
-<th class="col_heading level0 col11" id="T_8887b_level0_col11">CLTV</th>
-<th class="col_heading level0 col12" id="T_8887b_level0_col12">CM</th>
-<th class="col_heading level0 col13" id="T_8887b_level0_col13">CM_per_UA</th>
-<th class="col_heading level0 col14" id="T_8887b_level0_col14">ROMI</th>
+<th class="col_heading level0 col0" id="T_da611_level0_col0">UA</th>
+<th class="col_heading level0 col1" id="T_da611_level0_col1">B</th>
+<th class="col_heading level0 col2" id="T_da611_level0_col2">T</th>
+<th class="col_heading level0 col3" id="T_da611_level0_col3">Revenue</th>
+<th class="col_heading level0 col4" id="T_da611_level0_col4">AC</th>
+<th class="col_heading level0 col5" id="T_da611_level0_col5">C1</th>
+<th class="col_heading level0 col6" id="T_da611_level0_col6">AOV</th>
+<th class="col_heading level0 col7" id="T_da611_level0_col7">APC</th>
+<th class="col_heading level0 col8" id="T_da611_level0_col8">CPA</th>
+<th class="col_heading level0 col9" id="T_da611_level0_col9">CAC</th>
+<th class="col_heading level0 col10" id="T_da611_level0_col10">ARPU</th>
+<th class="col_heading level0 col11" id="T_da611_level0_col11">CLTV</th>
+<th class="col_heading level0 col12" id="T_da611_level0_col12">CM</th>
+<th class="col_heading level0 col13" id="T_da611_level0_col13">CM_per_UA</th>
+<th class="col_heading level0 col14" id="T_da611_level0_col14">ROMI</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_8887b_level0_row0">Digital Marketing</th>
-<td class="data row0 col0" id="T_8887b_row0_col0">10,957</td>
-<td class="data row0 col1" id="T_8887b_row0_col1">473</td>
-<td class="data row0 col2" id="T_8887b_row0_col2">2,768</td>
-<td class="data row0 col3" id="T_8887b_row0_col3">€2,146,764</td>
-<td class="data row0 col4" id="T_8887b_row0_col4">€82,655</td>
-<td class="data row0 col5" id="T_8887b_row0_col5">4.32%</td>
-<td class="data row0 col6" id="T_8887b_row0_col6">€776</td>
-<td class="data row0 col7" id="T_8887b_row0_col7">5.85</td>
-<td class="data row0 col8" id="T_8887b_row0_col8">€7.54</td>
-<td class="data row0 col9" id="T_8887b_row0_col9">€175</td>
-<td class="data row0 col10" id="T_8887b_row0_col10">€196</td>
-<td class="data row0 col11" id="T_8887b_row0_col11">€4,539</td>
-<td class="data row0 col12" id="T_8887b_row0_col12">€2,064,109</td>
-<td class="data row0 col13" id="T_8887b_row0_col13">€188</td>
-<td class="data row0 col14" id="T_8887b_row0_col14">2497%</td>
+<th class="row_heading level0 row0" id="T_da611_level0_row0">Digital Marketing</th>
+<td class="data row0 col0" id="T_da611_row0_col0">10,957</td>
+<td class="data row0 col1" id="T_da611_row0_col1">473</td>
+<td class="data row0 col2" id="T_da611_row0_col2">2,768</td>
+<td class="data row0 col3" id="T_da611_row0_col3">€2,146,764</td>
+<td class="data row0 col4" id="T_da611_row0_col4">€82,655</td>
+<td class="data row0 col5" id="T_da611_row0_col5">4.32%</td>
+<td class="data row0 col6" id="T_da611_row0_col6">€776</td>
+<td class="data row0 col7" id="T_da611_row0_col7">5.85</td>
+<td class="data row0 col8" id="T_da611_row0_col8">€7.54</td>
+<td class="data row0 col9" id="T_da611_row0_col9">€175</td>
+<td class="data row0 col10" id="T_da611_row0_col10">€196</td>
+<td class="data row0 col11" id="T_da611_row0_col11">€4,539</td>
+<td class="data row0 col12" id="T_da611_row0_col12">€2,064,109</td>
+<td class="data row0 col13" id="T_da611_row0_col13">€188</td>
+<td class="data row0 col14" id="T_da611_row0_col14">2497%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_8887b_level0_row1">UX/UI Design</th>
-<td class="data row1 col0" id="T_8887b_row1_col0">5,683</td>
-<td class="data row1 col1" id="T_8887b_row1_col1">227</td>
-<td class="data row1 col2" id="T_8887b_row1_col2">1,113</td>
-<td class="data row1 col3" id="T_8887b_row1_col3">€855,655</td>
-<td class="data row1 col4" id="T_8887b_row1_col4">€42,872</td>
-<td class="data row1 col5" id="T_8887b_row1_col5">3.99%</td>
-<td class="data row1 col6" id="T_8887b_row1_col6">€769</td>
-<td class="data row1 col7" id="T_8887b_row1_col7">4.90</td>
-<td class="data row1 col8" id="T_8887b_row1_col8">€7.54</td>
-<td class="data row1 col9" id="T_8887b_row1_col9">€189</td>
-<td class="data row1 col10" id="T_8887b_row1_col10">€151</td>
-<td class="data row1 col11" id="T_8887b_row1_col11">€3,769</td>
-<td class="data row1 col12" id="T_8887b_row1_col12">€812,782</td>
-<td class="data row1 col13" id="T_8887b_row1_col13">€143</td>
-<td class="data row1 col14" id="T_8887b_row1_col14">1896%</td>
+<th class="row_heading level0 row1" id="T_da611_level0_row1">UX/UI Design</th>
+<td class="data row1 col0" id="T_da611_row1_col0">5,683</td>
+<td class="data row1 col1" id="T_da611_row1_col1">227</td>
+<td class="data row1 col2" id="T_da611_row1_col2">1,113</td>
+<td class="data row1 col3" id="T_da611_row1_col3">€855,655</td>
+<td class="data row1 col4" id="T_da611_row1_col4">€42,872</td>
+<td class="data row1 col5" id="T_da611_row1_col5">3.99%</td>
+<td class="data row1 col6" id="T_da611_row1_col6">€769</td>
+<td class="data row1 col7" id="T_da611_row1_col7">4.90</td>
+<td class="data row1 col8" id="T_da611_row1_col8">€7.54</td>
+<td class="data row1 col9" id="T_da611_row1_col9">€189</td>
+<td class="data row1 col10" id="T_da611_row1_col10">€151</td>
+<td class="data row1 col11" id="T_da611_row1_col11">€3,769</td>
+<td class="data row1 col12" id="T_da611_row1_col12">€812,782</td>
+<td class="data row1 col13" id="T_da611_row1_col13">€143</td>
+<td class="data row1 col14" id="T_da611_row1_col14">1896%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_8887b_level0_row2">Web Developer</th>
-<td class="data row2 col0" id="T_8887b_row2_col0">3,181</td>
-<td class="data row2 col1" id="T_8887b_row2_col1">137</td>
-<td class="data row2 col2" id="T_8887b_row2_col2">474</td>
-<td class="data row2 col3" id="T_8887b_row2_col3">€341,933</td>
-<td class="data row2 col4" id="T_8887b_row2_col4">€23,997</td>
-<td class="data row2 col5" id="T_8887b_row2_col5">4.31%</td>
-<td class="data row2 col6" id="T_8887b_row2_col6">€721</td>
-<td class="data row2 col7" id="T_8887b_row2_col7">3.46</td>
-<td class="data row2 col8" id="T_8887b_row2_col8">€7.54</td>
-<td class="data row2 col9" id="T_8887b_row2_col9">€175</td>
-<td class="data row2 col10" id="T_8887b_row2_col10">€107</td>
-<td class="data row2 col11" id="T_8887b_row2_col11">€2,496</td>
-<td class="data row2 col12" id="T_8887b_row2_col12">€317,937</td>
-<td class="data row2 col13" id="T_8887b_row2_col13">€100</td>
-<td class="data row2 col14" id="T_8887b_row2_col14">1325%</td>
+<th class="row_heading level0 row2" id="T_da611_level0_row2">Web Developer</th>
+<td class="data row2 col0" id="T_da611_row2_col0">3,181</td>
+<td class="data row2 col1" id="T_da611_row2_col1">137</td>
+<td class="data row2 col2" id="T_da611_row2_col2">474</td>
+<td class="data row2 col3" id="T_da611_row2_col3">€341,933</td>
+<td class="data row2 col4" id="T_da611_row2_col4">€23,997</td>
+<td class="data row2 col5" id="T_da611_row2_col5">4.31%</td>
+<td class="data row2 col6" id="T_da611_row2_col6">€721</td>
+<td class="data row2 col7" id="T_da611_row2_col7">3.46</td>
+<td class="data row2 col8" id="T_da611_row2_col8">€7.54</td>
+<td class="data row2 col9" id="T_da611_row2_col9">€175</td>
+<td class="data row2 col10" id="T_da611_row2_col10">€107</td>
+<td class="data row2 col11" id="T_da611_row2_col11">€2,496</td>
+<td class="data row2 col12" id="T_da611_row2_col12">€317,937</td>
+<td class="data row2 col13" id="T_da611_row2_col13">€100</td>
+<td class="data row2 col14" id="T_da611_row2_col14">1325%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_8887b_level0_row3">Total (3 products)</th>
-<td class="data row3 col0" id="T_8887b_row3_col0">19,822</td>
-<td class="data row3 col1" id="T_8887b_row3_col1">837</td>
-<td class="data row3 col2" id="T_8887b_row3_col2">4,355</td>
-<td class="data row3 col3" id="T_8887b_row3_col3">€3,344,352</td>
-<td class="data row3 col4" id="T_8887b_row3_col4">€149,523</td>
-<td class="data row3 col5" id="T_8887b_row3_col5">4.22%</td>
-<td class="data row3 col6" id="T_8887b_row3_col6">€768</td>
-<td class="data row3 col7" id="T_8887b_row3_col7">5.20</td>
-<td class="data row3 col8" id="T_8887b_row3_col8">€7.54</td>
-<td class="data row3 col9" id="T_8887b_row3_col9">€179</td>
-<td class="data row3 col10" id="T_8887b_row3_col10">€169</td>
-<td class="data row3 col11" id="T_8887b_row3_col11">€3,996</td>
-<td class="data row3 col12" id="T_8887b_row3_col12">€3,194,828</td>
-<td class="data row3 col13" id="T_8887b_row3_col13">€161</td>
-<td class="data row3 col14" id="T_8887b_row3_col14">2137%</td>
+<th class="row_heading level0 row3" id="T_da611_level0_row3">Total (3 products)</th>
+<td class="data row3 col0" id="T_da611_row3_col0">19,822</td>
+<td class="data row3 col1" id="T_da611_row3_col1">837</td>
+<td class="data row3 col2" id="T_da611_row3_col2">4,355</td>
+<td class="data row3 col3" id="T_da611_row3_col3">€3,344,352</td>
+<td class="data row3 col4" id="T_da611_row3_col4">€149,523</td>
+<td class="data row3 col5" id="T_da611_row3_col5">4.22%</td>
+<td class="data row3 col6" id="T_da611_row3_col6">€768</td>
+<td class="data row3 col7" id="T_da611_row3_col7">5.20</td>
+<td class="data row3 col8" id="T_da611_row3_col8">€7.54</td>
+<td class="data row3 col9" id="T_da611_row3_col9">€179</td>
+<td class="data row3 col10" id="T_da611_row3_col10">€169</td>
+<td class="data row3 col11" id="T_da611_row3_col11">€3,996</td>
+<td class="data row3 col12" id="T_da611_row3_col12">€3,194,828</td>
+<td class="data row3 col13" id="T_da611_row3_col13">€161</td>
+<td class="data row3 col14" id="T_da611_row3_col14">2137%</td>
 </tr>
 </tbody>
 </table>
@@ -8201,15 +8169,15 @@ UA только по лидам с продуктом — завысила бы 
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_c2812">
+<table id="T_253f2">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_c2812_level0_col0">students</th>
-<th class="col_heading level0 col1" id="T_c2812_level0_col1">cash_received</th>
-<th class="col_heading level0 col2" id="T_c2812_level0_col2">revenue</th>
-<th class="col_heading level0 col3" id="T_c2812_level0_col3">prepaid</th>
-<th class="col_heading level0 col4" id="T_c2812_level0_col4">refund_due</th>
+<th class="col_heading level0 col0" id="T_253f2_level0_col0">students</th>
+<th class="col_heading level0 col1" id="T_253f2_level0_col1">cash_received</th>
+<th class="col_heading level0 col2" id="T_253f2_level0_col2">revenue</th>
+<th class="col_heading level0 col3" id="T_253f2_level0_col3">prepaid</th>
+<th class="col_heading level0 col4" id="T_253f2_level0_col4">refund_due</th>
 </tr>
 <tr>
 <th class="index_name level0">student_status</th>
@@ -8222,44 +8190,44 @@ UA только по лидам с продуктом — завысила бы 
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_c2812_level0_row0">active</th>
-<td class="data row0 col0" id="T_c2812_row0_col0">398</td>
-<td class="data row0 col1" id="T_c2812_row0_col1">€1,415,285</td>
-<td class="data row0 col2" id="T_c2812_row0_col2">€1,312,244</td>
-<td class="data row0 col3" id="T_c2812_row0_col3">€107,869</td>
-<td class="data row0 col4" id="T_c2812_row0_col4">€0</td>
+<th class="row_heading level0 row0" id="T_253f2_level0_row0">active</th>
+<td class="data row0 col0" id="T_253f2_row0_col0">398</td>
+<td class="data row0 col1" id="T_253f2_row0_col1">€1,415,285</td>
+<td class="data row0 col2" id="T_253f2_row0_col2">€1,312,244</td>
+<td class="data row0 col3" id="T_253f2_row0_col3">€107,869</td>
+<td class="data row0 col4" id="T_253f2_row0_col4">€0</td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_c2812_level0_row1">dropout</th>
-<td class="data row1 col0" id="T_c2812_row1_col0">54</td>
-<td class="data row1 col1" id="T_c2812_row1_col1">€85,460</td>
-<td class="data row1 col2" id="T_c2812_row1_col2">€72,532</td>
-<td class="data row1 col3" id="T_c2812_row1_col3">€13,638</td>
-<td class="data row1 col4" id="T_c2812_row1_col4">€13,638</td>
+<th class="row_heading level0 row1" id="T_253f2_level0_row1">dropout</th>
+<td class="data row1 col0" id="T_253f2_row1_col0">54</td>
+<td class="data row1 col1" id="T_253f2_row1_col1">€85,460</td>
+<td class="data row1 col2" id="T_253f2_row1_col2">€72,532</td>
+<td class="data row1 col3" id="T_253f2_row1_col3">€13,638</td>
+<td class="data row1 col4" id="T_253f2_row1_col4">€13,638</td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_c2812_level0_row2">finished</th>
-<td class="data row2 col0" id="T_c2812_row2_col0">71</td>
-<td class="data row2 col1" id="T_c2812_row2_col1">€408,500</td>
-<td class="data row2 col2" id="T_c2812_row2_col2">€408,500</td>
-<td class="data row2 col3" id="T_c2812_row2_col3">€0</td>
-<td class="data row2 col4" id="T_c2812_row2_col4">€0</td>
+<th class="row_heading level0 row2" id="T_253f2_level0_row2">finished</th>
+<td class="data row2 col0" id="T_253f2_row2_col0">71</td>
+<td class="data row2 col1" id="T_253f2_row2_col1">€408,500</td>
+<td class="data row2 col2" id="T_253f2_row2_col2">€408,500</td>
+<td class="data row2 col3" id="T_253f2_row2_col3">€0</td>
+<td class="data row2 col4" id="T_253f2_row2_col4">€0</td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_c2812_level0_row3">unknown</th>
-<td class="data row3 col0" id="T_c2812_row3_col0">314</td>
-<td class="data row3 col1" id="T_c2812_row3_col1">€1,669,100</td>
-<td class="data row3 col2" id="T_c2812_row3_col2">€1,551,076</td>
-<td class="data row3 col3" id="T_c2812_row3_col3">€122,833</td>
-<td class="data row3 col4" id="T_c2812_row3_col4">€0</td>
+<th class="row_heading level0 row3" id="T_253f2_level0_row3">unknown</th>
+<td class="data row3 col0" id="T_253f2_row3_col0">314</td>
+<td class="data row3 col1" id="T_253f2_row3_col1">€1,669,100</td>
+<td class="data row3 col2" id="T_253f2_row3_col2">€1,551,076</td>
+<td class="data row3 col3" id="T_253f2_row3_col3">€122,833</td>
+<td class="data row3 col4" id="T_253f2_row3_col4">€0</td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_c2812_level0_row4">Итого</th>
-<td class="data row4 col0" id="T_c2812_row4_col0">837</td>
-<td class="data row4 col1" id="T_c2812_row4_col1">€3,578,345</td>
-<td class="data row4 col2" id="T_c2812_row4_col2">€3,344,352</td>
-<td class="data row4 col3" id="T_c2812_row4_col3">€244,341</td>
-<td class="data row4 col4" id="T_c2812_row4_col4">€13,638</td>
+<th class="row_heading level0 row4" id="T_253f2_level0_row4">Итого</th>
+<td class="data row4 col0" id="T_253f2_row4_col0">837</td>
+<td class="data row4 col1" id="T_253f2_row4_col1">€3,578,345</td>
+<td class="data row4 col2" id="T_253f2_row4_col2">€3,344,352</td>
+<td class="data row4 col3" id="T_253f2_row4_col3">€244,341</td>
+<td class="data row4 col4" id="T_253f2_row4_col4">€13,638</td>
 </tr>
 </tbody>
 </table>
@@ -8343,39 +8311,39 @@ UA только по лидам с продуктом — завысила бы 
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_1422c">
+<table id="T_c6a40">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_1422c_level0_col0">ΔCM, €</th>
-<th class="col_heading level0 col1" id="T_1422c_level0_col1">ΔCM, %</th>
+<th class="col_heading level0 col0" id="T_c6a40_level0_col0">ΔCM, €</th>
+<th class="col_heading level0 col1" id="T_c6a40_level0_col1">ΔCM, %</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_1422c_level0_row0">UA +10%</th>
-<td class="data row0 col0" id="T_1422c_row0_col0">€319,483</td>
-<td class="data row0 col1" id="T_1422c_row0_col1">10.0%</td>
+<th class="row_heading level0 row0" id="T_c6a40_level0_row0">UA +10%</th>
+<td class="data row0 col0" id="T_c6a40_row0_col0">€319,483</td>
+<td class="data row0 col1" id="T_c6a40_row0_col1">10.0%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_1422c_level0_row1">C1 +10%</th>
-<td class="data row1 col0" id="T_1422c_row1_col0">€334,435</td>
-<td class="data row1 col1" id="T_1422c_row1_col1">10.5%</td>
+<th class="row_heading level0 row1" id="T_c6a40_level0_row1">C1 +10%</th>
+<td class="data row1 col0" id="T_c6a40_row1_col0">€334,435</td>
+<td class="data row1 col1" id="T_c6a40_row1_col1">10.5%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_1422c_level0_row2">AOV +10%</th>
-<td class="data row2 col0" id="T_1422c_row2_col0">€334,435</td>
-<td class="data row2 col1" id="T_1422c_row2_col1">10.5%</td>
+<th class="row_heading level0 row2" id="T_c6a40_level0_row2">AOV +10%</th>
+<td class="data row2 col0" id="T_c6a40_row2_col0">€334,435</td>
+<td class="data row2 col1" id="T_c6a40_row2_col1">10.5%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_1422c_level0_row3">APC +10%</th>
-<td class="data row3 col0" id="T_1422c_row3_col0">€334,435</td>
-<td class="data row3 col1" id="T_1422c_row3_col1">10.5%</td>
+<th class="row_heading level0 row3" id="T_c6a40_level0_row3">APC +10%</th>
+<td class="data row3 col0" id="T_c6a40_row3_col0">€334,435</td>
+<td class="data row3 col1" id="T_c6a40_row3_col1">10.5%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_1422c_level0_row4">CPA −10%</th>
-<td class="data row4 col0" id="T_1422c_row4_col0">€14,952</td>
-<td class="data row4 col1" id="T_1422c_row4_col1">0.5%</td>
+<th class="row_heading level0 row4" id="T_c6a40_level0_row4">CPA −10%</th>
+<td class="data row4 col0" id="T_c6a40_row4_col0">€14,952</td>
+<td class="data row4 col1" id="T_c6a40_row4_col1">0.5%</td>
 </tr>
 </tbody>
 </table>
@@ -8428,12 +8396,7 @@ UA только по лидам с продуктом — завысила бы 
 <div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">AB</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"A - High"</span><span class="p">,</span> <span class="s2">"B - Medium"</span><span class="p">]</span>
-<span class="n">conv_calls</span> <span class="o">=</span> <span class="n">calls</span><span class="p">[</span><span class="n">calls</span><span class="p">[</span><span class="s2">"is_conversation"</span><span class="p">]]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"contact_id"</span><span class="p">)[</span><span class="s2">"call_start_time"</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-<span class="n">deals</span><span class="p">[</span><span class="s2">"first_talk"</span><span class="p">]</span> <span class="o">=</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"contact_id"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">conv_calls</span><span class="p">)</span>
-<span class="n">lag</span> <span class="o">=</span> <span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"first_talk"</span><span class="p">]</span> <span class="o">-</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">])</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
-<span class="n">deals</span><span class="p">[</span><span class="s2">"reached_24h"</span><span class="p">]</span> <span class="o">=</span> <span class="n">lag</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="o">-</span><span class="mi">3600</span><span class="p">,</span> <span class="mi">86400</span><span class="p">)</span>
-<span class="n">deals</span><span class="p">[</span><span class="s2">"is_AB"</span><span class="p">]</span> <span class="o">=</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"quality"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">AB</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">deals</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">add_contact_metrics</span><span class="p">(</span><span class="n">deals</span><span class="p">,</span> <span class="n">calls</span><span class="p">)</span>   <span class="c1"># first_talk, reached_24h, is_AB, sla_bucket (src/metrics.py)</span>
 
 <span class="n">reached</span> <span class="o">=</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"reached_24h"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="n">ab_given_reached</span> <span class="o">=</span> <span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"reached_24h"</span><span class="p">],</span> <span class="s2">"is_AB"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -8518,9 +8481,7 @@ CM (маржинальная прибыль) = €3,194,828
 <div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">deals</span><span class="p">[</span><span class="s2">"sla_bucket"</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"sla_sec"</span><span class="p">]</span> <span class="o">/</span> <span class="mi">3600</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">],</span>
-                             <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">"&lt; 15 min"</span><span class="p">,</span> <span class="s2">"15–60 min"</span><span class="p">,</span> <span class="s2">"1–4 h"</span><span class="p">,</span> <span class="s2">"4–24 h"</span><span class="p">,</span> <span class="s2">"&gt; 24 h"</span><span class="p">])</span>
-<span class="n">evidence</span> <span class="o">=</span> <span class="n">deals</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"sla_bucket"</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">evidence</span> <span class="o">=</span> <span class="n">deals</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"sla_bucket"</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
     <span class="n">leads</span><span class="o">=</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">),</span> <span class="n">reached_24h</span><span class="o">=</span><span class="p">(</span><span class="s2">"reached_24h"</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">),</span> <span class="n">share_AB</span><span class="o">=</span><span class="p">(</span><span class="s2">"is_AB"</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">),</span> <span class="n">C1</span><span class="o">=</span><span class="p">(</span><span class="s2">"is_student"</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">))</span>
 <span class="n">evidence</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s2">"reached_24h"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:.1%}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"share_AB"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:.1%}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"C1"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:.1%}</span><span class="s2">"</span><span class="p">})</span>
 </pre></div>
@@ -8537,14 +8498,14 @@ CM (маржинальная прибыль) = €3,194,828
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_b08c7">
+<table id="T_eabff">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_b08c7_level0_col0">leads</th>
-<th class="col_heading level0 col1" id="T_b08c7_level0_col1">reached_24h</th>
-<th class="col_heading level0 col2" id="T_b08c7_level0_col2">share_AB</th>
-<th class="col_heading level0 col3" id="T_b08c7_level0_col3">C1</th>
+<th class="col_heading level0 col0" id="T_eabff_level0_col0">leads</th>
+<th class="col_heading level0 col1" id="T_eabff_level0_col1">reached_24h</th>
+<th class="col_heading level0 col2" id="T_eabff_level0_col2">share_AB</th>
+<th class="col_heading level0 col3" id="T_eabff_level0_col3">C1</th>
 </tr>
 <tr>
 <th class="index_name level0">sla_bucket</th>
@@ -8556,39 +8517,39 @@ CM (маржинальная прибыль) = €3,194,828
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_b08c7_level0_row0">&lt; 15 min</th>
-<td class="data row0 col0" id="T_b08c7_row0_col0">950</td>
-<td class="data row0 col1" id="T_b08c7_row0_col1">77.1%</td>
-<td class="data row0 col2" id="T_b08c7_row0_col2">21.2%</td>
-<td class="data row0 col3" id="T_b08c7_row0_col3">6.6%</td>
+<th class="row_heading level0 row0" id="T_eabff_level0_row0">&lt; 15 min</th>
+<td class="data row0 col0" id="T_eabff_row0_col0">950</td>
+<td class="data row0 col1" id="T_eabff_row0_col1">77.1%</td>
+<td class="data row0 col2" id="T_eabff_row0_col2">21.2%</td>
+<td class="data row0 col3" id="T_eabff_row0_col3">6.6%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_b08c7_level0_row1">15–60 min</th>
-<td class="data row1 col0" id="T_b08c7_row1_col0">2385</td>
-<td class="data row1 col1" id="T_b08c7_row1_col1">65.2%</td>
-<td class="data row1 col2" id="T_b08c7_row1_col2">13.9%</td>
-<td class="data row1 col3" id="T_b08c7_row1_col3">6.0%</td>
+<th class="row_heading level0 row1" id="T_eabff_level0_row1">15–60 min</th>
+<td class="data row1 col0" id="T_eabff_row1_col0">2385</td>
+<td class="data row1 col1" id="T_eabff_row1_col1">65.2%</td>
+<td class="data row1 col2" id="T_eabff_row1_col2">13.9%</td>
+<td class="data row1 col3" id="T_eabff_row1_col3">6.0%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_b08c7_level0_row2">1–4 h</th>
-<td class="data row2 col0" id="T_b08c7_row2_col0">3287</td>
-<td class="data row2 col1" id="T_b08c7_row2_col1">62.3%</td>
-<td class="data row2 col2" id="T_b08c7_row2_col2">12.6%</td>
-<td class="data row2 col3" id="T_b08c7_row2_col3">5.5%</td>
+<th class="row_heading level0 row2" id="T_eabff_level0_row2">1–4 h</th>
+<td class="data row2 col0" id="T_eabff_row2_col0">3287</td>
+<td class="data row2 col1" id="T_eabff_row2_col1">62.3%</td>
+<td class="data row2 col2" id="T_eabff_row2_col2">12.6%</td>
+<td class="data row2 col3" id="T_eabff_row2_col3">5.5%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_b08c7_level0_row3">4–24 h</th>
-<td class="data row3 col0" id="T_b08c7_row3_col0">6615</td>
-<td class="data row3 col1" id="T_b08c7_row3_col1">55.8%</td>
-<td class="data row3 col2" id="T_b08c7_row3_col2">10.7%</td>
-<td class="data row3 col3" id="T_b08c7_row3_col3">5.2%</td>
+<th class="row_heading level0 row3" id="T_eabff_level0_row3">4–24 h</th>
+<td class="data row3 col0" id="T_eabff_row3_col0">6615</td>
+<td class="data row3 col1" id="T_eabff_row3_col1">55.8%</td>
+<td class="data row3 col2" id="T_eabff_row3_col2">10.7%</td>
+<td class="data row3 col3" id="T_eabff_row3_col3">5.2%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_b08c7_level0_row4">&gt; 24 h</th>
-<td class="data row4 col0" id="T_b08c7_row4_col0">1758</td>
-<td class="data row4 col1" id="T_b08c7_row4_col1">1.4%</td>
-<td class="data row4 col2" id="T_b08c7_row4_col2">13.6%</td>
-<td class="data row4 col3" id="T_b08c7_row4_col3">4.6%</td>
+<th class="row_heading level0 row4" id="T_eabff_level0_row4">&gt; 24 h</th>
+<td class="data row4 col0" id="T_eabff_row4_col0">1758</td>
+<td class="data row4 col1" id="T_eabff_row4_col1">1.4%</td>
+<td class="data row4 col2" id="T_eabff_row4_col2">13.6%</td>
+<td class="data row4 col3" id="T_eabff_row4_col3">4.6%</td>
 </tr>
 </tbody>
 </table>
@@ -8654,7 +8615,7 @@ CM (маржинальная прибыль) = €3,194,828
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">fast</span> <span class="o">=</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"sla_bucket"</span><span class="p">]</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s2">"&lt; 15 min"</span><span class="p">)</span>
-<span class="n">slow</span> <span class="o">=</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"sla_bucket"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">"15–60 min"</span><span class="p">,</span> <span class="s2">"1–4 h"</span><span class="p">,</span> <span class="s2">"4–24 h"</span><span class="p">])</span>
+<span class="n">slow</span> <span class="o">=</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"sla_bucket"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">SLOW</span><span class="p">)</span>
 <span class="n">work</span> <span class="o">=</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">hour</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">deals</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">dayofweek</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)</span>
 <span class="n">check</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"все лиды"</span><span class="p">:</span> <span class="n">deals</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">deals</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s2">"рабочее время (пн–пт, 9–18)"</span><span class="p">:</span> <span class="n">work</span><span class="p">}</span>
 <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"Facebook Ads"</span><span class="p">,</span> <span class="s2">"Google Ads"</span><span class="p">]:</span>
@@ -8679,39 +8640,39 @@ CM (маржинальная прибыль) = €3,194,828
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_95a5d">
+<table id="T_6aabf">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_95a5d_level0_col0">&lt; 15 мин</th>
-<th class="col_heading level0 col1" id="T_95a5d_level0_col1">15 мин – 24 ч</th>
-<th class="col_heading level0 col2" id="T_95a5d_level0_col2">разрыв, п.п.</th>
+<th class="col_heading level0 col0" id="T_6aabf_level0_col0">&lt; 15 мин</th>
+<th class="col_heading level0 col1" id="T_6aabf_level0_col1">15 мин – 24 ч</th>
+<th class="col_heading level0 col2" id="T_6aabf_level0_col2">разрыв, п.п.</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_95a5d_level0_row0">все лиды</th>
-<td class="data row0 col0" id="T_95a5d_row0_col0">77.1%</td>
-<td class="data row0 col1" id="T_95a5d_row0_col1">59.3%</td>
-<td class="data row0 col2" id="T_95a5d_row0_col2">+17.7</td>
+<th class="row_heading level0 row0" id="T_6aabf_level0_row0">все лиды</th>
+<td class="data row0 col0" id="T_6aabf_row0_col0">77.1%</td>
+<td class="data row0 col1" id="T_6aabf_row0_col1">59.3%</td>
+<td class="data row0 col2" id="T_6aabf_row0_col2">+17.7</td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_95a5d_level0_row1">рабочее время (пн–пт, 9–18)</th>
-<td class="data row1 col0" id="T_95a5d_row1_col0">77.9%</td>
-<td class="data row1 col1" id="T_95a5d_row1_col1">62.3%</td>
-<td class="data row1 col2" id="T_95a5d_row1_col2">+15.6</td>
+<th class="row_heading level0 row1" id="T_6aabf_level0_row1">рабочее время (пн–пт, 9–18)</th>
+<td class="data row1 col0" id="T_6aabf_row1_col0">77.9%</td>
+<td class="data row1 col1" id="T_6aabf_row1_col1">62.3%</td>
+<td class="data row1 col2" id="T_6aabf_row1_col2">+15.6</td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_95a5d_level0_row2">Facebook Ads</th>
-<td class="data row2 col0" id="T_95a5d_row2_col0">80.6%</td>
-<td class="data row2 col1" id="T_95a5d_row2_col1">60.5%</td>
-<td class="data row2 col2" id="T_95a5d_row2_col2">+20.0</td>
+<th class="row_heading level0 row2" id="T_6aabf_level0_row2">Facebook Ads</th>
+<td class="data row2 col0" id="T_6aabf_row2_col0">80.6%</td>
+<td class="data row2 col1" id="T_6aabf_row2_col1">60.5%</td>
+<td class="data row2 col2" id="T_6aabf_row2_col2">+20.0</td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_95a5d_level0_row3">Google Ads</th>
-<td class="data row3 col0" id="T_95a5d_row3_col0">77.6%</td>
-<td class="data row3 col1" id="T_95a5d_row3_col1">61.0%</td>
-<td class="data row3 col2" id="T_95a5d_row3_col2">+16.6</td>
+<th class="row_heading level0 row3" id="T_6aabf_level0_row3">Google Ads</th>
+<td class="data row3 col0" id="T_6aabf_row3_col0">77.6%</td>
+<td class="data row3 col1" id="T_6aabf_row3_col1">61.0%</td>
+<td class="data row3 col2" id="T_6aabf_row3_col2">+16.6</td>
 </tr>
 </tbody>
 </table>
@@ -8727,55 +8688,13 @@ CM (маржинальная прибыль) = €3,194,828
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p>Разрыв 16–20 п.п. сохраняется в рабочее время и внутри каждого крупного источника — эффект не сводится к
-ночным заявкам или к структуре каналов. Но это всё ещё наблюдательные данные, поэтому нужен A/B-тест.</p>
+ночным заявкам или к структуре каналов. Проверим это строже: логистическая регрессия учитывает <strong>одновременно</strong>
+источник, час и день недели заявки, месяц и менеджера. Если быстрый ответ — это просто признак «сильного»
+менеджера или «горячего» канала, эффект после контроля должен исчезнуть.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a101b432">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<blockquote>
-<p><strong>Гипотеза (H1).</strong> Если каждому новому лиду в течение 1 минуты автоматически назначать свободного менеджера
-с push-уведомлением и отправлять клиенту сообщение в WhatsApp/SMS («Менеджер позвонит в течение 15 минут»),
-а менеджер обязан позвонить <strong>в течение 15 минут</strong> в рабочее время,
-<strong>то доля лидов, с которыми состоялся разговор в первые 24 часа, вырастет как минимум на 10 п.п.</strong>
-(с ~59% до ≥ 69%), <strong>потому что</strong> клиент ещё «тёплый» и ждёт звонка — в данных лиды с ответом &lt; 15 мин
-дозваниваются в 77% случаев против 59% при ответе от 15 минут до 24 часов (разрыв 18 п.п., в рабочее
-время — 16 п.п.; закладываем консервативно 10 п.п.).</p>
-</blockquote>
-<ul>
-<li><strong>Метрика продукта, на которую воздействуем:</strong> C1 (через дозвон и квалификацию).</li>
-<li><strong>Первичная метрика теста:</strong> <code>reached_24h</code> — доля лидов с разговором ≥ 30 секунд в первые 24 часа.
-Выбрана потому, что: (а) она измерима за 1 день, а оплата — в среднем через 17+ дней и за 2 недели её не
-набрать; (б) она напрямую связана с C1 (см. дерево метрик).</li>
-<li><strong>Вторичные метрики:</strong> медианный SLA, доля лидов A+B, доля <code>Lost</code> с причиной «не отвечает».</li>
-<li><strong>Отложенная метрика:</strong> C1 по когортам теста — отслеживаем через 45 дней после окончания.</li>
-<li><strong>Guardrail-метрики (не должны ухудшиться):</strong> доля лидов <code>Non target</code>, число звонков на менеджера в день
-(нагрузка), доля жалоб/отписок от сообщений.</li>
-<li><strong>H0:</strong> доли <code>reached_24h</code> в группах A и B равны.</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8c438343">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="5.-%D0%94%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD-A/B-%D1%82%D0%B5%D1%81%D1%82%D0%B0:-%D1%81%D1%80%D0%BE%D0%BA-%D0%B7%D0%B0%D1%84%D0%B8%D0%BA%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD-%E2%80%94-14-%D0%B4%D0%BD%D0%B5%D0%B9">5. Дизайн A/B-теста: срок зафиксирован — 14 дней<a class="anchor-link" href="#5.-%D0%94%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD-A/B-%D1%82%D0%B5%D1%81%D1%82%D0%B0:-%D1%81%D1%80%D0%BE%D0%BA-%D0%B7%D0%B0%D1%84%D0%B8%D0%BA%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD-%E2%80%94-14-%D0%B4%D0%BD%D0%B5%D0%B9">¶</a></h2><p><strong>Тест не проводился:</strong> в выгрузке CRM нет данных эксперимента, поэтому ниже — только дизайн. По условию срок
-теста не больше 2 недель, поэтому идём от срока: фиксируем 14 дней → считаем, сколько лидов наберётся →
-считаем <strong>MDE</strong> (минимальный эффект, который тест сможет заметить при α = 0.05 и мощности 80%). Тест имеет смысл,
-только если ожидаемый эффект не меньше MDE.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=565f7a84">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=18c8b3b4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8783,36 +8702,26 @@ CM (маржинальная прибыль) = €3,194,828
 <div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">recent</span> <span class="o">=</span> <span class="n">deals</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="s2">"2024-03-01"</span><span class="p">]</span>
-<span class="n">n_days</span> <span class="o">=</span> <span class="n">recent</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
-<span class="n">leads_per_day</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">recent</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_days</span>
-<span class="n">alpha</span><span class="p">,</span> <span class="n">power</span><span class="p">,</span> <span class="n">TEST_DAYS</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">,</span> <span class="mi">14</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">deals</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"sla_bucket"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">"&lt; 15 min"</span><span class="p">,</span> <span class="o">*</span><span class="n">M</span><span class="o">.</span><span class="n">SLOW</span><span class="p">])]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">x</span><span class="p">[</span><span class="s2">"fast"</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="s2">"sla_bucket"</span><span class="p">]</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s2">"&lt; 15 min"</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">x</span><span class="p">[</span><span class="s2">"reached"</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="s2">"reached_24h"</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">x</span><span class="p">[</span><span class="s2">"hour"</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">hour</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">x</span><span class="p">[</span><span class="s2">"dow"</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">dayofweek</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">x</span><span class="p">[</span><span class="s2">"mon"</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="s2">"month"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%Y-%m"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">src</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"owner"</span><span class="p">,</span> <span class="s2">"deal_owner_name"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"src"</span><span class="p">,</span> <span class="s2">"source"</span><span class="p">)]:</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">src</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span> <span class="o">&gt;=</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">)</span>   <span class="c1"># редкие категории объединяем</span>
 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">mde_for</span><span class="p">(</span><span class="n">p_base</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n_group</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""MDE в долях для двух групп по n_group (z-тест для долей, обратное преобразование h Коэна)."""</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="n">NormalIndPower</span><span class="p">()</span><span class="o">.</span><span class="n">solve_power</span><span class="p">(</span><span class="n">nobs1</span><span class="o">=</span><span class="n">n_group</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="n">power</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">p_base</span><span class="p">))</span> <span class="o">+</span> <span class="n">h</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">p_base</span>
-
-
-<span class="c1"># контроль — лиды с ответом от 15 мин до 24 ч (корзину «&gt; 24 h» исключаем, см. раздел 4)</span>
-<span class="n">p_control</span> <span class="o">=</span> <span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">slow</span><span class="p">,</span> <span class="s2">"reached_24h"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">n_14</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">leads_per_day</span> <span class="o">*</span> <span class="n">TEST_DAYS</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">mde</span> <span class="o">=</span> <span class="n">mde_for</span><span class="p">(</span><span class="n">p_control</span><span class="p">,</span> <span class="n">n_14</span><span class="p">)</span>
-<span class="n">expected</span> <span class="o">=</span> <span class="mf">0.10</span>
-
-<span class="n">design</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span>
-    <span class="s2">"Срок теста"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">TEST_DAYS</span><span class="si">}</span><span class="s2"> дней (2 полные недели — учитывает недельную сезонность)"</span><span class="p">,</span>
-    <span class="s2">"Лидов в день (с марта 2024)"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">leads_per_day</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-    <span class="s2">"Лидов на группу за 14 дней (50/50)"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">n_14</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-    <span class="s2">"Baseline reached_24h (контроль)"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">p_control</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-    <span class="s2">"α / мощность"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">power</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-    <span class="s2">"MDE за 14 дней"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"+</span><span class="si">{</span><span class="n">mde</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> п.п. (с </span><span class="si">{</span><span class="n">p_control</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2"> до </span><span class="si">{</span><span class="n">p_control</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mde</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span>
-    <span class="s2">"Ожидаемый эффект (раздел 4)"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"+</span><span class="si">{</span><span class="n">expected</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> п.п."</span><span class="p">,</span>
-    <span class="s2">"Вывод"</span><span class="p">:</span> <span class="s2">"ожидаемый эффект ≥ MDE — тест за 14 дней имеет смысл"</span> <span class="k">if</span> <span class="n">expected</span> <span class="o">&gt;=</span> <span class="n">mde</span>
-             <span class="k">else</span> <span class="s2">"ожидаемый эффект &lt; MDE — за 14 дней тест эффект не покажет"</span><span class="p">,</span>
-<span class="p">},</span> <span class="n">name</span><span class="o">=</span><span class="s2">"значение"</span><span class="p">)</span>
-<span class="n">design</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+<span class="n">logit</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">logit</span><span class="p">(</span><span class="s2">"reached ~ fast + C(src) + C(hour) + C(dow) + C(mon) + C(owner)"</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">disp</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">me</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">get_margeff</span><span class="p">(</span><span class="n">at</span><span class="o">=</span><span class="s2">"overall"</span><span class="p">)</span><span class="o">.</span><span class="n">summary_frame</span><span class="p">()</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"fast"</span><span class="p">]</span>
+<span class="n">raw_gap</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s2">"fast"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"reached"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s2">"fast"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"reached"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">adj_gap</span> <span class="o">=</span> <span class="n">me</span><span class="p">[</span><span class="s2">"dy/dx"</span><span class="p">]</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span><span class="s2">"разрыв без контроля, п.п."</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">raw_gap</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">+.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+           <span class="s2">"разрыв с контролем (средний предельный эффект), п.п."</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">adj_gap</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">+.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+           <span class="s2">"95% ДИ, п.п."</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">me</span><span class="p">[</span><span class="s1">'Conf. Int. Low'</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">+.1f</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">me</span><span class="p">[</span><span class="s1">'Cont. Int. Hi.'</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">+.1f</span><span class="si">}</span><span class="s2">]"</span><span class="p">,</span>
+           <span class="s2">"отношение шансов"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logit</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">'fast'</span><span class="p">])</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+           <span class="s2">"p-value"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">logit</span><span class="o">.</span><span class="n">pvalues</span><span class="p">[</span><span class="s1">'fast'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1e</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+           <span class="s2">"лидов в модели"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">},</span> <span class="n">name</span><span class="o">=</span><span class="s2">"fast (&lt; 15 мин) → дозвон за 24 ч"</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -8843,6 +8752,344 @@ CM (маржинальная прибыль) = €3,194,828
 <thead>
 <tr style="text-align: right;">
 <th></th>
+<th>fast (&lt; 15 мин) → дозвон за 24 ч</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>разрыв без контроля, п.п.</th>
+<td>+17.7</td>
+</tr>
+<tr>
+<th>разрыв с контролем (средний предельный эффект), п.п.</th>
+<td>+19.0</td>
+</tr>
+<tr>
+<th>95% ДИ, п.п.</th>
+<td>[+15.2; +22.8]</td>
+</tr>
+<tr>
+<th>отношение шансов</th>
+<td>2.33</td>
+</tr>
+<tr>
+<th>p-value</th>
+<td>2.9e-22</td>
+</tr>
+<tr>
+<th>лидов в модели</th>
+<td>13,237</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fdb0aa59">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>С учётом источника, времени заявки, месяца и менеджера разрыв почти не меняется (+19 п.п., 95% ДИ ≈ +15…+23).
+Значит, связь скорости и дозвона не объясняется этими факторами. Остаются ненаблюдаемые причины (например,
+менеджер быстрее берёт заявку, которая выглядит «горячей»), поэтому окончательный ответ даст только A/B-тест.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a101b432">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<blockquote>
+<p><strong>Гипотеза (H1).</strong> Если каждому новому лиду в течение 1 минуты автоматически назначать свободного менеджера
+с push-уведомлением и отправлять клиенту сообщение в WhatsApp/SMS («Менеджер позвонит в течение 15 минут»),
+а менеджер обязан позвонить <strong>в течение 15 минут ежедневно с 8:00 до 23:00</strong> (сменный график),
+<strong>то доля лидов, с которыми состоялся разговор в первые 24 часа, вырастет как минимум на 10 п.п.</strong>,
+<strong>потому что</strong> клиент ещё «тёплый» и ждёт звонка: в данных лиды с ответом &lt; 15 мин дозваниваются в 77% случаев
+против 59% при ответе от 15 минут до 24 часов (+19 п.п. с учётом источника, времени, месяца и менеджера).</p>
+</blockquote>
+<p><strong>Почему окно 8:00–23:00, а не рабочее время.</strong> Заявки приходят равномерно с 8 утра до 23 часов, в том числе
+в выходные: в будни с 9 до 18 приходит только 41% лидов. Правило, которое действует только в рабочее время,
+не затронет большинство потока, и эффект на всех лидах получится слишком маленьким для теста (раздел 5).</p>
+<ul>
+<li><strong>Метрика продукта, на которую воздействуем:</strong> C1 (через дозвон и квалификацию).</li>
+<li><strong>Первичная метрика теста:</strong> <code>reached_24h</code> — доля лидов с разговором ≥ 30 секунд в первые 24 часа.
+Выбрана потому, что: (а) она измерима за 1 день, а оплата — в среднем через 17+ дней и за 2 недели её не
+набрать; (б) она напрямую связана с C1 (см. дерево метрик).</li>
+<li><strong>Вторичные метрики:</strong> медианный SLA, доля лидов A+B, доля <code>Lost</code> с причиной «не отвечает».</li>
+<li><strong>Метрика внедрения (проверяем первой):</strong> доля лидов группы B, которым позвонили ≤ 15 мин. Если она ниже
+порога из раздела 5, тест не сможет показать эффект, даже если гипотеза верна.</li>
+<li><strong>Отложенная метрика:</strong> C1 по когортам теста — отслеживаем через 45 дней после окончания.</li>
+<li><strong>Guardrail-метрики (не должны ухудшиться):</strong> доля лидов <code>Non target</code>, число звонков на менеджера в день
+(нагрузка), доля жалоб/отписок от сообщений.</li>
+<li><strong>H0:</strong> доли <code>reached_24h</code> в группах A и B равны.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8c438343">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="5.-%D0%94%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD-A/B-%D1%82%D0%B5%D1%81%D1%82%D0%B0:-%D1%81%D1%80%D0%BE%D0%BA-%D0%B7%D0%B0%D1%84%D0%B8%D0%BA%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD-%E2%80%94-14-%D0%B4%D0%BD%D0%B5%D0%B9">5. Дизайн A/B-теста: срок зафиксирован — 14 дней<a class="anchor-link" href="#5.-%D0%94%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD-A/B-%D1%82%D0%B5%D1%81%D1%82%D0%B0:-%D1%81%D1%80%D0%BE%D0%BA-%D0%B7%D0%B0%D1%84%D0%B8%D0%BA%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD-%E2%80%94-14-%D0%B4%D0%BD%D0%B5%D0%B9">¶</a></h2><p><strong>Тест не проводился:</strong> в выгрузке CRM нет данных эксперимента, поэтому ниже — только дизайн. По условию срок
+теста не больше 2 недель, поэтому идём от срока: фиксируем 14 дней → считаем, сколько лидов наберётся →
+считаем <strong>MDE</strong> (минимальный эффект, который тест сможет заметить при α = 0.05 и мощности 80%). Тест имеет смысл,
+только если ожидаемый эффект не меньше MDE.</p>
+<p><strong>Ожидаемый эффект считаем из данных, а не задаём «на глаз».</strong> Внутри окна действия правила лиды, которым сейчас
+отвечают за 15 минут – 24 часа, получают дозвон быстрых лидов (77%). Лиды без SLA и с ответом позже суток считаем
+незатронутыми — это консервативная оценка. Baseline — дозвон <strong>всех</strong> лидов окна, а не только медленных: в тест
+попадают все новые лиды, и контрольная группа будет такой же смесью.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=565f7a84">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">recent</span> <span class="o">=</span> <span class="n">deals</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">M</span><span class="o">.</span><span class="n">RECENT_FROM</span><span class="p">]</span>
+<span class="n">n_days</span> <span class="o">=</span> <span class="n">recent</span><span class="p">[</span><span class="s2">"created_time"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+<span class="n">leads_per_day</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">recent</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_days</span>
+<span class="n">alpha</span><span class="p">,</span> <span class="n">power</span><span class="p">,</span> <span class="n">TEST_DAYS</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">ALPHA</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">POWER</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">TEST_DAYS</span>
+<span class="n">mde_for</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">mde</span>
+
+<span class="n">options</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">speed_test_design</span><span class="p">(</span><span class="n">deals</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s2">"доля лидов в окне"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:.0%}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"лидов в окне в день"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:.0f}</span><span class="s2">"</span><span class="p">,</span>
+                              <span class="s2">"лидов на группу за 14 дней"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:,.0f}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"baseline дозвона в окне"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:.1%}</span><span class="s2">"</span><span class="p">,</span>
+                              <span class="o">**</span><span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:+.1f}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s2">"п.п."</span> <span class="ow">in</span> <span class="n">c</span><span class="p">}}))</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">3.8</span><span class="p">))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="mf">0.18</span><span class="p">,</span> <span class="n">options</span><span class="p">[</span><span class="s2">"ожидаемый эффект в окне, п.п."</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="mf">0.34</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">PRIMARY</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"expected effect"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="mf">0.18</span><span class="p">,</span> <span class="n">options</span><span class="p">[</span><span class="s2">"MDE в окне, п.п."</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="mf">0.34</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">MUTED</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"MDE (14 days)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">[</span><span class="s2">"Mon–Fri 9–18 (now)"</span><span class="p">,</span> <span class="s2">"Mon–Fri 8–21"</span><span class="p">,</span> <span class="s2">"Daily 8–21"</span><span class="p">,</span> <span class="s2">"Daily 8–23"</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"percentage points"</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">18</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"center right"</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">"y"</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"A 14-day test only works if the 15-minute rule covers evenings and weekends"</span><span class="p">)</span>
+<span class="n">save</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s2">"03_test_coverage"</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
+<style type="text/css">
+</style>
+<table id="T_70233">
+<thead>
+<tr>
+<th class="blank level0"> </th>
+<th class="col_heading level0 col0" id="T_70233_level0_col0">доля лидов в окне</th>
+<th class="col_heading level0 col1" id="T_70233_level0_col1">лидов в окне в день</th>
+<th class="col_heading level0 col2" id="T_70233_level0_col2">лидов на группу за 14 дней</th>
+<th class="col_heading level0 col3" id="T_70233_level0_col3">baseline дозвона в окне</th>
+<th class="col_heading level0 col4" id="T_70233_level0_col4">ожидаемый эффект в окне, п.п.</th>
+<th class="col_heading level0 col5" id="T_70233_level0_col5">MDE в окне, п.п.</th>
+<th class="col_heading level0 col6" id="T_70233_level0_col6">эффект на всех лидах, п.п.</th>
+<th class="col_heading level0 col7" id="T_70233_level0_col7">MDE на всех лидах, п.п.</th>
+<th class="col_heading level0 col8" id="T_70233_level0_col8">тест в окне имеет смысл</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="row_heading level0 row0" id="T_70233_level0_row0">пн–пт 9:00–18:00 (текущий график)</th>
+<td class="data row0 col0" id="T_70233_row0_col0">41%</td>
+<td class="data row0 col1" id="T_70233_row0_col1">30</td>
+<td class="data row0 col2" id="T_70233_row0_col2">212</td>
+<td class="data row0 col3" id="T_70233_row0_col3">44.0%</td>
+<td class="data row0 col4" id="T_70233_row0_col4">+11.0</td>
+<td class="data row0 col5" id="T_70233_row0_col5">+13.6</td>
+<td class="data row0 col6" id="T_70233_row0_col6">+4.5</td>
+<td class="data row0 col7" id="T_70233_row0_col7">+8.7</td>
+<td class="data row0 col8" id="T_70233_row0_col8">False</td>
+</tr>
+<tr>
+<th class="row_heading level0 row1" id="T_70233_level0_row1">пн–пт 8:00–21:00</th>
+<td class="data row1 col0" id="T_70233_row1_col0">58%</td>
+<td class="data row1 col1" id="T_70233_row1_col1">43</td>
+<td class="data row1 col2" id="T_70233_row1_col2">301</td>
+<td class="data row1 col3" id="T_70233_row1_col3">41.8%</td>
+<td class="data row1 col4" id="T_70233_row1_col4">+11.5</td>
+<td class="data row1 col5" id="T_70233_row1_col5">+11.4</td>
+<td class="data row1 col6" id="T_70233_row1_col6">+6.7</td>
+<td class="data row1 col7" id="T_70233_row1_col7">+8.7</td>
+<td class="data row1 col8" id="T_70233_row1_col8">True</td>
+</tr>
+<tr>
+<th class="row_heading level0 row2" id="T_70233_level0_row2">ежедневно 8:00–21:00</th>
+<td class="data row2 col0" id="T_70233_row2_col0">74%</td>
+<td class="data row2 col1" id="T_70233_row2_col1">55</td>
+<td class="data row2 col2" id="T_70233_row2_col2">386</td>
+<td class="data row2 col3" id="T_70233_row2_col3">42.2%</td>
+<td class="data row2 col4" id="T_70233_row2_col4">+11.7</td>
+<td class="data row2 col5" id="T_70233_row2_col5">+10.1</td>
+<td class="data row2 col6" id="T_70233_row2_col6">+8.7</td>
+<td class="data row2 col7" id="T_70233_row2_col7">+8.7</td>
+<td class="data row2 col8" id="T_70233_row2_col8">True</td>
+</tr>
+<tr>
+<th class="row_heading level0 row3" id="T_70233_level0_row3">ежедневно 8:00–23:00</th>
+<td class="data row3 col0" id="T_70233_row3_col0">85%</td>
+<td class="data row3 col1" id="T_70233_row3_col1">63</td>
+<td class="data row3 col2" id="T_70233_row3_col2">442</td>
+<td class="data row3 col3" id="T_70233_row3_col3">42.2%</td>
+<td class="data row3 col4" id="T_70233_row3_col4">+12.2</td>
+<td class="data row3 col5" id="T_70233_row3_col5">+9.4</td>
+<td class="data row3 col6" id="T_70233_row3_col6">+10.4</td>
+<td class="data row3 col7" id="T_70233_row3_col7">+8.7</td>
+<td class="data row3 col8" id="T_70233_row3_col8">True</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
+<img alt="No description has been provided for this image" class="" src="data:image/png;base64,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ZbpTaBcITcKocufOZRI2/vTTT6YVgbau2Lhxo0ycONF0ndCEizapUqWSl19uLDNmzDSjPQQPDOi87du/L9myZZV27dqbxJHaakSH3vzkk49D5HhQW7ZsMUklIxt2Mz4RXAAAAAAAB3l5eUutOmGHR4zrMsSU3iBXrlw5xLR3333XDL+oN/Q22bNnN/N5eHiE+HvkyJ/M33oDrPkItDvBgAEDzI108Jvf7NmzmfnHjRsXpgw6WoR68cVG8vHHH4VbTh2xoVChQiYfRGTBhUqVKkmOHDki3WZvb29TlpQpU0Y6nw7NuWnTRhMs0aEls2TxNTkRvv32WxNM0G1esGC+jBgxUhYsWGhGrShatIgZtnLYsOEhWiLYWi9ocKFZs6BEjjb6uXXr1sqUKVNMPobbt++Y5JUTJ06Qhg1D7lunT582Q2J+801Q64uEKIm/vx/pZpAo7f33MTkXAABAgsy5EBDwxOHP2jLne6X3iYWSwZl1nySJW5inyvElMY9OEt161+Ebu3TpLIcOHTItARKbPn36yMyZs2Tv3j3hjgIRHd9+20N+//13073DWXXv7GMNLRcAAAAAwAF6M8+IIHFHW0Nol4MRI0bIF198IYnFxo0b5dy5c6aryYAB/WMcWNAEklOnTjVDhCZkJHQEAAAAACRY2kpEh5TcuXOX3L17VxKLVatWybx586V3794mf0NMaZcQHWWibNkykpDRcgEAAAAAkKBlzZrV5CVITPr37++U5bRv314SA1ouAAAAAAAASwguAAAAAAAASwguAAAAAAAAggsAAAAAACD+0HIBAAAAAABYQnABAAAAAABYQnABAAAAAABYQnABAAAAAABYQnABAAAAAABYQnABAAAAAABYQnABAAAAAABYQnABAAAAAABY4mHt47AJCAiQwMBA+99JkiQRNzdrsZuAJ090QfblhP47sdaT1o3+AAAAAACeDgQXnGTQoB/krz//tN/4a5xBf8+Y0UcqVqwkTZq8KilTpXJomV26dJaiRYtKh44fmL/bt28nlStXlrbvvme5vFu3bpFFPy+UCxcuStq0aaVK1ary+uvNJHny5NFexuPHj2XJ4l9k8+ZNcvXqVUmdOo2UKFlSWrRoKenTpw8z/507d+TTrh/L22+3lcpVqljeBgAAAABAwkBwwYnSpEkjEydNsf/98MEDOXL0iEycMF52794l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"/>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=e4a7f5e5">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">W</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">CHOSEN_WINDOW</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">W</span><span class="p">]</span>
+<span class="n">breakeven</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">break_even_compliance</span><span class="p">(</span><span class="n">deals</span><span class="p">)</span>
+<span class="n">comp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">c</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">speed_test_design</span><span class="p">(</span><span class="n">deals</span><span class="p">,</span> <span class="n">compliance</span><span class="o">=</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">W</span><span class="p">,</span> <span class="p">[</span><span class="s2">"ожидаемый эффект в окне, п.п."</span><span class="p">,</span> <span class="s2">"MDE в окне, п.п."</span><span class="p">]]</span>
+                     <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]})</span><span class="o">.</span><span class="n">T</span>
+<span class="n">comp</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"выполнение правила (доля B-лидов с звонком ≤ 15 мин)"</span>
+<span class="n">comp</span><span class="p">[</span><span class="s2">"тест заметит эффект"</span><span class="p">]</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">comp</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">display</span><span class="p">(</span><span class="n">comp</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="n">c</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:+.1f}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">comp</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="mi">2</span><span class="p">]}))</span>
+
+<span class="n">n_group</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">opt</span><span class="p">[</span><span class="s2">"лидов на группу за 14 дней"</span><span class="p">])</span>
+<span class="n">p_control</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="s2">"baseline дозвона в окне"</span><span class="p">]</span>
+<span class="n">mde</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="s2">"MDE в окне, п.п."</span><span class="p">]</span> <span class="o">/</span> <span class="mi">100</span>
+<span class="n">expected</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="s2">"ожидаемый эффект в окне, п.п."</span><span class="p">]</span> <span class="o">/</span> <span class="mi">100</span>
+<span class="n">design</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span>
+    <span class="s2">"Срок теста"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">TEST_DAYS</span><span class="si">}</span><span class="s2"> дней (2 полные недели — учитывает недельную сезонность)"</span><span class="p">,</span>
+    <span class="s2">"Окно правила «звонок ≤ 15 мин»"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">W</span><span class="si">}</span><span class="s2"> — </span><span class="si">{</span><span class="n">opt</span><span class="p">[</span><span class="s1">'доля лидов в окне'</span><span class="p">]</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2"> лидов"</span><span class="p">,</span>
+    <span class="s2">"Анализируемая выборка"</span><span class="p">:</span> <span class="s2">"лиды, созданные в окне (заранее зафиксировано в плане теста)"</span><span class="p">,</span>
+    <span class="s2">"Лидов в окне в день (с марта 2024)"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">opt</span><span class="p">[</span><span class="s1">'лидов в окне в день'</span><span class="p">]</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Лидов на группу за 14 дней (50/50)"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">n_group</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Baseline reached_24h (контроль)"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">p_control</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"α / мощность"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">power</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">, двусторонний тест"</span><span class="p">,</span>
+    <span class="s2">"MDE за 14 дней"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"+</span><span class="si">{</span><span class="n">mde</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> п.п. (с </span><span class="si">{</span><span class="n">p_control</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2"> до </span><span class="si">{</span><span class="n">p_control</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mde</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span>
+    <span class="s2">"Ожидаемый эффект при полном выполнении"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"+</span><span class="si">{</span><span class="n">expected</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> п.п."</span><span class="p">,</span>
+    <span class="s2">"Минимальное выполнение правила"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">breakeven</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2"> лидов группы B получают звонок ≤ 15 мин"</span><span class="p">,</span>
+    <span class="s2">"Вывод"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"ожидаемый эффект ≥ MDE — тест за 14 дней имеет смысл при выполнении правила ≥ "</span>
+              <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">breakeven</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">expected</span> <span class="o">&gt;=</span> <span class="n">mde</span> <span class="k">else</span> <span class="s2">"ожидаемый эффект &lt; MDE — за 14 дней тест эффект не покажет"</span><span class="p">),</span>
+<span class="p">},</span> <span class="n">name</span><span class="o">=</span><span class="s2">"значение"</span><span class="p">)</span>
+<span class="n">design</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
+<style type="text/css">
+</style>
+<table id="T_30f0b">
+<thead>
+<tr>
+<th class="blank level0"> </th>
+<th class="col_heading level0 col0" id="T_30f0b_level0_col0">ожидаемый эффект в окне, п.п.</th>
+<th class="col_heading level0 col1" id="T_30f0b_level0_col1">MDE в окне, п.п.</th>
+<th class="col_heading level0 col2" id="T_30f0b_level0_col2">тест заметит эффект</th>
+</tr>
+<tr>
+<th class="index_name level0">выполнение правила (доля B-лидов с звонком ≤ 15 мин)</th>
+<th class="blank col0"> </th>
+<th class="blank col1"> </th>
+<th class="blank col2"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="row_heading level0 row0" id="T_30f0b_level0_row0">100%</th>
+<td class="data row0 col0" id="T_30f0b_row0_col0">+12.2</td>
+<td class="data row0 col1" id="T_30f0b_row0_col1">+9.4</td>
+<td class="data row0 col2" id="T_30f0b_row0_col2">True</td>
+</tr>
+<tr>
+<th class="row_heading level0 row1" id="T_30f0b_level0_row1">90%</th>
+<td class="data row1 col0" id="T_30f0b_row1_col0">+11.0</td>
+<td class="data row1 col1" id="T_30f0b_row1_col1">+9.4</td>
+<td class="data row1 col2" id="T_30f0b_row1_col2">True</td>
+</tr>
+<tr>
+<th class="row_heading level0 row2" id="T_30f0b_level0_row2">80%</th>
+<td class="data row2 col0" id="T_30f0b_row2_col0">+9.8</td>
+<td class="data row2 col1" id="T_30f0b_row2_col1">+9.4</td>
+<td class="data row2 col2" id="T_30f0b_row2_col2">True</td>
+</tr>
+<tr>
+<th class="row_heading level0 row3" id="T_30f0b_level0_row3">70%</th>
+<td class="data row3 col0" id="T_30f0b_row3_col0">+8.6</td>
+<td class="data row3 col1" id="T_30f0b_row3_col1">+9.4</td>
+<td class="data row3 col2" id="T_30f0b_row3_col2">False</td>
+</tr>
+<tr>
+<th class="row_heading level0 row4" id="T_30f0b_level0_row4">60%</th>
+<td class="data row4 col0" id="T_30f0b_row4_col0">+7.3</td>
+<td class="data row4 col1" id="T_30f0b_row4_col1">+9.4</td>
+<td class="data row4 col2" id="T_30f0b_row4_col2">False</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[12]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
 <th>значение</th>
 </tr>
 </thead>
@@ -8852,28 +9099,40 @@ CM (маржинальная прибыль) = €3,194,828
 <td>14 дней (2 полные недели — учитывает недельную...</td>
 </tr>
 <tr>
-<th>Лидов в день (с марта 2024)</th>
-<td>74</td>
+<th>Окно правила «звонок ≤ 15 мин»</th>
+<td>ежедневно 8:00–23:00 — 85% лидов</td>
+</tr>
+<tr>
+<th>Анализируемая выборка</th>
+<td>лиды, созданные в окне (заранее зафиксировано ...</td>
+</tr>
+<tr>
+<th>Лидов в окне в день (с марта 2024)</th>
+<td>63</td>
 </tr>
 <tr>
 <th>Лидов на группу за 14 дней (50/50)</th>
-<td>519</td>
+<td>442</td>
 </tr>
 <tr>
 <th>Baseline reached_24h (контроль)</th>
-<td>59.3%</td>
+<td>42.2%</td>
 </tr>
 <tr>
 <th>α / мощность</th>
-<td>0.05 / 80%</td>
+<td>0.05 / 80%, двусторонний тест</td>
 </tr>
 <tr>
 <th>MDE за 14 дней</th>
-<td>+8.4 п.п. (с 59.3% до 67.7%)</td>
+<td>+9.4 п.п. (с 42.2% до 51.6%)</td>
 </tr>
 <tr>
-<th>Ожидаемый эффект (раздел 4)</th>
-<td>+10 п.п.</td>
+<th>Ожидаемый эффект при полном выполнении</th>
+<td>+12.2 п.п.</td>
+</tr>
+<tr>
+<th>Минимальное выполнение правила</th>
+<td>77% лидов группы B получают звонок ≤ 15 мин</td>
 </tr>
 <tr>
 <th>Вывод</th>
@@ -8883,6 +9142,24 @@ CM (маржинальная прибыль) = €3,194,828
 </table>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=855ec0ec">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Что это значит.</strong> При нынешнем графике (будни 9–18) правило затрагивает только 41% лидов: в окне тест
+заметит лишь +13.6 п.п., а ожидаемый эффект +11.0 п.п. — тест за 14 дней провалился бы при любом результате.
+Если звонить ежедневно с 8:00 до 23:00, окно покрывает 85% лидов, MDE падает до +9.4 п.п., а ожидаемый эффект
++12.2 п.п. Запас небольшой: при выполнении правила ниже ~77% тест снова теряет чувствительность. Поэтому:</p>
+<ol>
+<li>перед стартом — 3 дня «технического пилота» маршрутизации, чтобы убедиться, что ≥ 80% лидов получают звонок ≤ 15 мин;</li>
+<li>метрику выполнения смотрим каждый день теста (это не «подглядывание» в результат: первичную метрику не проверяем до 14-го дня).</li>
+</ol>
 </div>
 </div>
 </div>
@@ -8916,11 +9193,11 @@ CM (маржинальная прибыль) = €3,194,828
 </tr>
 <tr>
 <td>Группа B (тест)</td>
-<td>автоназначение менеджера + push + авто-сообщение клиенту + правило «звонок ≤ 15 мин»</td>
+<td>автоназначение менеджера + push + авто-сообщение клиенту + правило «звонок ≤ 15 мин» с 8:00 до 23:00 (сменный график)</td>
 </tr>
 <tr>
 <td>Кто участвует</td>
-<td>все новые лиды из всех источников; одни и те же менеджеры работают с обеими группами</td>
+<td>все новые лиды из всех источников; анализ — лиды, созданные ежедневно с 8:00 до 23:00; одни и те же менеджеры работают с обеими группами</td>
 </tr>
 <tr>
 <td>Длительность</td>
@@ -8937,6 +9214,10 @@ CM (маржинальная прибыль) = €3,194,828
 <tr>
 <td>Решение</td>
 <td>внедряем, если <code>reached_24h</code> вырос значимо и guardrail-метрики не ухудшились; через 45 дней подтверждаем по C1</td>
+</tr>
+<tr>
+<td>Условие валидности</td>
+<td>≥ 80% лидов группы B получают звонок ≤ 15 мин (проверяем ежедневно); иначе результат «нет эффекта» не опровергает гипотезу</td>
 </tr>
 </tbody>
 </table>
@@ -8965,7 +9246,7 @@ CM (маржинальная прибыль) = €3,194,828
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">commit</span> <span class="o">=</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"stage"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">"Payment Done"</span><span class="p">,</span> <span class="s2">"Waiting For Payment"</span><span class="p">])</span>
@@ -9005,57 +9286,57 @@ CM (маржинальная прибыль) = €3,194,828
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_c8543">
+<table id="T_291cf">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_c8543_level0_col0">лидов с продуктом в день</th>
-<th class="col_heading level0 col1" id="T_c8543_level0_col1">лидов на группу за 14 дней</th>
-<th class="col_heading level0 col2" id="T_c8543_level0_col2">baseline: оплата или счёт</th>
-<th class="col_heading level0 col3" id="T_c8543_level0_col3">MDE за 14 дней, п.п.</th>
-<th class="col_heading level0 col4" id="T_c8543_level0_col4">вечер: оплата или счёт</th>
-<th class="col_heading level0 col5" id="T_c8543_level0_col5">утро: оплата или счёт</th>
-<th class="col_heading level0 col6" id="T_c8543_level0_col6">доля «Waiting For Payment»</th>
-<th class="col_heading level0 col7" id="T_c8543_level0_col7">доля «передумал / нужно подумать»</th>
+<th class="col_heading level0 col0" id="T_291cf_level0_col0">лидов с продуктом в день</th>
+<th class="col_heading level0 col1" id="T_291cf_level0_col1">лидов на группу за 14 дней</th>
+<th class="col_heading level0 col2" id="T_291cf_level0_col2">baseline: оплата или счёт</th>
+<th class="col_heading level0 col3" id="T_291cf_level0_col3">MDE за 14 дней, п.п.</th>
+<th class="col_heading level0 col4" id="T_291cf_level0_col4">вечер: оплата или счёт</th>
+<th class="col_heading level0 col5" id="T_291cf_level0_col5">утро: оплата или счёт</th>
+<th class="col_heading level0 col6" id="T_291cf_level0_col6">доля «Waiting For Payment»</th>
+<th class="col_heading level0 col7" id="T_291cf_level0_col7">доля «передумал / нужно подумать»</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_c8543_level0_row0">Digital Marketing</th>
-<td class="data row0 col0" id="T_c8543_row0_col0">4.3</td>
-<td class="data row0 col1" id="T_c8543_row0_col1">30</td>
-<td class="data row0 col2" id="T_c8543_row0_col2">31.8%</td>
-<td class="data row0 col3" id="T_c8543_row0_col3">+35</td>
-<td class="data row0 col4" id="T_c8543_row0_col4">47.6%</td>
-<td class="data row0 col5" id="T_c8543_row0_col5">32.9%</td>
-<td class="data row0 col6" id="T_c8543_row0_col6">7.5%</td>
-<td class="data row0 col7" id="T_c8543_row0_col7">21.9%</td>
+<th class="row_heading level0 row0" id="T_291cf_level0_row0">Digital Marketing</th>
+<td class="data row0 col0" id="T_291cf_row0_col0">4.3</td>
+<td class="data row0 col1" id="T_291cf_row0_col1">30</td>
+<td class="data row0 col2" id="T_291cf_row0_col2">31.8%</td>
+<td class="data row0 col3" id="T_291cf_row0_col3">+35</td>
+<td class="data row0 col4" id="T_291cf_row0_col4">47.6%</td>
+<td class="data row0 col5" id="T_291cf_row0_col5">32.9%</td>
+<td class="data row0 col6" id="T_291cf_row0_col6">7.5%</td>
+<td class="data row0 col7" id="T_291cf_row0_col7">21.9%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_c8543_level0_row1">UX/UI Design</th>
-<td class="data row1 col0" id="T_c8543_row1_col0">3.2</td>
-<td class="data row1 col1" id="T_c8543_row1_col1">22</td>
-<td class="data row1 col2" id="T_c8543_row1_col2">31.8%</td>
-<td class="data row1 col3" id="T_c8543_row1_col3">+41</td>
-<td class="data row1 col4" id="T_c8543_row1_col4">41.1%</td>
-<td class="data row1 col5" id="T_c8543_row1_col5">32.4%</td>
-<td class="data row1 col6" id="T_c8543_row1_col6">9.4%</td>
-<td class="data row1 col7" id="T_c8543_row1_col7">20.5%</td>
+<th class="row_heading level0 row1" id="T_291cf_level0_row1">UX/UI Design</th>
+<td class="data row1 col0" id="T_291cf_row1_col0">3.2</td>
+<td class="data row1 col1" id="T_291cf_row1_col1">22</td>
+<td class="data row1 col2" id="T_291cf_row1_col2">31.8%</td>
+<td class="data row1 col3" id="T_291cf_row1_col3">+41</td>
+<td class="data row1 col4" id="T_291cf_row1_col4">41.1%</td>
+<td class="data row1 col5" id="T_291cf_row1_col5">32.4%</td>
+<td class="data row1 col6" id="T_291cf_row1_col6">9.4%</td>
+<td class="data row1 col7" id="T_291cf_row1_col7">20.5%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_c8543_level0_row2">Web Developer</th>
-<td class="data row2 col0" id="T_c8543_row2_col0">2.8</td>
-<td class="data row2 col1" id="T_c8543_row2_col1">19</td>
-<td class="data row2 col2" id="T_c8543_row2_col2">38.4%</td>
-<td class="data row2 col3" id="T_c8543_row2_col3">+43</td>
-<td class="data row2 col4" id="T_c8543_row2_col4">0.0%</td>
-<td class="data row2 col5" id="T_c8543_row2_col5">40.5%</td>
-<td class="data row2 col6" id="T_c8543_row2_col6">14.3%</td>
-<td class="data row2 col7" id="T_c8543_row2_col7">15.2%</td>
+<th class="row_heading level0 row2" id="T_291cf_level0_row2">Web Developer</th>
+<td class="data row2 col0" id="T_291cf_row2_col0">2.8</td>
+<td class="data row2 col1" id="T_291cf_row2_col1">19</td>
+<td class="data row2 col2" id="T_291cf_row2_col2">38.4%</td>
+<td class="data row2 col3" id="T_291cf_row2_col3">+43</td>
+<td class="data row2 col4" id="T_291cf_row2_col4">0.0%</td>
+<td class="data row2 col5" id="T_291cf_row2_col5">40.5%</td>
+<td class="data row2 col6" id="T_291cf_row2_col6">14.3%</td>
+<td class="data row2 col7" id="T_291cf_row2_col7">15.2%</td>
 </tr>
 </tbody>
 </table>
@@ -9115,7 +9396,7 @@ CM (маржинальная прибыль) = €3,194,828
 <li><strong>Провести A/B-тест по продуктам за 14 дней нельзя</strong> — не хватит данных, результат будет «разницы нет»
 независимо от того, работает изменение или нет.</li>
 <li>Продуктовые гипотезы стоит проверять как <strong>пилот</strong> с наблюдением до/после или после роста трафика; а A/B-тест в
-рамках 14 дней проводим на общей метрике всех лидов (раздел 5), где MDE = +8.4 п.п. меньше ожидаемого эффекта.</li>
+рамках 14 дней проводим на общей метрике всех лидов (раздел 5), где при звонках ежедневно 8:00–23:00 MDE = +9.4 п.п. меньше ожидаемых +12.2 п.п.</li>
 <li>Страница сайта (<code>page</code>) не спасает: на продуктовые страницы приходит всего 1.6–3.2 лида в день. Продуктовые
 тесты станут возможны, только когда вырастет трафик или продукт будет фиксироваться у каждого лида при заявке.</li>
 </ol>
@@ -9129,8 +9410,14 @@ CM (маржинальная прибыль) = €3,194,828
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="7.-%D0%9E%D0%B6%D0%B8%D0%B4%D0%B0%D0%B5%D0%BC%D1%8B%D0%B9-%D0%B1%D0%B8%D0%B7%D0%BD%D0%B5%D1%81-%D1%8D%D1%84%D1%84%D0%B5%D0%BA%D1%82">7. Ожидаемый бизнес-эффект<a class="anchor-link" href="#7.-%D0%9E%D0%B6%D0%B8%D0%B4%D0%B0%D0%B5%D0%BC%D1%8B%D0%B9-%D0%B1%D0%B8%D0%B7%D0%BD%D0%B5%D1%81-%D1%8D%D1%84%D1%84%D0%B5%D0%BA%D1%82">¶</a></h2><p>Если гипотеза подтвердится и рост дозвона на 10 п.п. перейдёт в C1 пропорционально
-(C1 у дозвонившихся выше, чем у недозвонившихся), оценим эффект на CM:</p>
+<h2 id="7.-%D0%9E%D0%B6%D0%B8%D0%B4%D0%B0%D0%B5%D0%BC%D1%8B%D0%B9-%D0%B1%D0%B8%D0%B7%D0%BD%D0%B5%D1%81-%D1%8D%D1%84%D1%84%D0%B5%D0%BA%D1%82">7. Ожидаемый бизнес-эффект<a class="anchor-link" href="#7.-%D0%9E%D0%B6%D0%B8%D0%B4%D0%B0%D0%B5%D0%BC%D1%8B%D0%B9-%D0%B1%D0%B8%D0%B7%D0%BD%D0%B5%D1%81-%D1%8D%D1%84%D1%84%D0%B5%D0%BA%D1%82">¶</a></h2><p>Если гипотеза подтвердится, рост дозвона перейдёт в C1 через разницу конверсий: у лидов, с которыми поговорили
+в первые 24 часа, C1 выше, чем у остальных. Эта разница наблюдательная и, скорее всего, завышает причинный эффект,
+поэтому считаем три сценария и показываем диапазон, а не одну цифру:</p>
+<ul>
+<li><strong>оптимистичный</strong> — правило выполняется на 100%, разница C1 переносится полностью;</li>
+<li><strong>базовый</strong> — выполнение 80% (порог валидности теста), разница C1 переносится полностью;</li>
+<li><strong>консервативный</strong> — выполнение 80%, переносится только половина разницы C1.</li>
+</ul>
 </div>
 </div>
 </div>
@@ -9139,19 +9426,27 @@ CM (маржинальная прибыль) = €3,194,828
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">c1_reached</span> <span class="o">=</span> <span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">deals</span><span class="p">[</span><span class="s2">"reached_24h"</span><span class="p">],</span> <span class="s2">"is_student"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="n">c1_not</span> <span class="o">=</span> <span class="n">deals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">deals</span><span class="p">[</span><span class="s2">"reached_24h"</span><span class="p">],</span> <span class="s2">"is_student"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">c1_new</span> <span class="o">=</span> <span class="p">(</span><span class="n">reached</span> <span class="o">+</span> <span class="mf">0.10</span><span class="p">)</span> <span class="o">*</span> <span class="n">c1_reached</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">reached</span> <span class="o">-</span> <span class="mf">0.10</span><span class="p">)</span> <span class="o">*</span> <span class="n">c1_not</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">m0</span><span class="o">.</span><span class="n">copy</span><span class="p">();</span> <span class="n">m</span><span class="p">[</span><span class="s2">"C1"</span><span class="p">]</span> <span class="o">=</span> <span class="n">base</span><span class="p">[</span><span class="s2">"C1"</span><span class="p">]</span> <span class="o">*</span> <span class="n">c1_new</span> <span class="o">/</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"is_student"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span>
-    <span class="s2">"C1 у дозвонившихся за 24 ч"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">c1_reached</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-    <span class="s2">"C1 у остальных"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">c1_not</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-    <span class="s2">"Ожидаемый рост C1"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">c1_new</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">deals</span><span class="p">[</span><span class="s1">'is_student'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">:</span><span class="s2">+.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-    <span class="s2">"Ожидаемый рост CM за год"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"+€</span><span class="si">{</span><span class="n">cm</span><span class="p">(</span><span class="o">**</span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cm0</span><span class="si">:</span><span class="s2">,.0f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-<span class="p">})</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">"оценка"</span><span class="p">)</span>
+<span class="n">c1_base</span> <span class="o">=</span> <span class="n">deals</span><span class="p">[</span><span class="s2">"is_student"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">scenario</span><span class="p">(</span><span class="n">compliance</span><span class="p">,</span> <span class="n">transfer</span><span class="p">):</span>
+    <span class="n">d_reach</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">speed_test_design</span><span class="p">(</span><span class="n">deals</span><span class="p">,</span> <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span><span class="p">)</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">M</span><span class="o">.</span><span class="n">CHOSEN_WINDOW</span><span class="p">,</span> <span class="s2">"эффект на всех лидах, п.п."</span><span class="p">]</span> <span class="o">/</span> <span class="mi">100</span>
+    <span class="n">c1_new</span> <span class="o">=</span> <span class="n">c1_base</span> <span class="o">+</span> <span class="n">d_reach</span> <span class="o">*</span> <span class="p">(</span><span class="n">c1_reached</span> <span class="o">-</span> <span class="n">c1_not</span><span class="p">)</span> <span class="o">*</span> <span class="n">transfer</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">m0</span><span class="o">.</span><span class="n">copy</span><span class="p">();</span> <span class="n">m</span><span class="p">[</span><span class="s2">"C1"</span><span class="p">]</span> <span class="o">=</span> <span class="n">base</span><span class="p">[</span><span class="s2">"C1"</span><span class="p">]</span> <span class="o">*</span> <span class="n">c1_new</span> <span class="o">/</span> <span class="n">c1_base</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"рост дозвона на всех лидах, п.п."</span><span class="p">:</span> <span class="n">d_reach</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"рост C1"</span><span class="p">:</span> <span class="n">c1_new</span> <span class="o">/</span> <span class="n">c1_base</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">"доп. студентов в год"</span><span class="p">:</span> <span class="n">base</span><span class="p">[</span><span class="s2">"B"</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">c1_new</span> <span class="o">/</span> <span class="n">c1_base</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"рост CM в год, €"</span><span class="p">:</span> <span class="n">cm</span><span class="p">(</span><span class="o">**</span><span class="n">m</span><span class="p">)</span> <span class="o">-</span> <span class="n">cm0</span><span class="p">}</span>
+
+
+<span class="n">scen</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"оптимистичный"</span><span class="p">:</span> <span class="n">scenario</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="s2">"базовый"</span><span class="p">:</span> <span class="n">scenario</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                     <span class="s2">"консервативный"</span><span class="p">:</span> <span class="n">scenario</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)})</span><span class="o">.</span><span class="n">T</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"C1 у дозвонившихся за 24 ч: </span><span class="si">{</span><span class="n">c1_reached</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">, у остальных: </span><span class="si">{</span><span class="n">c1_not</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">scen</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s2">"рост дозвона на всех лидах, п.п."</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:+.1f}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"рост C1"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:+.1%}</span><span class="s2">"</span><span class="p">,</span>
+                   <span class="s2">"доп. студентов в год"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:+.0f}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"рост CM в год, €"</span><span class="p">:</span> <span class="s2">"+€</span><span class="si">{:,.0f}</span><span class="s2">"</span><span class="p">})</span>
 </pre></div>
 </div>
 </div>
@@ -9161,50 +9456,105 @@ CM (маржинальная прибыль) = €3,194,828
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>C1 у дозвонившихся за 24 ч: 6.8%, у остальных: 2.3%
+</pre>
+</div>
+</div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[12]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[14]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
+<style type="text/css">
 </style>
-<table border="1" class="dataframe">
+<table id="T_5579e">
 <thead>
-<tr style="text-align: right;">
-<th></th>
-<th>оценка</th>
+<tr>
+<th class="blank level0"> </th>
+<th class="col_heading level0 col0" id="T_5579e_level0_col0">рост дозвона на всех лидах, п.п.</th>
+<th class="col_heading level0 col1" id="T_5579e_level0_col1">рост C1</th>
+<th class="col_heading level0 col2" id="T_5579e_level0_col2">доп. студентов в год</th>
+<th class="col_heading level0 col3" id="T_5579e_level0_col3">рост CM в год, €</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th>C1 у дозвонившихся за 24 ч</th>
-<td>6.8%</td>
+<th class="row_heading level0 row0" id="T_5579e_level0_row0">оптимистичный</th>
+<td class="data row0 col0" id="T_5579e_row0_col0">+10.4</td>
+<td class="data row0 col1" id="T_5579e_row0_col1">+11.2%</td>
+<td class="data row0 col2" id="T_5579e_row0_col2">+94</td>
+<td class="data row0 col3" id="T_5579e_row0_col3">+€374,835</td>
 </tr>
 <tr>
-<th>C1 у остальных</th>
-<td>2.3%</td>
+<th class="row_heading level0 row1" id="T_5579e_level0_row1">базовый</th>
+<td class="data row1 col0" id="T_5579e_row1_col0">+8.3</td>
+<td class="data row1 col1" id="T_5579e_row1_col1">+9.0%</td>
+<td class="data row1 col2" id="T_5579e_row1_col2">+75</td>
+<td class="data row1 col3" id="T_5579e_row1_col3">+€299,868</td>
 </tr>
 <tr>
-<th>Ожидаемый рост C1</th>
-<td>+10.8%</td>
-</tr>
-<tr>
-<th>Ожидаемый рост CM за год</th>
-<td>+€360,269</td>
+<th class="row_heading level0 row2" id="T_5579e_level0_row2">консервативный</th>
+<td class="data row2 col0" id="T_5579e_row2_col0">+8.3</td>
+<td class="data row2 col1" id="T_5579e_row2_col1">+4.5%</td>
+<td class="data row2 col2" id="T_5579e_row2_col2">+38</td>
+<td class="data row2 col3" id="T_5579e_row2_col3">+€149,934</td>
 </tr>
 </tbody>
 </table>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3ae88346">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Сохраняем ключевые результаты в <code>reports/results_03.json</code> — их использует итоговый ноутбук 04, чтобы
+цифры не переписывались вручную.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=55a05201">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"C1"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">base</span><span class="p">[</span><span class="s2">"C1"</span><span class="p">]),</span> <span class="s2">"CAC"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">base</span><span class="p">[</span><span class="s2">"CAC"</span><span class="p">]),</span> <span class="s2">"CLTV"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">base</span><span class="p">[</span><span class="s2">"CLTV"</span><span class="p">]),</span> <span class="s2">"CM"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">base</span><span class="p">[</span><span class="s2">"CM"</span><span class="p">]),</span>
+    <span class="s2">"sensitivity_C1_plus10"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sens</span><span class="p">[</span><span class="s2">"C1 +10%"</span><span class="p">]),</span>
+    <span class="s2">"reach_gap_raw_pp"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">raw_gap</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span> <span class="s2">"reach_gap_adjusted_pp"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">adj_gap</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
+    <span class="s2">"test_window"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">CHOSEN_WINDOW</span><span class="p">,</span> <span class="s2">"test_window_share"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">opt</span><span class="p">[</span><span class="s2">"доля лидов в окне"</span><span class="p">]),</span>
+    <span class="s2">"test_n_group"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">opt</span><span class="p">[</span><span class="s2">"лидов на группу за 14 дней"</span><span class="p">]),</span> <span class="s2">"test_baseline"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_control</span><span class="p">),</span> <span class="s2">"test_mde_pp"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">mde</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
+    <span class="s2">"test_expected_pp"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">expected</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span> <span class="s2">"test_breakeven_compliance"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">breakeven</span><span class="p">),</span>
+    <span class="s2">"office_hours_expected_pp"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"ожидаемый эффект в окне, п.п."</span><span class="p">]),</span>
+    <span class="s2">"office_hours_mde_pp"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"MDE в окне, п.п."</span><span class="p">]),</span>
+    <span class="s2">"cm_uplift"</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">scen</span><span class="p">[</span><span class="s2">"рост CM в год, €"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+    <span class="s2">"c1_uplift"</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">scen</span><span class="p">[</span><span class="s2">"рост C1"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+<span class="p">}</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"reports"</span> <span class="o">/</span> <span class="s2">"results_03.json"</span>
+<span class="n">out</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Saved </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Saved results_03.json
+</pre>
 </div>
 </div>
 </div>
@@ -9218,15 +9568,21 @@ CM (маржинальная прибыль) = €3,194,828
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 id="8.-%D0%98%D1%82%D0%BE%D0%B3%D0%B8-%D0%BF%D1%80%D0%BE%D0%B4%D1%83%D0%BA%D1%82%D0%BE%D0%B2%D0%BE%D0%B9-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D1%82%D0%B8%D0%BA%D0%B8">8. Итоги продуктовой аналитики<a class="anchor-link" href="#8.-%D0%98%D1%82%D0%BE%D0%B3%D0%B8-%D0%BF%D1%80%D0%BE%D0%B4%D1%83%D0%BA%D1%82%D0%BE%D0%B2%D0%BE%D0%B9-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D1%82%D0%B8%D0%BA%D0%B8">¶</a></h2><ol>
 <li>Все продукты прибыльны после маркетинга; CAC €175–189 при CLTV €2.5–4.5k (ROMI 13–25×). Узкое место — конверсия (C1 ≈ 4%).</li>
-<li>Точка роста — <strong>C1</strong>: самый большой запас и понятный механизм улучшения (40% проигранных сделок — «не отвечает / перестал отвечать»).</li>
+<li>Точка роста — <strong>C1</strong>: самый большой запас и понятный механизм улучшения (31% лидов ни разу не поговорили с менеджером,
+40% проигранных сделок — «не отвечает / перестал отвечать»).</li>
 <li>Дерево метрик: CM ← Revenue ← C1 ← дозвон ← SLA первого контакта.</li>
-<li>Гипотеза: автоназначение лида + контакт ≤ 15 минут увеличат дозвон в первые 24 ч на ≥ 10 п.п.</li>
-<li>A/B-тест (только дизайн, данных эксперимента нет): срок зафиксирован — 14 дней, 519 лидов на группу, MDE = +8.4 п.п. при ожидаемых +10 п.п., α = 0.05, мощность 80%, z-тест для долей; итоговая проверка по C1
-через 45 дней.</li>
+<li>Связь скорости и дозвона устойчива: +19 п.п. с учётом источника, времени заявки, месяца и менеджера.</li>
+<li>Гипотеза: автоназначение лида + звонок ≤ 15 минут <strong>ежедневно с 8:00 до 23:00</strong> увеличат дозвон в первые 24 ч на ≥ 10 п.п.</li>
+<li>A/B-тест (только дизайн, данных эксперимента нет): 14 дней, 442 лида на группу (лиды окна 8–23), baseline 42.2%,
+MDE +9.4 п.п. при ожидаемых +12.2 п.п., α = 0.05, мощность 80%, z-тест для долей. Условие: правило выполняется
+у ≥ 80% лидов группы B. При нынешнем графике 9–18 тест за 14 дней не имел бы смысла (MDE +13.6 &gt; эффекта +11.0).
+Итоговая проверка по C1 — через 45 дней.</li>
+<li>Эффект при подтверждении: <strong>+€150–375k маржи в год</strong> (консервативный – оптимистичный сценарий, базовый ≈ €300k).</li>
 <li>Гипотезы по продуктам: Digital Marketing — вечерняя группа, UX/UI — кейс выпускника и разбор портфолио после
 консультации, Web Developer — напоминания и рассрочка для выставленных счетов. При 3–4 лидах с продуктом в день
 MDE за 14 дней +35–43 п.п., поэтому продуктовые A/B-тесты за 2 недели невозможны — их проверяем пилотом.</li>
 </ol>
+<p>➡️ Ответ на бизнес-вопрос и приоритеты действий — <a href="04_conclusions.ipynb">04_conclusions.ipynb</a></p>
 </div>
 </div>
 </div>

@@ -11,4 +11,5 @@ Web Developer,Payment reminders + instalments,14.3% stuck in Waiting For Payment
 Web Developer,Payment reminders + instalments,14.3% stuck in Waiting For Payment,Invoices paid,2. One-sided test,1.2,8,0.6284,37.0,7.5,1029,not detectable in 14 days
 Web Developer,Payment reminders + instalments,14.3% stuck in Waiting For Payment,Invoices paid,"3. All 3 products, 50/50",4.5,31,0.7254,23.7,7.5,1029,not detectable in 14 days
 Web Developer,Payment reminders + instalments,14.3% stuck in Waiting For Payment,Invoices paid,4. Historical control,1.2,16,0.6284,28.9,7.5,1029,not detectable in 14 days
-All leads,Call within 15 minutes,Reach 77% vs 59%,Reached in 24 h,1. Classic 50/50,74.2,519,0.5935,8.4,10.0,10,detectable in 14 days
+All leads,"Call ≤ 15 min, Mon–Fri 9–18",Reach 77% vs 59%,Reached in 24 h,1. Mon–Fri 9–18 (office hours),30.3,212,0.4403,13.6,11.0,22,not detectable in 14 days
+All leads,"Call ≤ 15 min, daily 8–23",Reach 77% vs 59%,Reached in 24 h,2. Daily 8–23 (shift schedule),63.2,442,0.4222,9.4,12.2,9,detectable in 14 days

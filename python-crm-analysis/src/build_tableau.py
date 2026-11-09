@@ -7,6 +7,7 @@ ad spend is spread over the leads of its source and month with a FIXED LOD.
 Dashboard "CRM Dashboard": KPI cards, monthly leads and C1, C1 and CAC by source (click a source to filter),
 speed to lead, revenue by product, prepayments by student status.
 Dashboard "A/B Test Options": product hypotheses and the MDE of four 14-day designs (reports/tableau/ab_variants.csv).
+Both datasources carry a Hyper extract (Data/Extracts/*.hyper), because Tableau Public only accepts extracts.
 Run: python src/export_tableau.py && python src/build_ab_variants.py && python src/build_tableau.py
 """
 import uuid
@@ -15,6 +16,8 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 
 import pandas as pd
+from tableauhyperapi import (Connection, CreateMode, HyperProcess, Inserter, SqlType, TableDefinition, TableName,
+                             Telemetry)
 
 OUT_DIR = Path(__file__).resolve().parents[1] / "reports" / "tableau"
 TWBX = OUT_DIR / "crm_dashboard.twbx"
@@ -197,13 +200,56 @@ def join(left, right, condition):
     return f"<relation join='left' type='join'><clause type='join'>{condition}</clause>{left}{right}</relation>"
 
 
-def datasource_xml(ds, conn, caption, filename, relation_xml, meta, extra=""):
+def write_hyper(df, path):
+    """Writes df to a Hyper file as table Extract.Extract (the layout Tableau uses for its own extracts)."""
+    sql = {"string": SqlType.text(), "integer": SqlType.big_int(), "real": SqlType.double()}
+    table = TableName("Extract", "Extract")
+    definition = TableDefinition(table, [TableDefinition.Column(c, sql[dtype(c)]) for c in df.columns])
+    rows = [[None if pd.isna(v) else (int(v) if dtype(c) == "integer" else float(v) if dtype(c) == "real" else str(v))
+             for c, v in zip(df.columns, r)] for r in df.itertuples(index=False)]
+    path.unlink(missing_ok=True)
+    with HyperProcess(Telemetry.DO_NOT_SEND_USAGE_DATA_TO_TABLEAU) as hyper:
+        with Connection(hyper.endpoint, str(path), CreateMode.CREATE_AND_REPLACE) as con:
+            con.catalog.create_schema("Extract")
+            con.catalog.create_table(definition)
+            with Inserter(con, definition) as ins:
+                ins.add_rows(rows)
+                ins.execute()
+
+
+def extract_xml(df, dbname):
+    """<extract> element pointing at a packaged Hyper file whose columns keep the datasource's local names."""
+    remote = {"string": 129, "integer": 20, "real": 5}
+    maps = "".join(f"<map key='[{q(c)}]' value='[Extract].[{q(c)}]' />" for c in df.columns)
+    meta = "".join(
+        f"<metadata-record class='column'><remote-name>{q(c)}</remote-name><remote-type>{remote[dtype(c)]}</remote-type>"
+        f"<local-name>[{q(c)}]</local-name><parent-name>[Extract]</parent-name><remote-alias>{q(c)}</remote-alias>"
+        f"<ordinal>{i}</ordinal><local-type>{dtype(c)}</local-type>"
+        f"<aggregation>{'Count' if dtype(c) == 'string' else 'Sum'}</aggregation>"
+        f"<contains-null>true</contains-null></metadata-record>" for i, c in enumerate(df.columns))
+    return (f"<extract count='-1' enabled='true' units='records'>"
+            f"<connection access_mode='readonly' author-locale='en_US' class='hyper' dbname='{dbname}' "
+            f"default-settings='hyper' schema='Extract' sslmode='' tablename='Extract' "
+            f"update-time='{pd.Timestamp.now():%m/%d/%Y %I:%M:%S %p}' username='tableau_internal_user'>"
+            f"<relation name='Extract' table='[Extract].[Extract]' type='table' /><cols>{maps}</cols>"
+            f"<metadata-records>{meta}</metadata-records></connection></extract>")
+
+
+def read_typed(table):
+    df = pd.read_csv(OUT_DIR / table, dtype=str, keep_default_na=False, na_values=[""])
+    for c in df.columns:
+        if dtype(c) != "string":
+            df[c] = pd.to_numeric(df[c])
+    return df
+
+
+def datasource_xml(ds, conn, caption, filename, relation_xml, meta, extra="", extract=""):
     return (f"<datasource caption='{caption}' inline='true' name='{ds}' version='18.1'>"
             f"<connection class='federated'><named-connections><named-connection caption='{caption}' name='{conn}'>"
             f"<connection class='textscan' directory='Data/tableau' filename='{filename}' password='' server='' "
             f"workgroup-auth-mode='as-is' /></named-connection></named-connections>{relation_xml}"
-            f"<metadata-records>{meta}</metadata-records></connection><aliases enabled='yes' />{extra}"
-            f"<layout dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />"
+            f"<metadata-records>{meta}</metadata-records></connection><aliases enabled='yes' />{extra}{extract}"
+            f"<layout dim-ordering='alphabetic' dim-percentage='0.5' measure-ordering='alphabetic' measure-percentage='0.4' show-structure='true' />"
             f"<semantic-values><semantic-value key='[Country].[Name]' value='&quot;Germany&quot;' /></semantic-values>"
             f"</datasource>")
 
@@ -220,11 +266,24 @@ def build():
                       rels[k], eq(d, "Contact ID", k, "Call Contact Key")),
                  rels[s], "<expression op='AND'>" + eq(d, "Source", s, "Spend Source") + eq(d, "Month", s, "Spend Month")
                  + "</expression>")
+    # extracts: the same left joins in pandas, one row per lead
+    flat = (read_typed(d)
+            .merge(read_typed(c), how="left", left_on="Contact ID", right_on="Contact Key")
+            .merge(read_typed(k), how="left", left_on="Contact ID", right_on="Call Contact Key")
+            .merge(read_typed(s), how="left", left_on=["Source", "Month"], right_on=["Spend Source", "Spend Month"]))
+    assert len(flat) == len(read_typed(d)), "joins must stay one row per lead"
+    ab_flat = read_typed("ab_variants.csv")
+    extracts = {"Data/Extracts/crm_model.hyper": flat, "Data/Extracts/ab_options.hyper": ab_flat}
+    for name, frame in extracts.items():
+        write_hyper(frame, OUT_DIR / Path(name).name)
+
     crm_ds = datasource_xml(DS_CRM, CONN_CRM, "CRM model", d, model, "".join(metas),
-                            "".join(column_decl(x) for x in list(CALCS) + [x for x in COLUMNS if x in REAL]))
+                            "".join(column_decl(x) for x in list(CALCS) + [x for x in COLUMNS if x in REAL]),
+                            extract_xml(flat, "Data/Extracts/crm_model.hyper"))
     ab_rel, ab_meta = relation("ab_variants.csv", CONN_AB)
     ab_ds = datasource_xml(DS_AB, CONN_AB, "A/B test options", "ab_variants.csv", ab_rel, ab_meta,
-                           "".join(column_decl(x) for x in ("Leads per day", "Baseline", "MDE pp", "Expected effect pp")))
+                           "".join(column_decl(x) for x in ("Leads per day", "Baseline", "MDE pp", "Expected effect pp")),
+                           extract_xml(ab_flat, "Data/Extracts/ab_options.hyper"))
 
     leads, c1, cac, reach = (inst(f, "usr")[0] for f in ("Calc_Leads", "Calc_C1", "Calc_CAC", "Calc_Reach"))
     rev, pre = inst("Revenue", "sum")[0], inst("Prepaid", "sum")[0]
@@ -314,9 +373,9 @@ def build():
     x0, cw = side + gap, W - side - gap
     br = BR
     insights = (run("Key insights", bold=True, size=13, color=BLUE) + run(br)
-                + run("• 4.2% of leads become students; 40% of lost deals never answered the phone." + br, size=10, color=INK)
+                + run("• 4.2% of leads become students; 31% never had a conversation, only 17% reach a consultation." + br, size=10, color=INK)
                 + run("• Answer within 15 min: 77% reached in 24 h vs 59% later." + br, size=10, color=INK)
-                + run("• Leads tripled while conversion fell from 5–6% to 2.6–3.4%." + br, size=10, color=INK)
+                + run("• Leads tripled, answers within 15 min fell from 21% to 3%, conversion fell inside every channel." + br, size=10, color=INK)
                 + run("• Revenue earned counts only months studied: €244k is prepayment, ≈€14k is owed to dropouts." + br + br,
                       size=10, color=INK)
                 + run("Data model", bold=True, size=13, color=BLUE) + run(br)
@@ -338,8 +397,9 @@ def build():
              + vis("Prepaid by Status", x0 + 2 * third, top + 2 * row, cw - 2 * third, H - top - 2 * row))
     note = (run("Why product A/B tests do not fit into 14 days", bold=True, size=13, color=BLUE) + run(br)
             + run("Leads with a known product are only 3–4 a day, so even the best 14-day design detects +18–29 pp, "
-                  "far above the expected +4–7.5 pp. Only the speed-to-lead test on all leads (MDE +8.4 pp vs expected "
-                  "+10 pp) fits into 14 days. Product hypotheses are checked as pilots.", size=11, color=INK))
+                  "far above the expected +4–7.5 pp. Only the speed-to-lead test fits into 14 days, and only if the 15-minute rule "
+                  "runs daily 8:00–23:00 (MDE +9.4 pp vs expected +12.2 pp); in office hours only it would not (MDE +13.6 pp "
+                  "vs +11.0 pp). Product hypotheses are checked as pilots.", size=11, color=INK))
     ab_zones = (txt(0, 0, W, 6500, run("Product Hypotheses and A/B Test Options · 14 days, α = 0.05, power 80%", size=22, color=BLUE))
                 + txt(0, 7000, W, 9000, note, border=LIGHT, fill=PANEL)
                 + vis("Product Hypotheses", 0, 17000, W, 26000) + vis("A/B Options: MDE in 14 days", 0, 44000, W, H - 44000))
@@ -361,7 +421,8 @@ def build():
                "<param name='field-captions' value='Source' /><param name='target' value='CRM Dashboard' /></command>"
                "</action></actions>")
     all_sheets = sheets + ab_sheets
-    windows = "".join(f"<window class='worksheet' name='{q(n)}'><cards><edge name='left'><strip size='160'>"
+    # worksheets are hidden: they live inside the two dashboards, so viewers see only the dashboards as tabs
+    windows = "".join(f"<window class='worksheet' hidden='true' name='{q(n)}'><cards><edge name='left'><strip size='160'>"
                       f"<card type='pages' /><card type='filters' /><card type='marks' /></strip></edge></cards>{sid(n)}</window>"
                       for n, _ in all_sheets)
     for dname, group, maxim in (("CRM Dashboard", sheets, " maximized='true'"), ("A/B Test Options", ab_sheets, "")):
@@ -381,6 +442,8 @@ def build():
         zf.writestr("crm_dashboard.twb", twb)
         for table in TABLES + ["ab_variants.csv"]:
             zf.write(OUT_DIR / table, f"Data/tableau/{table}")
+        for name in extracts:
+            zf.write(OUT_DIR / Path(name).name, name)
     print(f"Saved {TWBX} ({TWBX.stat().st_size / 1e6:.1f} MB)")
 
 

@@ -16,6 +16,8 @@
 # reused and tested. This notebook checks the raw data, runs the ETL and validates the result.
 
 # %%
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)  # pandas dtype backward compatibility, does not affect results
 import sys
 from pathlib import Path
 
@@ -132,6 +134,10 @@ checks = {
     "revenue only for students": (deals.loc[~deals["is_student"], "revenue"] == 0).all(),
     "deal contact_id found in Contacts, %": round(deals["contact_id"].isin(clean["Contacts"]["id"]).mean() * 100, 1),
     "call contact_id found in Contacts, %": round(clean["Calls"]["contact_id"].dropna().isin(clean["Contacts"]["id"]).mean() * 100, 1),
+    "no negative numbers in any table": not any((df.select_dtypes("number") < 0).any().any() for df in clean.values()),
+    "no date later than the export files (28.06.2024)": all(
+        (df[c].dropna() <= pd.Timestamp("2024-06-28")).all()
+        for df in clean.values() for c in df.columns if str(df[c].dtype).startswith("datetime")),
 }
 pd.Series(checks, name="check").to_frame()
 
@@ -139,11 +145,59 @@ pd.Series(checks, name="check").to_frame()
 deals["german_level"].value_counts().to_frame("deals")
 
 # %% [markdown]
+# ### 3.1 Univariate analysis again for the columns where missing values were filled
+#
+# Missing values in categorical fields were filled with explicit labels (`Unknown`, `Not rated`, `Not lost`,
+# `(no campaign)`, `Not applicable`). We check what the distributions look like afterwards: what share the label takes,
+# which value became the mode, and whether the distribution of the known values changed.
+
+# %%
+FILLED = [("Deals", "quality", "Not rated"), ("Deals", "lost_reason", "Not lost"),
+          ("Deals", "campaign", "(no campaign)"), ("Deals", "product", "Unknown"),
+          ("Deals", "education_type", "Unknown"), ("Deals", "payment_type", "Unknown"),
+          ("Deals", "city", "Unknown"), ("Deals", "german_level", "Unknown"),
+          ("Calls", "outgoing_call_status", "Not applicable"), ("Spend", "campaign", "(no campaign)")]
+rows = {}
+for table, col, label in FILLED:
+    s = clean[table][col].astype(str)
+    known = s[s.ne(label)]
+    rows[f"{table}.{col}"] = {"label": label, "label share": s.eq(label).mean(), "unique": s.nunique(),
+                              "mode": s.mode().iloc[0], "mode of known values": known.mode().iloc[0],
+                              "share of that mode among known": known.value_counts(normalize=True).iloc[0]}
+univariate = pd.DataFrame(rows).T
+univariate.style.format({"label share": "{:.1%}", "share of that mode among known": "{:.1%}"})
+
+# %%
+import matplotlib.pyplot as plt
+import viz
+viz.set_style()
+fig, axes = plt.subplots(2, 2, figsize=(14, 7))
+for ax, (table, col, label) in zip(axes.flat, [FILLED[0], FILLED[1], FILLED[3], FILLED[7]]):
+    vc = clean[table][col].astype(str).value_counts(normalize=True).head(8).sort_values()
+    ax.barh(vc.index, vc.values, color=[viz.ACCENT if v == label else viz.PRIMARY for v in vc.index], height=0.7)
+    for k, v in enumerate(vc.values):
+        ax.text(v, k, f" {v:.1%}", va="center", fontsize=9, color=viz.TEXT_2)
+    viz.pct_axis(ax, "x"); ax.set_xlim(0, vc.max() * 1.25); ax.grid(axis="y", visible=False)
+    ax.set_title(f"{col} after filling (orange = filled label)")
+plt.tight_layout(); viz.save(fig, "01_filled_columns"); plt.show()
+
+# %% [markdown]
+# **Findings of the repeated univariate analysis:**
+# - In `quality` and `lost_reason` the label is not the mode: 11% of leads are not rated and 28% are "not lost" (the deal
+#   is still open or won). The distribution of the known values did not change; filling only made the gap visible.
+# - In `product`, `education_type`, `payment_type`, `city` and `german_level` the `Unknown` label takes 82–98% and becomes
+#   the mode. This is expected: these fields are filled in at the consultation. So in the EDA these fields are analysed
+#   **on known values only**, and the share of `Unknown` is itself a CRM data-quality metric (notebook 04, action plan).
+# - In `Calls.outgoing_call_status`, 9% "Not applicable" are incoming calls, not missing data.
+# - Filling with the mean or the mode would distort the picture: the mode of `product` would turn 82% of leads into
+#   "Digital Marketing", and conversion by product would rise several times.
+
+# %% [markdown]
 # ## 4. Summary
 #
 # - Deals after cleaning: **19,822** (1,771 technical duplicates removed), calls: **95,791**, spend rows: **19,862**.
 # - Students (paid + study months filled in, not demo): **837** of 856 `Payment Done` deals.
-# - The joins work: 99.7% of deals and 100% of calls with a contact find their contact.
+# - The joins work: 99.8% of deals and 100% of calls with a contact find their contact.
 # - Clean tables are saved to `data/processed/` in two formats: **CSV** (for Tableau/Sheets) and
 #   **pickle** (for Python: keeps the `datetime`, `category` and `bool` types and loads instantly).
 #

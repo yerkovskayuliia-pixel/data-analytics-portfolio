@@ -1,0 +1,28 @@
+{
+  "C1": 0.04222580970638684,
+  "CAC": 178.64211469534047,
+  "CLTV": 3995.6409977915355,
+  "CM": 3194828.065151515,
+  "sensitivity_C1_plus10": 334435.1515151514,
+  "reach_gap_raw_pp": 17.705353968464742,
+  "reach_gap_adjusted_pp": 19.01019115558938,
+  "test_window": "daily 8:00–23:00",
+  "test_window_share": 0.8507391511683358,
+  "test_n_group": 442,
+  "test_baseline": 0.42222533632286996,
+  "test_mde_pp": 9.390758275668542,
+  "test_expected_pp": 12.229702619778148,
+  "test_breakeven_compliance": 0.7678648097690943,
+  "office_hours_expected_pp": 10.96803358088473,
+  "office_hours_mde_pp": 13.562009092558203,
+  "cm_uplift": {
+    "optimistic": 374834.5325656701,
+    "base": 299867.62605253607,
+    "conservative": 149933.81302626804
+  },
+  "c1_uplift": {
+    "optimistic": 0.1120798848050184,
+    "base": 0.08966390784401468,
+    "conservative": 0.04483195392200745
+  }
+}
