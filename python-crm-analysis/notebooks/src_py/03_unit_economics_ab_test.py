@@ -223,6 +223,85 @@ CM (contribution margin) = €{base['CM']:,.0f}
 print(tree)
 
 # %% [markdown]
+# The same structure as a diagram. The top levels decompose exactly: **CM = Revenue − AC**,
+# **Revenue = UA × C1 × AOV × APC**. The C1 branch is split into funnel steps: their product is the share of leads who
+# became students. Orange marks the path the hypothesis acts on: speed of first response → conversation → C1 → revenue → margin.
+
+# %%
+from matplotlib.patches import FancyBboxPatch
+
+fun = M.funnel(deals, calls)
+step = fun.iloc[:, 2]                      # step conversion (column name depends on M.set_lang)
+fast_share = deals["sla_bucket"].eq("< 15 min").mean()
+h1 = M.speed_test_design(deals).loc[M.CHOSEN_WINDOW].iloc[4]   # expected reach effect in the window, pp
+
+fig, ax = plt.subplots(figsize=(16, 9.6))
+ax.set_xlim(0, 16); ax.set_ylim(0, 10); ax.axis("off")
+NAVY, PALE, HOT = "#1f3b6e", "#eef2f8", "#fde7dd"
+
+
+def box(x, y, w, h, title, value, note="", hot=False):
+    ax.add_patch(FancyBboxPatch((x - w / 2, y - h / 2), w, h, boxstyle="round,pad=0.02,rounding_size=0.12",
+                                fc=HOT if hot else PALE, ec=ACCENT if hot else NAVY, lw=2.2 if hot else 1.2))
+    ax.text(x, y + h * 0.2, title, ha="center", va="center", fontsize=10.5, color=viz.TEXT_2)
+    ax.text(x, y - h * 0.08, value, ha="center", va="center", fontsize=14, fontweight="bold",
+            color=ACCENT if hot else NAVY)
+    if note:
+        ax.text(x, y - h * 0.34, note, ha="center", va="center", fontsize=9, color=viz.TEXT_2)
+
+
+def link(x1, y1, x2, y2, hot=False):
+    ym = (y1 + y2) / 2
+    ax.plot([x1, x1, x2, x2], [y1, ym, ym, y2], color=ACCENT if hot else MUTED, lw=2.4 if hot else 1.4,
+            zorder=0, solid_capstyle="round")
+
+
+# level 0–1: money
+box(8, 9.2, 3.6, 1.1, "Contribution margin (CM)", f"€{base['CM'] / 1e6:,.2f}M", "CM = Revenue − AC", hot=True)
+box(5, 7.4, 4.2, 1.1, "Revenue", f"€{base['Revenue'] / 1e6:,.2f}M", "Revenue = UA × C1 × AOV × APC", hot=True)
+box(12.6, 7.4, 3.6, 1.1, "Ad spend (AC)", f"€{base['AC'] / 1e3:,.1f}k", f"AC = UA × CPA (€{base['CPA']:.2f})")
+link(8, 8.65, 5, 7.95, hot=True); link(8, 8.65, 12.6, 7.95)
+
+# level 2: revenue factors
+x2 = {"UA": 1.6, "C1": 5.0, "AOV": 8.4, "APC": 11.2}
+box(x2["UA"], 5.5, 2.6, 1.1, "UA · leads", f"{base['UA']:,.0f}", "paid + free channels")
+box(x2["C1"], 5.5, 3.0, 1.1, "C1 · lead → student", f"{base['C1']:.2%}", "GROWTH LEVER", hot=True)
+box(x2["AOV"], 5.5, 2.6, 1.1, "AOV · avg payment", f"€{base['AOV']:,.0f}", "price per month")
+box(x2["APC"], 5.5, 2.6, 1.1, "APC · payments / student", f"{base['APC']:.2f}", "months paid")
+for k, x in x2.items():
+    link(5, 6.85, x, 6.05, hot=(k == "C1"))
+
+# level 3: C1 as a product of funnel steps
+steps = [("Called", step.iloc[1]), ("Conversation ≥30 s", step.iloc[2]), ("Consultation", step.iloc[3]),
+         ("Invoice or payment", step.iloc[4]), ("Student", step.iloc[5])]
+xs = [1.5, 4.5, 7.5, 10.5, 13.5]
+for (name, v), x in zip(steps, xs):
+    box(x, 3.35, 2.5, 1.0, name, f"{v:.1%}", hot=(name == "Conversation ≥30 s"))
+for a, b in zip(xs[:-1], xs[1:]):
+    ax.text((a + b) / 2, 3.35, "×", ha="center", va="center", fontsize=16, color=viz.TEXT_2)
+BUS = 4.12   # C1 → bus → every funnel step; the hypothesis path (orange) goes to the conversation step
+ax.plot([xs[0], xs[-1]], [BUS, BUS], color=MUTED, lw=1.4, zorder=0)
+for x in xs:
+    ax.plot([x, x], [BUS, 3.85], color=MUTED, lw=1.4, zorder=0)
+ax.plot([x2["C1"], x2["C1"], xs[1], xs[1]], [4.95, BUS, BUS, 3.85], color=ACCENT, lw=2.4, zorder=1)
+ax.text(15.0, 4.32, f"product = {step.iloc[1:].prod():.2%} of leads;\n+36 students paid without a call ≥30 s",
+        ha="right", va="bottom", fontsize=8.5, color=viz.TEXT_2)
+
+# level 4: driver and hypothesis
+box(xs[1], 1.35, 3.6, 1.15, "Speed of first response", f"median {deals['sla_sec'].median() / 3600:.1f} h",
+    f"only {fast_share:.1%} of leads answered < 15 min", hot=True)
+link(xs[1], 2.85, xs[1], 1.93, hot=True)
+ax.add_patch(FancyBboxPatch((7.0, 0.62), 8.6, 1.45, boxstyle="round,pad=0.02,rounding_size=0.12",
+                            fc="white", ec=ACCENT, lw=1.6, ls="--"))
+ax.text(11.3, 1.62, "Hypothesis H1 (A/B test, 14 days)", ha="center", fontsize=11, fontweight="bold", color=ACCENT)
+ax.text(11.3, 1.05, f"answer ≤ 15 min, daily 8:00–23:00  →  reach +{h1:.0f} pp in the window\n"
+        "→ C1 +4.5…11%  →  CM +€150–375k a year", ha="center", va="center", fontsize=10, color=viz.TEXT)
+ax.annotate("", xy=(7.0, 1.35), xytext=(xs[1] + 1.8, 1.35), arrowprops=dict(arrowstyle="<-", color=ACCENT, lw=1.6))
+ax.set_title("Metric tree: from margin to the lever the hypothesis moves (orange = path of H1)",
+             loc="left", fontsize=14, color=viz.TEXT)
+save(fig, "03_metric_tree"); plt.show()
+
+# %% [markdown]
 # The tree breaks CM down into operational metrics the sales team can influence every day.
 # The hypothesis works through this chain: **SLA ↓ → reach ↑ → qualified leads ↑ → C1 ↑ → Revenue ↑ → CM ↑**.
 
