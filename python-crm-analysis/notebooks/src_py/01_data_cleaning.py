@@ -201,4 +201,6 @@ plt.tight_layout(); viz.save(fig, "01_filled_columns"); plt.show()
 # - Clean tables are saved to `data/processed/` in two formats: **CSV** (for Tableau/Sheets) and
 #   **pickle** (for Python: keeps the `datetime`, `category` and `bool` types and loads instantly).
 #
-# ➡️ Next step: [02_eda_analysis.ipynb](02_eda_analysis.ipynb)
+# Next step: [02_eda_analysis.ipynb](02_eda_analysis.ipynb)
+
+# %%

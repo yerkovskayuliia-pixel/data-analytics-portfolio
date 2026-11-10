@@ -22,7 +22,7 @@
 # "question → evidence → decision" and compares the levers in euros. The numbers come from the data and from
 # `reports/results_03.json` (saved by notebook 03), never retyped by hand.
 
-# %% jupyter={"source_hidden": true} tags=["hide-input"]
+# %% tags=["hide-input"]
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)  # pandas dtype backward compatibility, does not affect results
 import json
@@ -57,9 +57,11 @@ fun = M.funnel(d, calls)
 #    17% reach a consultation. After the consultation the funnel works: 72% of issued invoices are paid.
 # 2. **The cause: the sales team did not keep up with the traffic growth.** Leads tripled, the share of answers within
 #    15 minutes fell from 21% to 3%, and conversion fell *within* channels, not because of a change in the channel mix.
-# 3. **The cheapest lever is the speed of the first response.** It needs no ad budget; if an A/B test confirms it, it is
-#    worth +€150–375k contribution margin a year. In parallel, switching off the Performance Max campaign saves
-#    ≈ €33k without any test.
+# 3. **The growth lever is C1, and there are five hypotheses for it**, one per funnel step (notebook 03, section 4):
+#    response speed, follow-up touches, call script, evening group, payment reminders. None needs ad budget.
+#    **Response speed (H1) is tested first**: it is the only one an A/B test can detect within 14 days; if confirmed it is
+#    worth +€150–375k contribution margin a year. The call script has the biggest potential (H3, ≈ +€511k) and is the
+#    next test. In parallel, switching off the Performance Max campaign saves ≈ €33k without any test.
 
 # %% [markdown]
 # ## 2. Chain of evidence
@@ -157,7 +159,8 @@ save(fig, "04_levers"); plt.show()
 # | Week 1 | 3-day technical pilot of the routing with 8:00–23:00 shifts | ≥ 80% of leads called within 15 min |
 # | Weeks 2–3 | A/B test "answer ≤ 15 min" (design: notebook 03, section 5) | `reached_24h` +≥ 9.4 pp, guardrails fine |
 # | +45 days | C1 check on the test cohorts; decision on a 100% rollout | C1 of group B above control |
-# | In parallel | Product pilots: evening DM group, UX/UI alumni case, Web Dev payment reminders | share "paid or invoiced" before/after |
+# | Months 2–4 | H3: pilot of the "book the consultation in the first call" script with 2–3 managers, then A/B (~87 days) | share of consultations after a conversation, then C1 |
+# | In parallel | Pilots of H2 (follow-up touches), H4 (evening group), H5 (payment reminders) with a before/after measurement | the funnel step of each hypothesis |
 # | Ongoing | Mandatory CRM fields (product, payment type, closing date) and consistent UTM tagging | fill rate ≥ 95%; 100% of campaigns matched to Spend |
 #
 # ## 5. Limitations: what could change the answer

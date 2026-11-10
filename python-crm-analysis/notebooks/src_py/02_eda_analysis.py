@@ -643,4 +643,6 @@ for col, name in [("reached_24h", "reached in 24 h"), ("is_AB", "A+B share")]:
 # | 6 | The core is Berlin and level B1 | geo and language targeting of ads |
 # | 7 | 71% of campaign names cannot be matched to Spend, key fields are filled in manually | consistent UTM tagging and mandatory CRM fields |
 #
-# ➡️ Next step: [03_unit_economics_ab_test.ipynb](03_unit_economics_ab_test.ipynb)
+# Next step: [03_unit_economics_ab_test.ipynb](03_unit_economics_ab_test.ipynb)
+
+# %%

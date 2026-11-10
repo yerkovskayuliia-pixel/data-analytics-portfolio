@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>04_conclusions</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>04_conclusions_RU</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7811,6 +7811,43 @@ a.anchor-link {
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs celltag_hide-input" id="cell-id=173e510e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">)</span>  <span class="c1"># обратная совместимость типов pandas, на расчёты не влияет</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"src"</span><span class="p">))</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cleaning</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">etl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">metrics</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">M</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">viz</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">viz</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRIMARY</span><span class="p">,</span> <span class="n">ACCENT</span><span class="p">,</span> <span class="n">MUTED</span><span class="p">,</span> <span class="n">save</span><span class="p">,</span> <span class="n">eur_axis</span>
+
+<span class="n">viz</span><span class="o">.</span><span class="n">set_style</span><span class="p">()</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"display.width"</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"display.max_colwidth"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">etl</span><span class="o">.</span><span class="n">load_clean</span><span class="p">()</span>
+<span class="n">deals</span><span class="p">,</span> <span class="n">calls</span><span class="p">,</span> <span class="n">spend</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"Deals"</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">"Calls"</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">"Spend"</span><span class="p">]</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">add_contact_metrics</span><span class="p">(</span><span class="n">deals</span><span class="p">,</span> <span class="n">calls</span><span class="p">)</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">((</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"reports"</span> <span class="o">/</span> <span class="s2">"results_03.json"</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">))</span>
+<span class="n">fun</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">funnel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">calls</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cbd6ff34">
 <div class="jp-Cell-inputWrapper" tabindex="0">
@@ -7823,9 +7860,11 @@ a.anchor-link {
 менеджером, до консультации доходят только 17%. После консультации воронка работает: 72% выставленных счетов оплачиваются.</li>
 <li><strong>Причина — отдел продаж не успел за ростом трафика.</strong> Лидов стало в 3 раза больше, доля ответов быстрее
 15 минут упала с 21% до 3%, а конверсия упала <em>внутри</em> каналов, а не из-за смены их структуры.</li>
-<li><strong>Самый дешёвый рычаг — скорость первого ответа.</strong> Он не требует рекламного бюджета; при подтверждении
-A/B-тестом это +€150–375k маржи в год. Параллельно без всякого теста можно сэкономить ≈ €33k,
-отключив кампанию Performance Max.</li>
+<li><strong>Точка роста — C1, и для неё есть пять гипотез</strong>, по одной на каждый шаг воронки (ноутбук 03, раздел 4):
+скорость ответа, повторные касания, скрипт разговора, вечерняя группа, напоминания об оплате. Все не требуют
+рекламного бюджета. <strong>Первой проверяем скорость ответа (H1)</strong> — единственную, которую A/B-тест различит за 14 дней:
+при подтверждении это +€150–375k маржи в год. Самый большой потенциал у скрипта разговора (H3, ≈ +€511k), он
+идёт следующим тестом. Параллельно без всякого теста можно сэкономить ≈ €33k, отключив кампанию Performance Max.</li>
 </ol>
 </div>
 </div>
@@ -8007,8 +8046,8 @@ A/B-тестом это +€150–375k маржи в год. Параллель�
 
 <span class="n">cut10</span> <span class="o">=</span> <span class="mf">0.10</span> <span class="o">*</span> <span class="n">spend</span><span class="p">[</span><span class="s2">"spend"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.10</span> <span class="o">*</span> <span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="s2">"CM"</span><span class="p">]</span> <span class="o">+</span> <span class="n">spend</span><span class="p">[</span><span class="s2">"spend"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>   <span class="c1"># −10% бюджета = −10% лидов</span>
 <span class="n">levers</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s2">"ΔCM мин, €"</span><span class="p">:</span> <span class="p">[</span><span class="n">R</span><span class="p">[</span><span class="s2">"cm_uplift"</span><span class="p">][</span><span class="s2">"консервативный"</span><span class="p">],</span> <span class="n">pm_dcm</span><span class="p">,</span> <span class="n">cut10</span><span class="p">],</span>
-    <span class="s2">"ΔCM макс, €"</span><span class="p">:</span> <span class="p">[</span><span class="n">R</span><span class="p">[</span><span class="s2">"cm_uplift"</span><span class="p">][</span><span class="s2">"оптимистичный"</span><span class="p">],</span> <span class="n">pm_dcm</span><span class="p">,</span> <span class="n">cut10</span><span class="p">],</span>
+    <span class="s2">"ΔCM мин, €"</span><span class="p">:</span> <span class="p">[</span><span class="n">R</span><span class="p">[</span><span class="s2">"cm_uplift"</span><span class="p">][</span><span class="s2">"conservative"</span><span class="p">],</span> <span class="n">pm_dcm</span><span class="p">,</span> <span class="n">cut10</span><span class="p">],</span>
+    <span class="s2">"ΔCM макс, €"</span><span class="p">:</span> <span class="p">[</span><span class="n">R</span><span class="p">[</span><span class="s2">"cm_uplift"</span><span class="p">][</span><span class="s2">"optimistic"</span><span class="p">],</span> <span class="n">pm_dcm</span><span class="p">,</span> <span class="n">cut10</span><span class="p">],</span>
     <span class="s2">"нужен рекламный бюджет"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"нет"</span><span class="p">,</span> <span class="s2">"нет (экономия)"</span><span class="p">,</span> <span class="s2">"нет"</span><span class="p">],</span>
     <span class="s2">"как проверить"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"A/B-тест 14 дней + C1 через 45 дней"</span><span class="p">,</span> <span class="s2">"сразу, контроль заявок Google 2–4 недели"</span><span class="p">,</span> <span class="s2">"—"</span><span class="p">],</span>
 <span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">"Ответ ≤ 15 мин, 8:00–23:00"</span><span class="p">,</span> <span class="s2">"Отключить Performance Max"</span><span class="p">,</span> <span class="s2">"Срезать весь бюджет на 10%"</span><span class="p">])</span>
@@ -8035,37 +8074,37 @@ CAC Google Ads: с PMax €344, без PMax €141 (Facebook €172)
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_6479b">
+<table id="T_3e616">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_6479b_level0_col0">ΔCM мин, €</th>
-<th class="col_heading level0 col1" id="T_6479b_level0_col1">ΔCM макс, €</th>
-<th class="col_heading level0 col2" id="T_6479b_level0_col2">нужен рекламный бюджет</th>
-<th class="col_heading level0 col3" id="T_6479b_level0_col3">как проверить</th>
+<th class="col_heading level0 col0" id="T_3e616_level0_col0">ΔCM мин, €</th>
+<th class="col_heading level0 col1" id="T_3e616_level0_col1">ΔCM макс, €</th>
+<th class="col_heading level0 col2" id="T_3e616_level0_col2">нужен рекламный бюджет</th>
+<th class="col_heading level0 col3" id="T_3e616_level0_col3">как проверить</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_6479b_level0_row0">Ответ ≤ 15 мин, 8:00–23:00</th>
-<td class="data row0 col0" id="T_6479b_row0_col0">€+149,934</td>
-<td class="data row0 col1" id="T_6479b_row0_col1">€+374,835</td>
-<td class="data row0 col2" id="T_6479b_row0_col2">нет</td>
-<td class="data row0 col3" id="T_6479b_row0_col3">A/B-тест 14 дней + C1 через 45 дней</td>
+<th class="row_heading level0 row0" id="T_3e616_level0_row0">Ответ ≤ 15 мин, 8:00–23:00</th>
+<td class="data row0 col0" id="T_3e616_row0_col0">€+149,934</td>
+<td class="data row0 col1" id="T_3e616_row0_col1">€+374,835</td>
+<td class="data row0 col2" id="T_3e616_row0_col2">нет</td>
+<td class="data row0 col3" id="T_3e616_row0_col3">A/B-тест 14 дней + C1 через 45 дней</td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_6479b_level0_row1">Отключить Performance Max</th>
-<td class="data row1 col0" id="T_6479b_row1_col0">€+33,183</td>
-<td class="data row1 col1" id="T_6479b_row1_col1">€+33,183</td>
-<td class="data row1 col2" id="T_6479b_row1_col2">нет (экономия)</td>
-<td class="data row1 col3" id="T_6479b_row1_col3">сразу, контроль заявок Google 2–4 недели</td>
+<th class="row_heading level0 row1" id="T_3e616_level0_row1">Отключить Performance Max</th>
+<td class="data row1 col0" id="T_3e616_row1_col0">€+33,183</td>
+<td class="data row1 col1" id="T_3e616_row1_col1">€+33,183</td>
+<td class="data row1 col2" id="T_3e616_row1_col2">нет (экономия)</td>
+<td class="data row1 col3" id="T_3e616_row1_col3">сразу, контроль заявок Google 2–4 недели</td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_6479b_level0_row2">Срезать весь бюджет на 10%</th>
-<td class="data row2 col0" id="T_6479b_row2_col0">€-319,483</td>
-<td class="data row2 col1" id="T_6479b_row2_col1">€-319,483</td>
-<td class="data row2 col2" id="T_6479b_row2_col2">нет</td>
-<td class="data row2 col3" id="T_6479b_row2_col3">—</td>
+<th class="row_heading level0 row2" id="T_3e616_level0_row2">Срезать весь бюджет на 10%</th>
+<td class="data row2 col0" id="T_3e616_row2_col0">€-319,483</td>
+<td class="data row2 col1" id="T_3e616_row2_col1">€-319,483</td>
+<td class="data row2 col2" id="T_3e616_row2_col2">нет</td>
+<td class="data row2 col3" id="T_3e616_row2_col3">—</td>
 </tr>
 </tbody>
 </table>
@@ -8168,9 +8207,14 @@ CAC Google Ads: с PMax €344, без PMax €141 (Facebook €172)
 <td>C1 группы B выше контроля</td>
 </tr>
 <tr>
+<td>Месяцы 2–4</td>
+<td>H3: пилот скрипта «запись на консультацию в первом звонке» на 2–3 менеджерах, затем A/B (~87 дней)</td>
+<td>доля консультаций после разговора, затем C1</td>
+</tr>
+<tr>
 <td>Параллельно</td>
-<td>Пилоты по продуктам: вечерняя группа DM, кейс выпускника UX/UI, напоминания об оплате Web Dev</td>
-<td>доля «оплата или счёт» до/после</td>
+<td>Пилоты H2 (повторные касания), H4 (вечерняя группа), H5 (напоминания об оплате) с замером до/после</td>
+<td>шаг воронки каждой гипотезы</td>
 </tr>
 <tr>
 <td>Постоянно</td>

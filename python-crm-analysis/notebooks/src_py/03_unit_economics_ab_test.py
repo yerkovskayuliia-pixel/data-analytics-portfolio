@@ -1,8 +1,8 @@
 # %% [markdown]
-# # 03 · Product Analytics: Unit Economics, Metric Tree, Hypothesis and A/B Test
+# # 03 · Product Analytics: Unit Economics, Metric Tree, Five C1 Hypotheses and A/B Test
 #
 # Task: calculate unit economics by product → find growth levers → build a metric tree →
-# formulate a hypothesis → design an A/B test lasting **no more than 2 weeks**.
+# formulate 5 hypotheses for C1 growth → choose one → design an A/B test lasting **no more than 2 weeks**.
 
 # %%
 import warnings
@@ -152,6 +152,51 @@ rec.style.format({"students": "{:,.0f}", **{c: "€{:,.0f}" for c in ["cash_rece
 # or a refund too if they drop out. Conversely, 182 students have paid €10k less than they have studied (receivables).
 
 # %% [markdown]
+# ### 1.2 Reconciliation with the teacher's calculation: is the unit a request or a person?
+#
+# The teacher's calculation has UA = 18,548, B = 829, C1 = 4.47%; ours has UA = 19,822, B = 837, C1 = 4.22%. The
+# difference is not an error but the choice of unit:
+#
+# | Teacher's number | Where it comes from | Our counterpart |
+# |---|---|---|
+# | UA = 18,548 | all rows of the Contacts table | 19,822 deals after removing technical duplicates |
+# | 18,089 | unique contacts in Deals **before** removing duplicates | 17,005 after removal |
+# | 840 "successed courses" | `Payment Done` deals with the study duration filled in | 837: demo accesses and erroneous rows are also excluded |
+# | B = 829 | unique paying contacts (our count in the raw data: 828) | 825 unique students as people |
+#
+# - **Unit "person" (contact)** is the classic UA of unit economics. It includes 460 contacts without a single deal and
+#   1,083 contacts that only had technical duplicates.
+# - **Unit "request" (deal)** is how we count: every new request is a separate chance to sell, and the request is the
+#   randomisation unit of the response-speed A/B test (the "call within 15 minutes" rule applies to every request).
+#   2,179 people left 2–5 requests and are counted several times.
+#
+# Below: unit economics for the three choices of unit.
+
+# %%
+contacts = data["Contacts"]
+tot = ue.loc["Total (3 products)"]
+rev, ac = tot["Revenue"], tot["AC"]
+units = {
+    "request (deal): our calculation": (len(deals), int(deals["is_student"].sum())),
+    "person: all Contacts rows, as the teacher": (len(contacts), deals.loc[deals["is_student"], "contact_id"].nunique()),
+    "person: contacts that have a request": (deals["contact_id"].nunique(), deals.loc[deals["is_student"], "contact_id"].nunique()),
+}
+uv = pd.DataFrame({name: {"UA": ua, "B": b, "C1": b / ua, "CPA (LTC)": ac / ua, "LTV": rev / ua, "CLTV": rev / b,
+                          "CAC (CLTC)": ac / b, "CM = UA × (LTV − CPA)": ua * (rev / ua - ac / ua),
+                          "ΔCM at C1 +10%": rev * 0.10}
+                   for name, (ua, b) in units.items()}).T
+uv.style.format({"UA": "{:,.0f}", "B": "{:,.0f}", "C1": "{:.2%}", "CPA (LTC)": "€{:.2f}", "LTV": "€{:,.0f}",
+                 "CLTV": "€{:,.0f}", "CAC (CLTC)": "€{:,.0f}", "CM = UA × (LTV − CPA)": "€{:,.0f}",
+                 "ΔCM at C1 +10%": "+€{:,.0f}"})
+
+# %% [markdown]
+# **Reconciliation result.** Only the per-unit metrics change (C1, CPA, LTV, CLTV, CAC); the money stays the same:
+# the €3.19M margin and the effect of +10% C1 (+€334k) are identical for any unit, so the choice of unit changes neither
+# the growth lever nor the conclusions. The project keeps the "request" unit because the hypotheses and the A/B test work
+# with requests. Counted by people, as in the teacher's calculation, C1 = 4.45% (825 / 18,548; the teacher has
+# 829 / 18,548 = 4.47%, without excluding demo accesses and duplicates), CPA = €8.06, CAC = €181.
+
+# %% [markdown]
 # ## 2. Growth levers: sensitivity analysis
 # We raise each metric by 10% and see how CM changes. When UA grows, the ad budget grows
 # proportionally (CPA is constant); raising C1, AOV or APC needs no extra budget.
@@ -223,9 +268,11 @@ CM (contribution margin) = €{base['CM']:,.0f}
 print(tree)
 
 # %% [markdown]
-# The same structure as a diagram. The top levels decompose exactly: **CM = Revenue − AC**,
-# **Revenue = UA × C1 × AOV × APC**. The C1 branch is split into funnel steps: their product is the share of leads who
-# became students. Orange marks the path the hypothesis acts on: speed of first response → conversation → C1 → revenue → margin.
+# The same structure as a diagram, in unit-economics formulas:
+# **CM = UA × (LTV − CPA) = (CLTV − CAC) × B**, **LTV = C1 × CLTV**, **CLTV = (AOV − COGS) × APC**
+# (there are no teaching costs in the data, COGS = 0). The C1 branch is split into funnel steps: their product is the
+# share of leads who became students. Under the steps are the five hypotheses of section 4, each acting on its own
+# step; orange marks the path of H1, chosen for the A/B test.
 
 # %%
 from matplotlib.patches import FancyBboxPatch
@@ -233,21 +280,22 @@ from matplotlib.patches import FancyBboxPatch
 fun = M.funnel(deals, calls)
 step = fun.iloc[:, 2]                      # step conversion (column name depends on M.set_lang)
 fast_share = deals["sla_bucket"].eq("< 15 min").mean()
-h1 = M.speed_test_design(deals).loc[M.CHOSEN_WINDOW].iloc[4]   # expected reach effect in the window, pp
+o_tree = M.speed_test_design(deals).loc[M.CHOSEN_WINDOW]
+ltv = base["Revenue"] / base["UA"]
 
-fig, ax = plt.subplots(figsize=(16, 9.6))
-ax.set_xlim(0, 16); ax.set_ylim(0, 10); ax.axis("off")
+fig, ax = plt.subplots(figsize=(16, 10))
+ax.set_xlim(0, 16); ax.set_ylim(0, 10.4); ax.axis("off")
 NAVY, PALE, HOT = "#1f3b6e", "#eef2f8", "#fde7dd"
 
 
-def box(x, y, w, h, title, value, note="", hot=False):
+def box(x, y, w, h, title, value, note="", hot=False, vsize=14):
     ax.add_patch(FancyBboxPatch((x - w / 2, y - h / 2), w, h, boxstyle="round,pad=0.02,rounding_size=0.12",
                                 fc=HOT if hot else PALE, ec=ACCENT if hot else NAVY, lw=2.2 if hot else 1.2))
-    ax.text(x, y + h * 0.2, title, ha="center", va="center", fontsize=10.5, color=viz.TEXT_2)
-    ax.text(x, y - h * 0.08, value, ha="center", va="center", fontsize=14, fontweight="bold",
+    ax.text(x, y + h * 0.22, title, ha="center", va="center", fontsize=10.5, color=viz.TEXT_2)
+    ax.text(x, y - h * 0.05, value, ha="center", va="center", fontsize=vsize, fontweight="bold",
             color=ACCENT if hot else NAVY)
     if note:
-        ax.text(x, y - h * 0.34, note, ha="center", va="center", fontsize=9, color=viz.TEXT_2)
+        ax.text(x, y - h * 0.33, note, ha="center", va="center", fontsize=9, color=viz.TEXT_2)
 
 
 def link(x1, y1, x2, y2, hot=False):
@@ -256,59 +304,211 @@ def link(x1, y1, x2, y2, hot=False):
             zorder=0, solid_capstyle="round")
 
 
-# level 0–1: money
-box(8, 9.2, 3.6, 1.1, "Contribution margin (CM)", f"€{base['CM'] / 1e6:,.2f}M", "CM = Revenue − AC", hot=True)
-box(5, 7.4, 4.2, 1.1, "Revenue", f"€{base['Revenue'] / 1e6:,.2f}M", "Revenue = UA × C1 × AOV × APC", hot=True)
-box(12.6, 7.4, 3.6, 1.1, "Ad spend (AC)", f"€{base['AC'] / 1e3:,.1f}k", f"AC = UA × CPA (€{base['CPA']:.2f})")
-link(8, 8.65, 5, 7.95, hot=True); link(8, 8.65, 12.6, 7.95)
+def tag(x, y, text, hot=False):
+    ax.add_patch(FancyBboxPatch((x - 1.25, y - 0.24), 2.5, 0.48, boxstyle="round,pad=0.01,rounding_size=0.1",
+                                fc=HOT if hot else "white", ec=ACCENT, lw=1.8 if hot else 1.0))
+    ax.text(x, y, text, ha="center", va="center", fontsize=9.5, color=ACCENT if hot else viz.TEXT,
+            fontweight="bold" if hot else "normal")
 
-# level 2: revenue factors
-x2 = {"UA": 1.6, "C1": 5.0, "AOV": 8.4, "APC": 11.2}
-box(x2["UA"], 5.5, 2.6, 1.1, "UA · leads", f"{base['UA']:,.0f}", "paid + free channels")
-box(x2["C1"], 5.5, 3.0, 1.1, "C1 · lead → student", f"{base['C1']:.2%}", "GROWTH LEVER", hot=True)
-box(x2["AOV"], 5.5, 2.6, 1.1, "AOV · avg payment", f"€{base['AOV']:,.0f}", "price per month")
-box(x2["APC"], 5.5, 2.6, 1.1, "APC · payments / student", f"{base['APC']:.2f}", "months paid")
-for k, x in x2.items():
-    link(5, 6.85, x, 6.05, hot=(k == "C1"))
+
+# level 0–1: unit economics (CM = UA × (LTV − CPA) = (CLTV − CAC) × B)
+box(8, 9.6, 5.2, 1.15, "Contribution margin (CM)", f"€{base['CM'] / 1e6:,.2f}M",
+    "CM = UA × (LTV − LTC) = (CLTV − CLTC) × B", hot=True)
+box(2.2, 7.75, 3.0, 1.1, "UA · leads", f"{base['UA']:,.0f}", "paid + free channels")
+box(8, 7.75, 3.6, 1.1, "LTV · revenue per lead", f"€{ltv:,.0f}", "LTV = C1 × CLTV", hot=True)
+box(13.8, 7.75, 3.2, 1.1, "LTC = CPA · cost per lead", f"€{base['CPA']:.2f}", f"AC / UA (AC €{base['AC'] / 1e3:,.1f}k)")
+link(8, 9.02, 2.2, 8.3); link(8, 9.02, 8, 8.3, hot=True); link(8, 9.02, 13.8, 8.3)
+
+# level 2: LTV = C1 × CLTV
+box(5.0, 5.85, 3.0, 1.1, "C1 · lead → student", f"{base['C1']:.2%}", "GROWTH LEVER", hot=True)
+box(11.0, 5.85, 4.4, 1.1, "CLTV · revenue per student", f"€{base['CLTV']:,.0f}",
+    f"(AOV €{base['AOV']:,.0f} − COGS €0) × APC {base['APC']:.2f}")
+link(8, 7.2, 5.0, 6.4, hot=True); link(8, 7.2, 11.0, 6.4)
+ax.text(11.0, 5.05, f"CLTC = CAC = AC / B = €{base['CAC']:,.0f}  ·  B = {base['B']:,.0f}  ·  T = {base['T']:,.0f} payments  ·  Revenue = AOV × T = €{base['Revenue'] / 1e6:,.2f}M", ha="center",
+        fontsize=9, color=viz.TEXT_2)
 
 # level 3: C1 as a product of funnel steps
 steps = [("Called", step.iloc[1]), ("Conversation ≥30 s", step.iloc[2]), ("Consultation", step.iloc[3]),
          ("Invoice or payment", step.iloc[4]), ("Student", step.iloc[5])]
 xs = [1.5, 4.5, 7.5, 10.5, 13.5]
 for (name, v), x in zip(steps, xs):
-    box(x, 3.35, 2.5, 1.0, name, f"{v:.1%}", hot=(name == "Conversation ≥30 s"))
+    box(x, 3.55, 2.5, 1.0, name, f"{v:.1%}", hot=(name == "Conversation ≥30 s"))
 for a, b in zip(xs[:-1], xs[1:]):
-    ax.text((a + b) / 2, 3.35, "×", ha="center", va="center", fontsize=16, color=viz.TEXT_2)
-BUS = 4.12   # C1 → bus → every funnel step; the hypothesis path (orange) goes to the conversation step
+    ax.text((a + b) / 2, 3.55, "×", ha="center", va="center", fontsize=16, color=viz.TEXT_2)
+BUS = 4.33
 ax.plot([xs[0], xs[-1]], [BUS, BUS], color=MUTED, lw=1.4, zorder=0)
 for x in xs:
-    ax.plot([x, x], [BUS, 3.85], color=MUTED, lw=1.4, zorder=0)
-ax.plot([x2["C1"], x2["C1"], xs[1], xs[1]], [4.95, BUS, BUS, 3.85], color=ACCENT, lw=2.4, zorder=1)
-ax.text(15.0, 4.32, f"product = {step.iloc[1:].prod():.2%} of leads;\n+36 students paid without a call ≥30 s",
+    ax.plot([x, x], [BUS, 4.05], color=MUTED, lw=1.4, zorder=0)
+ax.plot([5.0, 5.0, xs[1], xs[1]], [5.3, BUS, BUS, 4.05], color=ACCENT, lw=2.4, zorder=1)
+ax.text(15.2, 4.45, f"product = {step.iloc[1:].prod():.2%} of leads; +36 students paid without a call ≥30 s",
         ha="right", va="bottom", fontsize=8.5, color=viz.TEXT_2)
 
-# level 4: driver and hypothesis
-box(xs[1], 1.35, 3.6, 1.15, "Speed of first response", f"median {deals['sla_sec'].median() / 3600:.1f} h",
-    f"only {fast_share:.1%} of leads answered < 15 min", hot=True)
-link(xs[1], 2.85, xs[1], 1.93, hot=True)
-ax.add_patch(FancyBboxPatch((7.0, 0.62), 8.6, 1.45, boxstyle="round,pad=0.02,rounding_size=0.12",
+# level 4: the five hypotheses, one per funnel step
+for x, y, t, hot in [(xs[1], 2.6, "H1 answer ≤ 15 min", True), (xs[1], 2.0, "H2 follow-up 48 h", False),
+                     (xs[2], 2.6, "H3 call script", False), (xs[3], 2.6, "H4 evening group", False),
+                     (xs[4], 2.6, "H5 payment reminders", False)]:
+    tag(x, y, t, hot)
+    ax.plot([x, x], [3.05, y + 0.24], color=ACCENT, lw=1.2, ls=":", zorder=0)
+ax.add_patch(FancyBboxPatch((0.3, 0.25), 15.4, 1.15, boxstyle="round,pad=0.02,rounding_size=0.12",
                             fc="white", ec=ACCENT, lw=1.6, ls="--"))
-ax.text(11.3, 1.62, "Hypothesis H1 (A/B test, 14 days)", ha="center", fontsize=11, fontweight="bold", color=ACCENT)
-ax.text(11.3, 1.05, f"answer ≤ 15 min, daily 8:00–23:00  →  reach +{h1:.0f} pp in the window\n"
-        "→ C1 +4.5…11%  →  CM +€150–375k a year", ha="center", va="center", fontsize=10, color=viz.TEXT)
-ax.annotate("", xy=(7.0, 1.35), xytext=(xs[1] + 1.8, 1.35), arrowprops=dict(arrowstyle="<-", color=ACCENT, lw=1.6))
-ax.set_title("Metric tree: from margin to the lever the hypothesis moves (orange = path of H1)",
-             loc="left", fontsize=14, color=viz.TEXT)
+ax.text(8, 1.05, f"Speed of first response: median {deals['sla_sec'].median() / 3600:.1f} h, only {fast_share:.1%} "
+        f"of leads answered < 15 min", ha="center", fontsize=10.5, color=viz.TEXT)
+ax.text(8, 0.6, f"H1 → A/B test: the only hypothesis detectable in 14 days (MDE +{o_tree.iloc[5]:.1f} pp < effect "
+        f"+{o_tree.iloc[4]:.1f} pp in the 8–23 window).  H2–H5 → pilots and longer tests.",
+        ha="center", fontsize=10.5, fontweight="bold", color=ACCENT)
+ax.set_title("Metric tree: CM = UA × (LTV − LTC), LTV = C1 × CLTV; five hypotheses act on the C1 funnel "
+             "(orange = H1)", loc="left", fontsize=14, color=viz.TEXT)
 save(fig, "03_metric_tree"); plt.show()
 
 # %% [markdown]
 # The tree breaks CM down into operational metrics the sales team can influence every day.
-# The hypothesis works through this chain: **SLA ↓ → reach ↑ → qualified leads ↑ → C1 ↑ → Revenue ↑ → CM ↑**.
+# The chosen hypothesis H1 works through this chain: **SLA ↓ → reach ↑ → qualified leads ↑ → C1 ↑ → LTV ↑ → CM ↑**.
 
 # %% [markdown]
-# ## 4. Hypothesis
+# **Reconciliation with the teacher's metric tree** (Metrics Tree Studio): every node of that tree is in ours, with the
+# same formula. Our tree additionally breaks C1 down into funnel steps, and the five hypotheses are attached to them.
+
+# %%
+tree_map = pd.DataFrame([
+    ("CM", "(CLTV − CLTC) × B = UA × (LTV − LTC)", f"€{base['CM']:,.0f}"),
+    ("Revenue", "AOV × T", f"€{base['Revenue']:,.0f}"),
+    ("LTV", "CLTV × C1", f"€{base['Revenue'] / base['UA']:,.0f}"),
+    ("CLTV", "(AOV − COGS) × APC", f"€{base['CLTV']:,.0f}"),
+    ("CLTC (= CAC)", "AC / B", f"€{base['CAC']:,.0f}"),
+    ("LTC (= CPA)", "AC / UA", f"€{base['CPA']:.2f}"),
+    ("APC", "T / B", f"{base['APC']:.2f}"),
+    ("AOV", "Revenue / T", f"€{base['AOV']:,.0f}"),
+    ("COGS / COGS Total", "cost per payment / total", "€0: not in the data"),
+    ("C1", "B / UA", f"{base['C1']:.2%}"),
+    ("AC", "UA × CPA", f"€{base['AC']:,.0f}"),
+    ("UA", "number of leads (idu)", f"{base['UA']:,.0f}"),
+    ("T", "number of payments (payment_value)", f"{base['T']:,.0f}"),
+    ("B", "number of buyers", f"{base['B']:,.0f}"),
+], columns=["teacher's tree node", "formula", "our value"]).set_index("teacher's tree node")
+tree_map
+
+# %% [markdown]
+# ## 4. Five hypotheses for C1 growth
 #
-# From the EDA (notebook 02, section 7):
+# The growth lever is C1, so all five hypotheses act on it, but through different funnel steps:
+# C1 = (call) × (conversation) × (consultation) × (invoice) × (payment), and growing any step by some percentage grows C1
+# by the same percentage. For each hypothesis we estimate from the data how much its step grows, what that gives C1 and
+# the margin, and whether it can be checked with an A/B test in 14 days (whether the step has enough leads for the
+# effect to exceed the MDE).
+
+# %%
+from statsmodels.stats.proportion import proportion_effectsize
+
+# Every hypothesis raises one funnel step. C1 = product of the steps, so relative step growth = C1 growth.
+d = deals.copy()
+d["called"] = d["contact_id"].isin(calls["contact_id"])
+d["consult"] = d["product"].ne("Unknown")
+d["invoice"] = d["stage"].isin(["Payment Done", "Waiting For Payment"])
+rec = d[d["created_time"] >= M.RECENT_FROM]
+n_days_rec = rec["created_time"].dt.normalize().nunique()
+talked, called = d[d["talked"]], d[d["called"]]
+cons = d[d["talked"] & d["consult"]]
+inv = cons[cons["invoice"]]
+
+# H1: from the test design (section 5): 8–23 window, 80% compliance, the C1 gap carries over fully
+o = M.speed_test_design(deals).loc[M.CHOSEN_WINDOW]
+c1_r = deals.loc[deals["reached_24h"], "is_student"].mean()
+c1_n = deals.loc[~deals["reached_24h"], "is_student"].mean()
+h1_all = M.speed_test_design(deals, compliance=0.8).loc[M.CHOSEN_WINDOW].iloc[6] / 100
+# H2: 20% of leads who were called but never reached get to a conversation; they convert half as well as the rest
+nr_share = (called["talked"] == False).mean()
+# H3: the script closes a third of the gap between the average and the best manager at "conversation → consultation"
+mgr_rate = talked.groupby("deal_owner_name", observed=True).agg(n=("id", "size"), rate=("consult", "mean"))
+best_rate = mgr_rate.loc[mgr_rate["n"] >= 300, "rate"].max()
+# H4: a third of morning clients choose the evening; half of the observed evening advantage is causal
+ev = cons.loc[cons["education_type"].eq("Evening"), "invoice"].mean()
+mo = cons.loc[cons["education_type"].eq("Morning"), "invoice"].mean()
+share_mo = cons["education_type"].eq("Morning").mean()
+# H5: 10% of stuck invoices get paid
+stuck = (cons["stage"] == "Waiting For Payment").sum()
+
+H = pd.DataFrame([
+    # code, hypothesis, funnel step, test units per day, step now, step growth (share), carry-over into C1
+    ("H1", "Answer ≤ 15 min, daily 8–23", "lead → conversation in 24 h", o.iloc[1], o.iloc[3], o.iloc[4] / 100,
+     h1_all * (c1_r - c1_n) / deals["is_student"].mean()),
+    ("H2", "3 calls in 48 h + WhatsApp/SMS", "call → conversation", rec["called"].sum() / n_days_rec,
+     called["talked"].mean(), 0.20 * nr_share, None),
+    ("H3", "Script: book the consultation in the 1st call", "conversation → consultation",
+     (rec["talked"]).sum() / n_days_rec, talked["consult"].mean(), (best_rate - talked["consult"].mean()) / 3, None),
+    ("H4", "Evening group at the consultation", "consultation → invoice", (rec["talked"] & rec["consult"]).sum() / n_days_rec,
+     cons["invoice"].mean(), share_mo / 3 * (ev - mo) * 0.5, None),
+    ("H5", "Payment reminders + instalments", "invoice → payment",
+     (rec["talked"] & rec["consult"] & rec["invoice"]).sum() / n_days_rec, inv["is_student"].mean(),
+     0.10 * stuck / len(inv), None),
+], columns=["code", "hypothesis", "funnel step", "test units per day", "step now", "step growth", "C1 growth"]).set_index("code")
+transfer = {"H2": 0.5}
+for k in ["H2", "H3", "H4", "H5"]:
+    H.loc[k, "C1 growth"] = H.loc[k, "step growth"] / H.loc[k, "step now"] * transfer.get(k, 1.0)
+
+H["extra students per year"] = base["B"] * H["C1 growth"].astype(float)
+H["CM growth per year, €"] = [cm(**{**m0, "C1": m0["C1"] * (1 + g)}) - cm0 for g in H["C1 growth"].astype(float)]
+n14 = (H["test units per day"] * M.TEST_DAYS / 2).astype(int)
+H["MDE in 14 days, pp"] = [M.mde(p, n) * 100 for p, n in zip(H["step now"], n14)]
+H["effect on step, pp"] = H["step growth"] * 100
+H["A/B in 14 days"] = H["effect on step, pp"] >= H["MDE in 14 days, pp"]
+H["days for A/B"] = [int(np.ceil(2 * NormalIndPower().solve_power(proportion_effectsize(p + dlt, p), alpha=M.ALPHA,
+                                                                   power=M.POWER, ratio=1) / u))
+                     for p, dlt, u in zip(H["step now"], H["step growth"], H["test units per day"])]
+# ICE: Impact from the CM estimate; Confidence and Ease are expert scores (reasoning in the table below)
+H["I"] = (1 + 9 * H["CM growth per year, €"] / H["CM growth per year, €"].max()).round().astype(int)
+H["C"] = pd.Series({"H1": 8, "H2": 5, "H3": 5, "H4": 4, "H5": 4})
+H["E"] = pd.Series({"H1": 5, "H2": 8, "H3": 6, "H4": 8, "H5": 9})
+H["ICE"] = H["I"] * H["C"] * H["E"]
+H = H.sort_values("ICE", ascending=False)
+display(H.drop(columns=["step growth"]).style.format({
+    "test units per day": "{:.0f}", "step now": "{:.1%}", "C1 growth": "{:+.1%}", "extra students per year": "{:+.0f}",
+    "CM growth per year, €": "+€{:,.0f}", "MDE in 14 days, pp": "+{:.1f}", "effect on step, pp": "+{:.1f}"}))
+
+fig, ax = plt.subplots(figsize=(11, 4))
+p = H.sort_values("CM growth per year, €")
+yy = np.arange(len(p))
+ax.barh(yy, p["CM growth per year, €"], color=[ACCENT if t else PRIMARY for t in p["A/B in 14 days"]], height=0.6)
+for k, (v, ice, t) in enumerate(zip(p["CM growth per year, €"], p["ICE"], p["A/B in 14 days"])):
+    ax.text(v, k, f"  +€{v / 1e3:,.0f}k · ICE {ice}" + ("  · A/B in 14 days" if t else ""), va="center", fontsize=10,
+            color=viz.TEXT_2)
+ax.set_yticks(yy, [f"{i}: {s}" for i, s in zip(p.index, ["Answer ≤ 15 min, daily 8–23" if i == "H1" else
+                                                          {"H2": "Follow-up: 3 calls in 48 h + messages",
+                                                           "H3": "Call script: book the consultation",
+                                                           "H4": "Offer the evening group",
+                                                           "H5": "Payment reminders + instalments"}[i] for i in p.index])])
+eur_axis(ax, "x"); ax.set_xlim(0, p["CM growth per year, €"].max() * 1.6); ax.grid(axis="y", visible=False)
+ax.set_title("Five hypotheses for C1: margin per year if confirmed (orange = testable in 14 days)")
+save(fig, "03_c1_hypotheses"); plt.show()
+
+# %% [markdown]
+# **The five hypotheses** (all act on C1):
+#
+# | | If… | then… | because (data) |
+# |---|---|---|---|
+# | **H1** | every new lead gets a manager within 1 minute, the client gets a WhatsApp/SMS and a call **within 15 min every day from 8:00 to 23:00** | the share of leads with a conversation in the first 24 h grows by ≥ 10 pp | answer < 15 min: reach 77% vs 59%; +19 pp controlling for source, time, month and manager |
+# | **H2** | a lead who was not reached gets 3 more calls at different times within 48 h and a messenger message offering a convenient time | more leads reach a conversation | 3,551 leads were called but never reached; among deals lost without a conversation 52% are "doesn't answer" |
+# | **H3** | introduce a first-call script based on the best managers' practice: the goal of the call is to book a consultation at a specific time | more leads reach the consultation after the conversation | this is the biggest loss in the funnel (−10,368 leads); the best manager (Ulysses Adams) gets a consultation after 35.7% of conversations vs 24.5% on average |
+# | **H4** | always offer the evening group alongside the morning one at the consultation | more clients reach an invoice | after the consultation the evening group gives 46% invoices vs 34% for the morning one |
+# | **H5** | remind clients with an invoice about payment after 24 and 72 h and offer instalments | more invoices get paid | 308 deals are stuck in `Waiting For Payment` |
+#
+# **Estimation assumptions** (conservative): H1: test design from section 5, 80% compliance; H2: 20% of leads not
+# reached get to a conversation and convert half as well; H3: the script closes a third of the gap between the average
+# and the best manager; H4: a third of morning clients choose the evening, half of the evening advantage is causal;
+# H5: 10% of stuck invoices get paid.
+#
+# **ICE.** Impact comes from the margin estimate (1–10). Confidence: H1 = 8 (strong link, checked by regression), H2 and
+# H3 = 5 (the gap between managers may be explained by their lead flow), H4 and H5 = 4 (client self-selection,
+# assumptions without data). Ease: H5 = 9 and H2, H4 = 8 (automatic messages and a change of offer), H3 = 6 (manager
+# training), H1 = 5 (needs lead routing and evening shifts).
+#
+# **Choice.** By ICE, H3 comes first: it has the biggest effect (+€511k), but its step has only 50 leads a day and an A/B
+# test would need ~87 days. **The only hypothesis that an A/B test can check within 14 days is H1** (MDE +9.4 pp is below
+# the expected +12.2 pp; 9 days are enough). So: **H1: A/B test now** (sections 5–7); **H3: the next test** (a script
+# pilot with 2–3 managers, then an A/B test of ~3 months); **H2, H4, H5**: pilots with a before/after measurement, since
+# their steps have too few leads for an A/B test to detect a realistic effect in a reasonable time.
+
+# %% [markdown]
+# ### 4.1 The chosen hypothesis H1: evidence from the data
 
 # %%
 evidence = deals.groupby("sla_bucket", observed=True).agg(
@@ -500,6 +700,8 @@ design.to_frame()
 # %% [markdown]
 # ## 6. Hypotheses for each product
 #
+# These are product versions of the section 4 hypotheses: for Digital Marketing, H4 (evening group); for Web Developer, H5 (payment reminders); for UX/UI, removing doubts after the consultation.
+#
 # The product appears in the CRM only at the consultation, so the unit for product hypotheses is a lead with a known
 # product. The 14-day metric is the **share of leads that reached payment or an invoice** (`Payment Done` or
 # `Waiting For Payment`): payment itself cannot be awaited within 2 weeks (median cycle 17 days), while the client's
@@ -590,6 +792,9 @@ results = {
     "office_hours_mde_pp": float(options.iloc[0]["MDE in window, pp"]),
     "cm_uplift": {k: float(v) for k, v in scen["CM growth per year, €"].items()},   # optimistic / base / conservative
     "c1_uplift": {k: float(v) for k, v in scen["C1 growth"].items()},
+    "hypotheses": {k: {"cm_uplift": float(r["CM growth per year, €"]), "c1_uplift": float(r["C1 growth"]),
+                       "ab_14_days": bool(r["A/B in 14 days"]), "days_for_ab": int(r["days for A/B"]), "ice": int(r["ICE"])}
+                   for k, r in H.iterrows()},
 }
 out = Path.cwd().parent / "reports" / "results_03.json"
 out.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -602,7 +807,8 @@ print(f"Saved {out.name}")
 #    manager, 40% of lost deals are "doesn't answer / stopped answering").
 # 3. Metric tree: CM ← Revenue ← C1 ← reach ← first-contact SLA.
 # 4. The link between speed and reach is robust: +19 pp controlling for source, request time, month and manager.
-# 5. Hypothesis: auto-assigning leads + a call within 15 minutes **every day from 8:00 to 23:00** will raise 24-hour reach by ≥ 10 pp.
+# 5. **Five hypotheses for C1 growth**, one per funnel step: H1 response speed, H2 follow-up touches, H3 call script, H4 evening group, H5 payment reminders. By ICE H3 comes first (+€511k), but only H1 can be checked by an A/B test within 14 days, so it goes into the test; H3 is the next test, H2, H4, H5 are pilots.
+#    Hypothesis H1: auto-assigning leads + a call within 15 minutes **every day from 8:00 to 23:00** will raise 24-hour reach by ≥ 10 pp.
 # 6. A/B test (design only, no experiment data): 14 days, 442 leads per group (leads of the 8–23 window), baseline 42.2%,
 #    MDE +9.4 pp vs an expected +12.2 pp, α = 0.05, power 80%, z-test for proportions. Condition: the rule is followed for
 #    ≥ 80% of group B leads. With the current 9–18 schedule a 14-day test would make no sense (MDE +13.6 > effect +11.0).
@@ -612,4 +818,4 @@ print(f"Saved {out.name}")
 #    consultation, Web Developer — reminders and instalments for issued invoices. With 3–4 leads with a product a day the
 #    14-day MDE is +35–43 pp, so product A/B tests within 2 weeks are not possible; they are checked as pilots.
 #
-# ➡️ The answer to the business question and the action priorities: [04_conclusions.ipynb](04_conclusions.ipynb)
+# The answer to the business question and the action priorities: [04_conclusions.ipynb](04_conclusions.ipynb)

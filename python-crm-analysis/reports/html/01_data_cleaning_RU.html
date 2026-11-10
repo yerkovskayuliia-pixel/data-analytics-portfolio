@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>01_data_cleaning</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>01_data_cleaning_RU</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7842,6 +7842,31 @@ a.anchor-link {
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs celltag_hide-input" id="cell-id=30e4e06a">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">)</span>  <span class="c1"># обратная совместимость типов pandas, на расчёты не влияет</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"src"</span><span class="p">))</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cleaning</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">etl</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"display.max_columns"</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"display.width"</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=964b0c9f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
@@ -7943,6 +7968,25 @@ a.anchor-link {
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell celltag_hide-input" id="cell-id=d77edb07">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">missing_report</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"пропусков"</span><span class="p">:</span> <span class="n">m</span><span class="p">,</span> <span class="s2">"%"</span><span class="p">:</span> <span class="p">(</span><span class="n">m</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                          <span class="s2">"тип"</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)})</span>
+            <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"пропусков &gt; 0"</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"%"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="n">missing_report</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="s2">"Deals"</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -8998,108 +9042,108 @@ a.anchor-link {
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_207f0">
+<table id="T_86ee1">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_207f0_level0_col0">метка</th>
-<th class="col_heading level0 col1" id="T_207f0_level0_col1">доля метки</th>
-<th class="col_heading level0 col2" id="T_207f0_level0_col2">уникальных</th>
-<th class="col_heading level0 col3" id="T_207f0_level0_col3">мода</th>
-<th class="col_heading level0 col4" id="T_207f0_level0_col4">мода среди известных</th>
-<th class="col_heading level0 col5" id="T_207f0_level0_col5">доля моды среди известных</th>
+<th class="col_heading level0 col0" id="T_86ee1_level0_col0">метка</th>
+<th class="col_heading level0 col1" id="T_86ee1_level0_col1">доля метки</th>
+<th class="col_heading level0 col2" id="T_86ee1_level0_col2">уникальных</th>
+<th class="col_heading level0 col3" id="T_86ee1_level0_col3">мода</th>
+<th class="col_heading level0 col4" id="T_86ee1_level0_col4">мода среди известных</th>
+<th class="col_heading level0 col5" id="T_86ee1_level0_col5">доля моды среди известных</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_207f0_level0_row0">Deals.quality</th>
-<td class="data row0 col0" id="T_207f0_row0_col0">Not rated</td>
-<td class="data row0 col1" id="T_207f0_row0_col1">11.3%</td>
-<td class="data row0 col2" id="T_207f0_row0_col2">6</td>
-<td class="data row0 col3" id="T_207f0_row0_col3">E - Non Qualified</td>
-<td class="data row0 col4" id="T_207f0_row0_col4">E - Non Qualified</td>
-<td class="data row0 col5" id="T_207f0_row0_col5">34.9%</td>
+<th class="row_heading level0 row0" id="T_86ee1_level0_row0">Deals.quality</th>
+<td class="data row0 col0" id="T_86ee1_row0_col0">Not rated</td>
+<td class="data row0 col1" id="T_86ee1_row0_col1">11.3%</td>
+<td class="data row0 col2" id="T_86ee1_row0_col2">6</td>
+<td class="data row0 col3" id="T_86ee1_row0_col3">E - Non Qualified</td>
+<td class="data row0 col4" id="T_86ee1_row0_col4">E - Non Qualified</td>
+<td class="data row0 col5" id="T_86ee1_row0_col5">34.9%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_207f0_level0_row1">Deals.lost_reason</th>
-<td class="data row1 col0" id="T_207f0_row1_col0">Not lost</td>
-<td class="data row1 col1" id="T_207f0_row1_col1">27.6%</td>
-<td class="data row1 col2" id="T_207f0_row1_col2">21</td>
-<td class="data row1 col3" id="T_207f0_row1_col3">Not lost</td>
-<td class="data row1 col4" id="T_207f0_row1_col4">Doesn't Answer</td>
-<td class="data row1 col5" id="T_207f0_row1_col5">28.8%</td>
+<th class="row_heading level0 row1" id="T_86ee1_level0_row1">Deals.lost_reason</th>
+<td class="data row1 col0" id="T_86ee1_row1_col0">Not lost</td>
+<td class="data row1 col1" id="T_86ee1_row1_col1">27.6%</td>
+<td class="data row1 col2" id="T_86ee1_row1_col2">21</td>
+<td class="data row1 col3" id="T_86ee1_row1_col3">Not lost</td>
+<td class="data row1 col4" id="T_86ee1_row1_col4">Doesn't Answer</td>
+<td class="data row1 col5" id="T_86ee1_row1_col5">28.8%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_207f0_level0_row2">Deals.campaign</th>
-<td class="data row2 col0" id="T_207f0_row2_col0">(no campaign)</td>
-<td class="data row2 col1" id="T_207f0_row2_col1">21.4%</td>
-<td class="data row2 col2" id="T_207f0_row2_col2">154</td>
-<td class="data row2 col3" id="T_207f0_row2_col3">(no campaign)</td>
-<td class="data row2 col4" id="T_207f0_row2_col4">performancemax_digitalmarkt_ru_DE</td>
-<td class="data row2 col5" id="T_207f0_row2_col5">16.5%</td>
+<th class="row_heading level0 row2" id="T_86ee1_level0_row2">Deals.campaign</th>
+<td class="data row2 col0" id="T_86ee1_row2_col0">(no campaign)</td>
+<td class="data row2 col1" id="T_86ee1_row2_col1">21.4%</td>
+<td class="data row2 col2" id="T_86ee1_row2_col2">154</td>
+<td class="data row2 col3" id="T_86ee1_row2_col3">(no campaign)</td>
+<td class="data row2 col4" id="T_86ee1_row2_col4">performancemax_digitalmarkt_ru_DE</td>
+<td class="data row2 col5" id="T_86ee1_row2_col5">16.5%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_207f0_level0_row3">Deals.product</th>
-<td class="data row3 col0" id="T_207f0_row3_col0">Unknown</td>
-<td class="data row3 col1" id="T_207f0_row3_col1">82.2%</td>
-<td class="data row3 col2" id="T_207f0_row3_col2">6</td>
-<td class="data row3 col3" id="T_207f0_row3_col3">Unknown</td>
-<td class="data row3 col4" id="T_207f0_row3_col4">Digital Marketing</td>
-<td class="data row3 col5" id="T_207f0_row3_col5">55.2%</td>
+<th class="row_heading level0 row3" id="T_86ee1_level0_row3">Deals.product</th>
+<td class="data row3 col0" id="T_86ee1_row3_col0">Unknown</td>
+<td class="data row3 col1" id="T_86ee1_row3_col1">82.2%</td>
+<td class="data row3 col2" id="T_86ee1_row3_col2">6</td>
+<td class="data row3 col3" id="T_86ee1_row3_col3">Unknown</td>
+<td class="data row3 col4" id="T_86ee1_row3_col4">Digital Marketing</td>
+<td class="data row3 col5" id="T_86ee1_row3_col5">55.2%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_207f0_level0_row4">Deals.education_type</th>
-<td class="data row4 col0" id="T_207f0_row4_col0">Unknown</td>
-<td class="data row4 col1" id="T_207f0_row4_col1">83.6%</td>
-<td class="data row4 col2" id="T_207f0_row4_col2">3</td>
-<td class="data row4 col3" id="T_207f0_row4_col3">Unknown</td>
-<td class="data row4 col4" id="T_207f0_row4_col4">Morning</td>
-<td class="data row4 col5" id="T_207f0_row4_col5">87.8%</td>
+<th class="row_heading level0 row4" id="T_86ee1_level0_row4">Deals.education_type</th>
+<td class="data row4 col0" id="T_86ee1_row4_col0">Unknown</td>
+<td class="data row4 col1" id="T_86ee1_row4_col1">83.6%</td>
+<td class="data row4 col2" id="T_86ee1_row4_col2">3</td>
+<td class="data row4 col3" id="T_86ee1_row4_col3">Unknown</td>
+<td class="data row4 col4" id="T_86ee1_row4_col4">Morning</td>
+<td class="data row4 col5" id="T_86ee1_row4_col5">87.8%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row5" id="T_207f0_level0_row5">Deals.payment_type</th>
-<td class="data row5 col0" id="T_207f0_row5_col0">Unknown</td>
-<td class="data row5 col1" id="T_207f0_row5_col1">97.6%</td>
-<td class="data row5 col2" id="T_207f0_row5_col2">4</td>
-<td class="data row5 col3" id="T_207f0_row5_col3">Unknown</td>
-<td class="data row5 col4" id="T_207f0_row5_col4">Recurring Payments</td>
-<td class="data row5 col5" id="T_207f0_row5_col5">70.6%</td>
+<th class="row_heading level0 row5" id="T_86ee1_level0_row5">Deals.payment_type</th>
+<td class="data row5 col0" id="T_86ee1_row5_col0">Unknown</td>
+<td class="data row5 col1" id="T_86ee1_row5_col1">97.6%</td>
+<td class="data row5 col2" id="T_86ee1_row5_col2">4</td>
+<td class="data row5 col3" id="T_86ee1_row5_col3">Unknown</td>
+<td class="data row5 col4" id="T_86ee1_row5_col4">Recurring Payments</td>
+<td class="data row5 col5" id="T_86ee1_row5_col5">70.6%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row6" id="T_207f0_level0_row6">Deals.city</th>
-<td class="data row6 col0" id="T_207f0_row6_col0">Unknown</td>
-<td class="data row6 col1" id="T_207f0_row6_col1">89.1%</td>
-<td class="data row6 col2" id="T_207f0_row6_col2">875</td>
-<td class="data row6 col3" id="T_207f0_row6_col3">Unknown</td>
-<td class="data row6 col4" id="T_207f0_row6_col4">Berlin</td>
-<td class="data row6 col5" id="T_207f0_row6_col5">8.4%</td>
+<th class="row_heading level0 row6" id="T_86ee1_level0_row6">Deals.city</th>
+<td class="data row6 col0" id="T_86ee1_row6_col0">Unknown</td>
+<td class="data row6 col1" id="T_86ee1_row6_col1">89.1%</td>
+<td class="data row6 col2" id="T_86ee1_row6_col2">875</td>
+<td class="data row6 col3" id="T_86ee1_row6_col3">Unknown</td>
+<td class="data row6 col4" id="T_86ee1_row6_col4">Berlin</td>
+<td class="data row6 col5" id="T_86ee1_row6_col5">8.4%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row7" id="T_207f0_level0_row7">Deals.german_level</th>
-<td class="data row7 col0" id="T_207f0_row7_col0">Unknown</td>
-<td class="data row7 col1" id="T_207f0_row7_col1">94.0%</td>
-<td class="data row7 col2" id="T_207f0_row7_col2">8</td>
-<td class="data row7 col3" id="T_207f0_row7_col3">Unknown</td>
-<td class="data row7 col4" id="T_207f0_row7_col4">B1</td>
-<td class="data row7 col5" id="T_207f0_row7_col5">68.0%</td>
+<th class="row_heading level0 row7" id="T_86ee1_level0_row7">Deals.german_level</th>
+<td class="data row7 col0" id="T_86ee1_row7_col0">Unknown</td>
+<td class="data row7 col1" id="T_86ee1_row7_col1">94.0%</td>
+<td class="data row7 col2" id="T_86ee1_row7_col2">8</td>
+<td class="data row7 col3" id="T_86ee1_row7_col3">Unknown</td>
+<td class="data row7 col4" id="T_86ee1_row7_col4">B1</td>
+<td class="data row7 col5" id="T_86ee1_row7_col5">68.0%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row8" id="T_207f0_level0_row8">Calls.outgoing_call_status</th>
-<td class="data row8 col0" id="T_207f0_row8_col0">Not applicable</td>
-<td class="data row8 col1" id="T_207f0_row8_col1">9.4%</td>
-<td class="data row8 col2" id="T_207f0_row8_col2">2</td>
-<td class="data row8 col3" id="T_207f0_row8_col3">Completed</td>
-<td class="data row8 col4" id="T_207f0_row8_col4">Completed</td>
-<td class="data row8 col5" id="T_207f0_row8_col5">100.0%</td>
+<th class="row_heading level0 row8" id="T_86ee1_level0_row8">Calls.outgoing_call_status</th>
+<td class="data row8 col0" id="T_86ee1_row8_col0">Not applicable</td>
+<td class="data row8 col1" id="T_86ee1_row8_col1">9.4%</td>
+<td class="data row8 col2" id="T_86ee1_row8_col2">2</td>
+<td class="data row8 col3" id="T_86ee1_row8_col3">Completed</td>
+<td class="data row8 col4" id="T_86ee1_row8_col4">Completed</td>
+<td class="data row8 col5" id="T_86ee1_row8_col5">100.0%</td>
 </tr>
 <tr>
-<th class="row_heading level0 row9" id="T_207f0_level0_row9">Spend.campaign</th>
-<td class="data row9 col0" id="T_207f0_row9_col0">(no campaign)</td>
-<td class="data row9 col1" id="T_207f0_row9_col1">25.6%</td>
-<td class="data row9 col2" id="T_207f0_row9_col2">52</td>
-<td class="data row9 col3" id="T_207f0_row9_col3">(no campaign)</td>
-<td class="data row9 col4" id="T_207f0_row9_col4">12.07.2023wide_DE</td>
-<td class="data row9 col5" id="T_207f0_row9_col5">14.0%</td>
+<th class="row_heading level0 row9" id="T_86ee1_level0_row9">Spend.campaign</th>
+<td class="data row9 col0" id="T_86ee1_row9_col0">(no campaign)</td>
+<td class="data row9 col1" id="T_86ee1_row9_col1">25.6%</td>
+<td class="data row9 col2" id="T_86ee1_row9_col2">52</td>
+<td class="data row9 col3" id="T_86ee1_row9_col3">(no campaign)</td>
+<td class="data row9 col4" id="T_86ee1_row9_col4">12.07.2023wide_DE</td>
+<td class="data row9 col5" id="T_86ee1_row9_col5">14.0%</td>
 </tr>
 </tbody>
 </table>
@@ -9153,12 +9197,12 @@ a.anchor-link {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><strong>Выводы повторного одномерного анализа:</strong></p>
 <ul>
-<li>В <code>quality</code> и <code>lost_reason</code> метка — не мода: 11% лидов без оценки и 28% «не проиграны» (сделка ещё в работе
-или выиграна). Распределение известных значений не изменилось — заполнение только сделало пропуск видимым.</li>
+<li>В <code>quality</code> и <code>lost_reason</code> метка - не мода: 11% лидов без оценки и 28% «не проиграны» (сделка ещё в работе
+или выиграна). Распределение известных значений не изменилось - заполнение только сделало пропуск видимым.</li>
 <li>В <code>product</code>, <code>education_type</code>, <code>payment_type</code>, <code>city</code>, <code>german_level</code> метка <code>Unknown</code> занимает 82–98% и
 становится модой. Это ожидаемо: поля заполняются на консультации. Поэтому в EDA эти поля анализируются
-<strong>только по известным значениям</strong>, а доля <code>Unknown</code> сама по себе — метрика качества CRM (ноутбук 04, план действий).</li>
-<li>В <code>Calls.outgoing_call_status</code> 9% «Not applicable» — входящие звонки, это не пропуск.</li>
+<strong>только по известным значениям</strong>, а доля <code>Unknown</code> сама по себе - метрика качества CRM (ноутбук 04, план действий).</li>
+<li>В <code>Calls.outgoing_call_status</code> 9% «Not applicable» - входящие звонки, это не пропуск.</li>
 <li>Заполнение средним/модой здесь исказило бы картину: например, мода <code>product</code> превратила бы 82% лидов в
 «Digital Marketing», а конверсия в продукт выросла бы в разы.</li>
 </ul>
@@ -9179,7 +9223,21 @@ a.anchor-link {
 <li>Очищенные таблицы сохранены в <code>data/processed/</code> в двух форматах: <strong>CSV</strong> (для Tableau/Sheets) и
 <strong>pickle</strong> (для Python: сохраняет типы <code>datetime</code>, <code>category</code>, <code>bool</code> и загружается мгновенно).</li>
 </ul>
-<p>➡️ Следующий шаг — <a href="02_eda_analysis.ipynb">02_eda_analysis.ipynb</a></p>
+<p>Следующий шаг — <a href="02_eda_analysis.ipynb">02_eda_analysis.ipynb</a></p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=153ac409-fd08-41a2-b6c5-e42aee03ab06">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+</div>
 </div>
 </div>
 </div>

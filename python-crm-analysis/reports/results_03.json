@@ -24,5 +24,42 @@
     "optimistic": 0.1120798848050184,
     "base": 0.08966390784401468,
     "conservative": 0.04483195392200745
+  },
+  "hypotheses": {
+    "H3": {
+      "cm_uplift": 510572.364239702,
+      "c1_uplift": 0.15266707519426848,
+      "ab_14_days": false,
+      "days_for_ab": 87,
+      "ice": 300
+    },
+    "H1": {
+      "cm_uplift": 299867.62605253607,
+      "c1_uplift": 0.08966390784401465,
+      "ab_14_days": true,
+      "days_for_ab": 9,
+      "ice": 240
+    },
+    "H4": {
+      "cm_uplift": 163008.974974975,
+      "c1_uplift": 0.0487415794172551,
+      "ab_14_days": false,
+      "days_for_ab": 2777,
+      "ice": 128
+    },
+    "H2": {
+      "cm_uplift": 86495.209252025,
+      "c1_uplift": 0.02586307356154407,
+      "ab_14_days": false,
+      "days_for_ab": 43,
+      "ice": 120
+    },
+    "H5": {
+      "cm_uplift": 128596.78734914633,
+      "c1_uplift": 0.03845193508114857,
+      "ab_14_days": false,
+      "days_for_ab": 1859,
+      "ice": 108
+    }
   }
 }

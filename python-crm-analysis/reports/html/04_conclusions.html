@@ -7811,6 +7811,44 @@ a.anchor-link {
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs celltag_hide-input" id="cell-id=173e510e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">)</span>  <span class="c1"># pandas dtype backward compatibility, does not affect results</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"src"</span><span class="p">))</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cleaning</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">etl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">metrics</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">M</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">viz</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">viz</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRIMARY</span><span class="p">,</span> <span class="n">ACCENT</span><span class="p">,</span> <span class="n">MUTED</span><span class="p">,</span> <span class="n">save</span><span class="p">,</span> <span class="n">eur_axis</span>
+
+<span class="n">M</span><span class="o">.</span><span class="n">set_lang</span><span class="p">(</span><span class="s2">"en"</span><span class="p">)</span>
+<span class="n">viz</span><span class="o">.</span><span class="n">set_style</span><span class="p">()</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"display.width"</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"display.max_colwidth"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">etl</span><span class="o">.</span><span class="n">load_clean</span><span class="p">()</span>
+<span class="n">deals</span><span class="p">,</span> <span class="n">calls</span><span class="p">,</span> <span class="n">spend</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"Deals"</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">"Calls"</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">"Spend"</span><span class="p">]</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">add_contact_metrics</span><span class="p">(</span><span class="n">deals</span><span class="p">,</span> <span class="n">calls</span><span class="p">)</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">((</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"reports"</span> <span class="o">/</span> <span class="s2">"results_03.json"</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">))</span>
+<span class="n">fun</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">funnel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">calls</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cbd6ff34">
 <div class="jp-Cell-inputWrapper" tabindex="0">
@@ -7823,9 +7861,11 @@ a.anchor-link {
 17% reach a consultation. After the consultation the funnel works: 72% of issued invoices are paid.</li>
 <li><strong>The cause: the sales team did not keep up with the traffic growth.</strong> Leads tripled, the share of answers within
 15 minutes fell from 21% to 3%, and conversion fell <em>within</em> channels, not because of a change in the channel mix.</li>
-<li><strong>The cheapest lever is the speed of the first response.</strong> It needs no ad budget; if an A/B test confirms it, it is
-worth +€150–375k contribution margin a year. In parallel, switching off the Performance Max campaign saves
-≈ €33k without any test.</li>
+<li><strong>The growth lever is C1, and there are five hypotheses for it</strong>, one per funnel step (notebook 03, section 4):
+response speed, follow-up touches, call script, evening group, payment reminders. None needs ad budget.
+<strong>Response speed (H1) is tested first</strong>: it is the only one an A/B test can detect within 14 days; if confirmed it is
+worth +€150–375k contribution margin a year. The call script has the biggest potential (H3, ≈ +€511k) and is the
+next test. In parallel, switching off the Performance Max campaign saves ≈ €33k without any test.</li>
 </ol>
 </div>
 </div>
@@ -8035,37 +8075,37 @@ Google Ads CAC: with PMax €344, without PMax €141 (Facebook €172)
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_d036b">
+<table id="T_331b1">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_d036b_level0_col0">ΔCM min, €</th>
-<th class="col_heading level0 col1" id="T_d036b_level0_col1">ΔCM max, €</th>
-<th class="col_heading level0 col2" id="T_d036b_level0_col2">needs ad budget</th>
-<th class="col_heading level0 col3" id="T_d036b_level0_col3">how to check</th>
+<th class="col_heading level0 col0" id="T_331b1_level0_col0">ΔCM min, €</th>
+<th class="col_heading level0 col1" id="T_331b1_level0_col1">ΔCM max, €</th>
+<th class="col_heading level0 col2" id="T_331b1_level0_col2">needs ad budget</th>
+<th class="col_heading level0 col3" id="T_331b1_level0_col3">how to check</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_d036b_level0_row0">Answer ≤ 15 min, 8:00–23:00</th>
-<td class="data row0 col0" id="T_d036b_row0_col0">€+149,934</td>
-<td class="data row0 col1" id="T_d036b_row0_col1">€+374,835</td>
-<td class="data row0 col2" id="T_d036b_row0_col2">no</td>
-<td class="data row0 col3" id="T_d036b_row0_col3">14-day A/B test + C1 after 45 days</td>
+<th class="row_heading level0 row0" id="T_331b1_level0_row0">Answer ≤ 15 min, 8:00–23:00</th>
+<td class="data row0 col0" id="T_331b1_row0_col0">€+149,934</td>
+<td class="data row0 col1" id="T_331b1_row0_col1">€+374,835</td>
+<td class="data row0 col2" id="T_331b1_row0_col2">no</td>
+<td class="data row0 col3" id="T_331b1_row0_col3">14-day A/B test + C1 after 45 days</td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_d036b_level0_row1">Switch off Performance Max</th>
-<td class="data row1 col0" id="T_d036b_row1_col0">€+33,183</td>
-<td class="data row1 col1" id="T_d036b_row1_col1">€+33,183</td>
-<td class="data row1 col2" id="T_d036b_row1_col2">no (saves money)</td>
-<td class="data row1 col3" id="T_d036b_row1_col3">right away, watch Google sign-ups for 2–4 weeks</td>
+<th class="row_heading level0 row1" id="T_331b1_level0_row1">Switch off Performance Max</th>
+<td class="data row1 col0" id="T_331b1_row1_col0">€+33,183</td>
+<td class="data row1 col1" id="T_331b1_row1_col1">€+33,183</td>
+<td class="data row1 col2" id="T_331b1_row1_col2">no (saves money)</td>
+<td class="data row1 col3" id="T_331b1_row1_col3">right away, watch Google sign-ups for 2–4 weeks</td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_d036b_level0_row2">Cut the whole budget by 10%</th>
-<td class="data row2 col0" id="T_d036b_row2_col0">€-319,483</td>
-<td class="data row2 col1" id="T_d036b_row2_col1">€-319,483</td>
-<td class="data row2 col2" id="T_d036b_row2_col2">no</td>
-<td class="data row2 col3" id="T_d036b_row2_col3">—</td>
+<th class="row_heading level0 row2" id="T_331b1_level0_row2">Cut the whole budget by 10%</th>
+<td class="data row2 col0" id="T_331b1_row2_col0">€-319,483</td>
+<td class="data row2 col1" id="T_331b1_row2_col1">€-319,483</td>
+<td class="data row2 col2" id="T_331b1_row2_col2">no</td>
+<td class="data row2 col3" id="T_331b1_row2_col3">—</td>
 </tr>
 </tbody>
 </table>
@@ -8168,9 +8208,14 @@ that campaign Google Ads is cheaper than Facebook, so there is no need to move t
 <td>C1 of group B above control</td>
 </tr>
 <tr>
+<td>Months 2–4</td>
+<td>H3: pilot of the "book the consultation in the first call" script with 2–3 managers, then A/B (~87 days)</td>
+<td>share of consultations after a conversation, then C1</td>
+</tr>
+<tr>
 <td>In parallel</td>
-<td>Product pilots: evening DM group, UX/UI alumni case, Web Dev payment reminders</td>
-<td>share "paid or invoiced" before/after</td>
+<td>Pilots of H2 (follow-up touches), H4 (evening group), H5 (payment reminders) with a before/after measurement</td>
+<td>the funnel step of each hypothesis</td>
 </tr>
 <tr>
 <td>Ongoing</td>
